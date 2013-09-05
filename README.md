@@ -10,7 +10,7 @@ jQuery Kladr
 Подключение
 
 `````javascript
-$('input').kladr({
+$( 'input' ).kladr({
     option1: 'value1',
     option2: 'value2'
 });
@@ -19,13 +19,13 @@ $('input').kladr({
 Чтение опции, свойства
 
 `````javascript
-$('input').kladr('option1');
+$( 'input' ).kladr('option1');
 `````
 
 Изменение опции, свойства
 
 `````javascript
-$('input').kladr('option1', 123);
+$( 'input' ).kladr('option1', 123);
 `````
 
 Параметры
@@ -91,6 +91,48 @@ $('input').kladr('option1', 123);
 * **jquery.kladr.images** - Изображения
 * **examples** - Примеры использования плагина
 
+Примеры
+--------------------------------------------------------------------------------
+
+Автодополнение городами России
+
+`````javascript
+$( 'input' ).kladr({
+    token: 'token',
+    key: 'key',
+    type: $.kladr.type.city
+});
+`````
+
+Изменении подписи при выборе района
+
+`````javascript
+$( 'input' ).kladr({
+    token: 'token',
+    key: 'key',
+    type: $.kladr.type.district,
+    select: function( obj ){
+        $( 'label' ).text( obj.type );
+    }
+});
+`````
+
+Проверка названия города, введённого пользователем самостоятельно
+
+`````javascript
+$( 'input' ).kladr({
+    token: 'token',
+    key: 'key',
+    type: $.kladr.type.city,
+    check:  function( obj ){
+        if(obj){
+            $( 'input' ).css('color', 'black');
+        } else {
+            $( 'input' ).css('color', 'red');
+        }
+    }
+});
+`````
 
 
 [1]: http://kladr-api.ru/        "КЛАДР API"
