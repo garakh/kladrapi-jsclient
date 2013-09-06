@@ -1,0 +1,30 @@
+#kladr_autocomplete ul{
+    display: block;
+    margin: 0;
+    padding: 0;
+    border: 1px solid rgb(94, 94, 94);
+    border-radius: 3px;
+    position: absolute;
+}
+
+#kladr_autocomplete li{
+    display: list-item;
+    list-style-type: none;
+    margin: 0;
+    padding: 3px 5px;
+    overflow: hidden;
+    border: 1px solid white;
+    border-bottom: 1px solid rgb(189, 189, 189);
+}
+
+#kladr_autocomplete li:hover{
+    background-color: rgb(224, 224, 224);
+    border-radius: 3px;
+    border: 1px solid rgb(151, 151, 151);
+}
+
+#kladr_autocomplete a{
+    display: block;
+    cursor: default;
+    width: 10000px;
+}
