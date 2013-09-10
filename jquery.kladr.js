@@ -58,7 +58,39 @@
         var ac = null;
         
         var defaultOptions = {
+            token: null,
+            key: null,
+            type: null,
+            parentType: null,
+            parentId: null,
+            limit: 10,
+            withParents: false,
+            showSpinner: true,
+            current: null,
             
+            open: null,
+            close: null,
+            send: null,
+            received: null,
+            select: null,
+            check: null,
+            
+            source: function(query){
+                return [
+                    {typeShort: 'г', name: 'Архангельск'},
+                    {typeShort: 'пгт', name: 'Архара'},
+                    {typeShort: 'пгт', name: 'Архиповка'},
+                    {typeShort: 'п', name: 'Архангельский'},
+                ];
+            },
+                    
+            labelFormat: function(obj, query){
+                return obj.typeShort+'. '+obj.name;
+            },
+            
+            valueFormat: function(obj, query){
+                return obj.name;
+            }
         };
         
         var options = null;
