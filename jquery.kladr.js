@@ -76,20 +76,26 @@
             select: null,
             check: null,
             
-            source: function(query){
-                return [
-                    {typeShort: 'г', name: 'Архангельск'},
-                    {typeShort: 'пгт', name: 'Архара'},
-                    {typeShort: 'пгт', name: 'Архиповка'},
-                    {typeShort: 'п', name: 'Архангельский'},
-                ];
+            source: function( query, callback ){
+                var params = {
+                    token: options.token,
+                    key: options.token,
+                    type: options.type,
+                    name: query,
+                    parentType: options.parentType,
+                    parentId: options.parentId,
+                    withParents: options.withParents,
+                    limit: options.limit
+                };
+        
+                $.kladr.api(params, callback);
             },
                     
-            labelFormat: function(obj, query){
+            labelFormat: function( obj, query ){
                 return obj.typeShort+'. '+obj.name;
             },
             
-            valueFormat: function(obj, query){
+            valueFormat: function( obj, query ){
                 return obj.name;
             }
         };
@@ -170,11 +176,11 @@
         };
         
         var open = function(){
-            var query = input.val();
-            var objs = options.source(query);
-            render(objs);
-            position();           
-            ac.slideDown(50);
+            options.source(input.val(), function(objs){
+                render(objs);
+                position();           
+                ac.slideDown(50);
+            });
         };
         
         return init(param1, param2, function(){
