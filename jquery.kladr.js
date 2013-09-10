@@ -57,6 +57,7 @@
         var input = this;
         var ac = null;
         
+        var options = null;
         var defaultOptions = {
             token: null,
             key: null,
@@ -92,8 +93,6 @@
                 return obj.name;
             }
         };
-        
-        var options = null;
         
         var init = function( param1, param2, callback ){
             options = input.data('kladr-options');
@@ -161,7 +160,7 @@
             for(var i in objs){
                 var obj = objs[i];
                 
-                var a = $('<a data-val="'+value(obj)+'">'+label(obj)+'</a>');
+                var a = $('<a data-val="'+options.valueFormat(obj)+'">'+options.labelFormat(obj)+'</a>');
                 a.data('kladr-object', obj);
                                 
                 var li = $('<li></li>').append(a);                
@@ -169,29 +168,12 @@
             }
         };
         
-        var label = function(obj){
-            return obj.typeShort+'. '+obj.name;
-        };
-        
-        var value = function(obj){
-            return obj.name;
-        };
-        
-        var source = function(query){
-            return [
-                {typeShort: 'г', name: 'Архангельск'},
-                {typeShort: 'пгт', name: 'Архара'},
-                {typeShort: 'пгт', name: 'Архиповка'},
-                {typeShort: 'п', name: 'Архангельский'},
-            ];
-        };
-        
         return init(param1, param2, function(){
             create();
             $(window).resize(position);
             input.keydown(function(){
                 var query = input.val();
-                var objs = source(query);
+                var objs = options.source(query);
                 render(objs);
                 position();           
                 ac.slideDown(100);
