@@ -53,9 +53,45 @@
 })(jQuery);
 
 (function( $, undefined ){
-    $.fn.kladr = function( options ){
+    $.fn.kladr = function( param1, param2 ){
         var input = this;
         var ac = null;
+        
+        var defaultOptions = {
+            
+        };
+        
+        var options = null;
+        
+        var init = function( param1, param2, callback ){
+            options = input.data('kladr-options');
+            
+            if(param2 !== undefined){
+                options[param1] = param2;
+                input.data('kladr-options', options);
+                return input;
+            }
+            
+            if($.type(param1) === 'string'){
+                if(!options) return null;
+                return options[param1];
+            }
+            
+            if(options){
+                return input;
+            }
+            
+            options = defaultOptions;
+            if($.type(param1) === 'object'){
+                for(var i in param1){
+                    options[i] = param1[i];
+                }
+            }
+            
+            input.data('kladr-options', options);
+            callback && callback();
+            return input;
+        };
         
         var create = function(){
             var container = $(document.getElementById('kladr_autocomplete'));
@@ -118,14 +154,16 @@
             ];
         };
         
-        create();
-        $(window).resize(position);
-        input.keydown(function(){
-            var query = input.val();
-            var objs = source(query);
-            render(objs);
-            position();           
-            ac.slideDown(100);
+        return init(param1, param2, function(){
+            create();
+            $(window).resize(position);
+            input.keydown(function(){
+                var query = input.val();
+                var objs = source(query);
+                render(objs);
+                position();           
+                ac.slideDown(100);
+            });
         });
     };
 })(jQuery);
