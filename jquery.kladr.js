@@ -150,7 +150,8 @@
             var a = $(this);
             if(a.is('li')) a = a.find('a');
             input.val(a.attr('data-val'));
-            input.data('kladr-object', a.data('kladr-object'));
+            options.current = a.data('kladr-object');
+            input.data('kladr-options', options);
             a.closest('ul').hide();
             return false;
         };
@@ -168,16 +169,18 @@
             }
         };
         
+        var open = function(){
+            var query = input.val();
+            var objs = options.source(query);
+            render(objs);
+            position();           
+            ac.slideDown(50);
+        };
+        
         return init(param1, param2, function(){
-            create();
+            create();            
+            input.keydown(open);
             $(window).resize(position);
-            input.keydown(function(){
-                var query = input.val();
-                var objs = options.source(query);
-                render(objs);
-                position();           
-                ac.slideDown(100);
-            });
         });
     };
 })(jQuery);
