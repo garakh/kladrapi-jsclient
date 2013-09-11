@@ -249,6 +249,7 @@
         return init(param1, param2, function(){
             create();            
             input.keyup(open);
+            input.blur(close);
             ac.on('click', 'li, a', select);
             $(window).resize(position);
         });
