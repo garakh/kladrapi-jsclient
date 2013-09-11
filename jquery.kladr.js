@@ -2,7 +2,7 @@
     $.kladr = {};
     
     // Service URL
-    $.kladr.url = 'http://kladr-api.ru/api.php';
+    $.kladr.url = 'https://kladr-api.ru/api.php';
     
     // Enum KLADR object types
     $.kladr.type = {
