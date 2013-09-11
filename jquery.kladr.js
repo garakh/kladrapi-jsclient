@@ -57,6 +57,8 @@
         var input = this;
         var ac = null;
         
+        var spinner = null;
+        
         var options = null;
         var defaultOptions = {
             token: null,
@@ -188,28 +190,37 @@
             options[event] && options[event](obj);
         };
         
-        var position = function(){
-            var inputOffset = input.offset();
-            
-            ac.css({
-               top:  inputOffset.top+input.outerHeight() + 'px',
-               left: inputOffset.left
-            });
-            
-            var differ = ac.outerWidth() - ac.width();
-            ac.width(input.outerWidth() - differ);
-        };
-        
         var create = function(){
             var container = $(document.getElementById('kladr_autocomplete'));
             if(!container.length){
                 container = $('<div id="kladr_autocomplete"></div>').appendTo('body');
             }
             
-            ac = $('<ul style="display: none;"></ul>').appendTo(container);  
             input.attr('autocomplete', 'off');
+            ac = $('<ul style="display: none;"></ul>').appendTo(container); 
+            spinner = $('<div class="spinner" style="display: none;"></div>').appendTo(container); 
         };
         
+        var position = function(){
+            var inputOffset = input.offset();
+            var inputWidth = input.outerWidth();
+            var inputHeight = input.outerHeight();
+            
+            ac.css({
+               top:  inputOffset.top + inputHeight + 'px',
+               left: inputOffset.left
+            });
+            
+            var differ = ac.outerWidth() - ac.width();
+            ac.width(inputWidth - differ);
+                      
+            spinner.css({
+                top:  inputOffset.top,
+                left: inputOffset.left + inputWidth - inputHeight,
+            });
+            spinner.width(inputHeight).height(inputHeight);
+        };
+
         var render = function(objs, query){        
             ac.empty();            
             for(var i in objs){
@@ -303,8 +314,11 @@
             var query = key(input.val());
             if(!$.trim(query)) return;
             
+            spinnerShow();
             trigger('send');
+            
             options.source(query, function(objs){
+                spinnerHide();
                 trigger('received');
                 render(objs, query);
                 position();           
@@ -319,10 +333,19 @@
             trigger('close');
         };
         
+        var spinnerShow = function(){
+            if(options.showSpinner) spinner.show();
+        };
+        
+        var spinnerHide = function(){
+            spinner.hide();
+        };
+        
         return init(param1, param2, function(){
             var isActive = false;
             
             create(); 
+            position();
             
             input.keyup(open);
             input.keydown(keyselect);
