@@ -159,6 +159,8 @@
             options.current = a.data('kladr-object');
             input.data('kladr-options', options);
             a.closest('ul').hide();
+            trigger('select', options.current);
+            trigger('close');
             return false;
         };
         
@@ -179,10 +181,13 @@
         
         var open = function(){
             var query = input.val();
+            trigger('send');
             options.source(query, function(objs){
+                trigger('received');
                 render(objs, query);
                 position();           
                 ac.slideDown(50);
+                trigger('open');
             });
         };
         
