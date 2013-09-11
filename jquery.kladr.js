@@ -121,9 +121,9 @@
         };
         
         var keys = {
-            up: 38,
-            down: 40,
-            esc: 27,
+            up:    38,
+            down:  40,
+            esc:   27,
             enter: 13
         };
         
@@ -225,18 +225,22 @@
             }
         };
         
-        var select = function( a ){
+        var select = function(){
+            var a = ac.find('.active a');
+            if(!a.length) return;
+            
             input.val(a.attr('data-val'));
             options.current = a.data('kladr-object');
             input.data('kladr-options', options);
             trigger('select', options.current);
-            close();
         };
         
         var mouseselect = function(){
             var a = $(this);
             if(a.is('li')) a = a.find('a');
             select(a);
+            close();
+            input.focus();
             return false;
         };
         
@@ -246,29 +250,25 @@
                 case keys.up:
                     if(active.length) {
                         active.removeClass('active');
-                        active.prev().addClass('active');
+                        active = active.prev();
                     } else {
                         active = ac.find('li').last();
-                        active.addClass('active');
                     }
+                    active.addClass('active');
+                    select();
                     break;
                 case keys.down:                    
                     if(active.length) {
                         active.removeClass('active');
-                        active.next().addClass('active');
+                        active = active.next();
                     } else {
                         active = ac.find('li').first();
-                        active.addClass('active');
                     }
+                    active.addClass('active');
+                    select();
                     break;
                 case keys.esc:
                     close();
-                    break;
-                case keys.enter:
-                    if(active.length){
-                        var a = active.find('a');
-                        select(a);
-                    }
                     break;
             }
         };
@@ -292,6 +292,7 @@
         };
         
         var close = function(){
+            select();            
             ac.hide();
             trigger('close');
         };
@@ -299,16 +300,22 @@
         return init(param1, param2, function(){
             create(); 
             
-            input.blur(close);
+            var isActive = false;
+            
             input.keyup(open);
             input.keydown(keyselect);
+            input.blur(function(){
+                if(!isActive) close();
+            });
             
             ac.on('click', 'li, a', mouseselect);
-            ac.on('mouseenter', 'li', function(){
+            ac.on('mouseenter', 'li', function(){ 
                 $(this).addClass('active');
+                isActive = true;
             });
             ac.on('mouseleave', 'li', function(){
-                $(this).removeClass('active');
+                $(this).removeClass('active'); 
+                isActive = false;
             });
             
             $(window).resize(position);
