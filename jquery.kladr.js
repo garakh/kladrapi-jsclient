@@ -162,12 +162,14 @@
             return false;
         };
         
-        var render = function(objs){        
+        var render = function(objs, query){        
             ac.empty();            
             for(var i in objs){
-                var obj = objs[i];
+                var obj = objs[i];                
+                var value = options.valueFormat(obj, query);
+                var label = options.labelFormat(obj, query);
                 
-                var a = $('<a data-val="'+options.valueFormat(obj)+'">'+options.labelFormat(obj)+'</a>');
+                var a = $('<a data-val="'+value+'">'+label+'</a>');
                 a.data('kladr-object', obj);
                                 
                 var li = $('<li></li>').append(a);                
@@ -176,8 +178,9 @@
         };
         
         var open = function(){
-            options.source(input.val(), function(objs){
-                render(objs);
+            var query = input.val();
+            options.source(query, function(objs){
+                render(objs, query);
                 position();           
                 ac.slideDown(50);
             });
