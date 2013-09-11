@@ -288,18 +288,10 @@
             var query = key(input.val());
             if(!$.trim(query)) return;
             
-            var params = {
-                token: options.token,
-                key: options.token,
-                type: options.type,
-                name: query,
-                parentType: options.parentType,
-                parentId: options.parentId,
-                withParents: options.withParents,
-                limit: options.limit
-            };
-            
-            $.kladr.check(params, function(obj){
+            options.source(query, function(objs){
+                var obj = (objs.length > 0) ? objs[0] : false;                
+                if(obj) input.val(options.valueFormat(obj, query));
+                
                 options.current = obj;
                 input.data('kladr-options', options);
                 trigger('check', options.current);
