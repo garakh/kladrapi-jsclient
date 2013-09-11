@@ -150,54 +150,6 @@
             return input;
         };
         
-        var create = function(){
-            var container = $(document.getElementById('kladr_autocomplete'));
-            if(!container.length){
-                container = $('<div id="kladr_autocomplete"></div>').appendTo('body');
-            }
-            
-            ac = $('<ul style="display: none;"></ul>').appendTo(container);  
-            input.attr('autocomplete', 'off');
-        };
-        
-        var position = function(){
-            var inputOffset = input.offset();
-            
-            ac.css({
-               top:  inputOffset.top+input.outerHeight() + 'px',
-               left: inputOffset.left
-            });
-            
-            var differ = ac.outerWidth() - ac.width();
-            ac.width(input.outerWidth() - differ);
-        };
-        
-        var select = function(){
-            var a = $(this);
-            if(a.is('li')) a = a.find('a');
-            input.val(a.attr('data-val'));
-            options.current = a.data('kladr-object');
-            input.data('kladr-options', options);
-            trigger('select', options.current);
-            close();
-            return false;
-        };
-        
-        var render = function(objs, query){        
-            ac.empty();            
-            for(var i in objs){
-                var obj = objs[i];                
-                var value = options.valueFormat(obj, query);
-                var label = options.labelFormat(obj, query);
-                
-                var a = $('<a data-val="'+value+'">'+label+'</a>');
-                a.data('kladr-object', obj);
-                                
-                var li = $('<li></li>').append(a);                
-                li.appendTo(ac);
-            }
-        };
-        
         var key = function( val ){
             var en = "1234567890qazwsxedcrfvtgbyhnujmik,ol.p;[']- " +
                      "QAZWSXEDCRFVTGBYHNUJMIK<OL>P:{\"} ";
@@ -223,8 +175,88 @@
             return strNew;
         };
         
+        var trigger = function(event, obj){
+            if(!event) return;
+            input.trigger('kladr_'+event, obj);
+            options[event] && options[event](obj);
+        };
+        
+        var position = function(){
+            var inputOffset = input.offset();
+            
+            ac.css({
+               top:  inputOffset.top+input.outerHeight() + 'px',
+               left: inputOffset.left
+            });
+            
+            var differ = ac.outerWidth() - ac.width();
+            ac.width(input.outerWidth() - differ);
+        };
+        
+        var create = function(){
+            var container = $(document.getElementById('kladr_autocomplete'));
+            if(!container.length){
+                container = $('<div id="kladr_autocomplete"></div>').appendTo('body');
+            }
+            
+            ac = $('<ul style="display: none;"></ul>').appendTo(container);  
+            input.attr('autocomplete', 'off');
+        };
+        
+        var render = function(objs, query){        
+            ac.empty();            
+            for(var i in objs){
+                var obj = objs[i];                
+                var value = options.valueFormat(obj, query);
+                var label = options.labelFormat(obj, query);
+                
+                var a = $('<a data-val="'+value+'">'+label+'</a>');
+                a.data('kladr-object', obj);
+                                
+                var li = $('<li></li>').append(a);                
+                li.appendTo(ac);
+            }
+        };
+        
+        var mouseselect = function(){
+            var a = $(this);
+            if(a.is('li')) a = a.find('a');
+            input.val(a.attr('data-val'));
+            options.current = a.data('kladr-object');
+            input.data('kladr-options', options);
+            trigger('select', options.current);
+            close();
+            return false;
+        };
+        
+        var keyselect = function(event){
+            var keys = {
+                up: 38,
+                down: 40,
+                esc: 27,
+                enter: 13
+            };
+            
+            switch(event.which){
+                case keys.up:
+                    console.log('up');
+                    break;
+                case keys.down:
+                    console.log('down');
+                    break;
+                case keys.esc:
+                    console.log('esc');
+                    break;
+                case keys.enter:
+                    console.log('enter');
+                    break;
+            }
+        };
+        
         var open = function(){
             var query = key(input.val());
+            if(!$.trim(query)) return;
+            
             trigger('send');
             options.source(query, function(objs){
                 trigger('received');
@@ -240,17 +272,12 @@
             trigger('close');
         };
         
-        var trigger = function(event, obj){
-            if(!event) return;
-            input.trigger('kladr_'+event, obj);
-            options[event] && options[event](obj);
-        };
-        
         return init(param1, param2, function(){
-            create();            
-            input.keyup(open);
+            create(); 
             input.blur(close);
-            ac.on('click', 'li, a', select);
+            input.keyup(open);
+            input.keydown(keyselect);
+            ac.on('click', 'li, a', mouseselect);
             $(window).resize(position);
         });
     };
