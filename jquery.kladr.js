@@ -92,7 +92,27 @@
             },
                     
             labelFormat: function( obj, query ){
-                return obj.typeShort+'. '+obj.name;
+                var label = '';
+            
+                var name = obj.name.toLowerCase();
+                query = query.toLowerCase();
+
+                var start = name.indexOf(query);
+                start = start > 0 ? start : 0;
+
+                if(obj.typeShort){
+                    label += obj.typeShort + '. ';
+                }
+
+                if(query.length < obj.name.length){
+                    label += obj.name.substr(0, start);
+                    label += '<strong>' + obj.name.substr(start, query.length) + '</strong>';
+                    label += obj.name.substr(start+query.length, obj.name.length-query.length-start);
+                } else {
+                    label += obj.name;
+                }
+
+                return label;
             },
             
             valueFormat: function( obj, query ){
@@ -138,6 +158,8 @@
             
             ac = $('<ul style="display: none;"></ul>').appendTo(container);            
             ac.on('click', 'li, a', select);
+            
+            input.attr('autocomplete', 'off');
         };
         
         var position = function(){
