@@ -120,6 +120,13 @@
             }
         };
         
+        var keys = {
+            up: 38,
+            down: 40,
+            esc: 27,
+            enter: 13
+        };
+        
         var init = function( param1, param2, callback ){
             options = input.data('kladr-options');
             
@@ -218,42 +225,59 @@
             }
         };
         
-        var mouseselect = function(){
-            var a = $(this);
-            if(a.is('li')) a = a.find('a');
+        var select = function( a ){
             input.val(a.attr('data-val'));
             options.current = a.data('kladr-object');
             input.data('kladr-options', options);
             trigger('select', options.current);
             close();
+        };
+        
+        var mouseselect = function(){
+            var a = $(this);
+            if(a.is('li')) a = a.find('a');
+            select(a);
             return false;
         };
         
-        var keyselect = function(event){
-            var keys = {
-                up: 38,
-                down: 40,
-                esc: 27,
-                enter: 13
-            };
-            
+        var keyselect = function( event ){
+            var active = ac.find('li.active');  
             switch(event.which){
                 case keys.up:
-                    console.log('up');
+                    if(active.length) {
+                        active.removeClass('active');
+                        active.prev().addClass('active');
+                    } else {
+                        active = ac.find('li').last();
+                        active.addClass('active');
+                    }
                     break;
-                case keys.down:
-                    console.log('down');
+                case keys.down:                    
+                    if(active.length) {
+                        active.removeClass('active');
+                        active.next().addClass('active');
+                    } else {
+                        active = ac.find('li').first();
+                        active.addClass('active');
+                    }
                     break;
                 case keys.esc:
-                    console.log('esc');
+                    close();
                     break;
                 case keys.enter:
-                    console.log('enter');
+                    if(active.length){
+                        var a = active.find('a');
+                        select(a);
+                    }
                     break;
             }
         };
         
-        var open = function(){
+        var open = function( event ){
+            for(var i in keys){
+                if(keys[i] == event.which) return;
+            }
+                        
             var query = key(input.val());
             if(!$.trim(query)) return;
             
@@ -274,10 +298,19 @@
         
         return init(param1, param2, function(){
             create(); 
+            
             input.blur(close);
             input.keyup(open);
             input.keydown(keyselect);
+            
             ac.on('click', 'li, a', mouseselect);
+            ac.on('mouseenter', 'li', function(){
+                $(this).addClass('active');
+            });
+            ac.on('mouseleave', 'li', function(){
+                $(this).removeClass('active');
+            });
+            
             $(window).resize(position);
         });
     };
