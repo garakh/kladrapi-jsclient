@@ -111,7 +111,7 @@
                     label += '<strong>' + obj.name.substr(start, query.length) + '</strong>';
                     label += obj.name.substr(start+query.length, obj.name.length-query.length-start);
                 } else {
-                    label += obj.name;
+                    label += '<strong>' + obj.name + '</strong>';
                 }
 
                 return label;
