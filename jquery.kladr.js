@@ -273,6 +273,28 @@
             }
         };
         
+        var change = function(){
+            var query = key(input.val());
+            if(!$.trim(query)) return;
+            
+            var params = {
+                token: options.token,
+                key: options.token,
+                type: options.type,
+                name: query,
+                parentType: options.parentType,
+                parentId: options.parentId,
+                withParents: options.withParents,
+                limit: options.limit
+            };
+            
+            $.kladr.check(params, function(obj){
+                options.current = obj;
+                input.data('kladr-options', options);
+                trigger('check', options.current);
+            });
+        };
+        
         var open = function( event ){
             for(var i in keys){
                 if(keys[i] == event.which) return;
@@ -298,12 +320,13 @@
         };
         
         return init(param1, param2, function(){
-            create(); 
-            
             var isActive = false;
+            
+            create(); 
             
             input.keyup(open);
             input.keydown(keyselect);
+            input.change(change);
             input.blur(function(){
                 if(!isActive) close();
             });
