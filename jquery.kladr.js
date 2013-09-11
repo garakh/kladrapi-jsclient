@@ -156,9 +156,7 @@
                 container = $('<div id="kladr_autocomplete"></div>').appendTo('body');
             }
             
-            ac = $('<ul style="display: none;"></ul>').appendTo(container);            
-            ac.on('click', 'li, a', select);
-            
+            ac = $('<ul style="display: none;"></ul>').appendTo(container);  
             input.attr('autocomplete', 'off');
         };
         
@@ -180,9 +178,8 @@
             input.val(a.attr('data-val'));
             options.current = a.data('kladr-object');
             input.data('kladr-options', options);
-            a.closest('ul').hide();
             trigger('select', options.current);
-            trigger('close');
+            close();
             return false;
         };
         
@@ -238,6 +235,11 @@
             });
         };
         
+        var close = function(){
+            ac.hide();
+            trigger('close');
+        };
+        
         var trigger = function(event, obj){
             if(!event) return;
             input.trigger('kladr_'+event, obj);
@@ -247,6 +249,7 @@
         return init(param1, param2, function(){
             create();            
             input.keyup(open);
+            ac.on('click', 'li, a', select);
             $(window).resize(position);
         });
     };
