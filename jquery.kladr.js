@@ -137,7 +137,7 @@
             }
             
             ac = $('<ul style="display: none;"></ul>').appendTo(container);            
-            ac.on('click', 'li, a', itemClick);
+            ac.on('click', 'li, a', select);
         };
         
         var position = function(){
@@ -152,7 +152,7 @@
             ac.width(input.outerWidth() - differ);
         };
         
-        var itemClick = function(){
+        var select = function(){
             var a = $(this);
             if(a.is('li')) a = a.find('a');
             input.val(a.attr('data-val'));
@@ -179,8 +179,33 @@
             }
         };
         
+        var key = function( val ){
+            var en = "1234567890qazwsxedcrfvtgbyhnujmik,ol.p;[']- " +
+                     "QAZWSXEDCRFVTGBYHNUJMIK<OL>P:{\"} ";
+             
+            var ru = "1234567890йфяцычувскамепинртгоьшлбщдюзжхэъ- " +
+                     "ЙФЯЦЫЧУВСКАМЕПИНРТГОЬШЛБЩДЮЗЖХЭЪ ";
+
+            var strNew = '';
+            var ch;
+            var index;
+            for( var i=0; i<val.length; i++ ){
+                ch = val[i];                    
+                index = en.indexOf(ch);
+
+                if(index > -1){
+                    strNew += ru[index];
+                    continue;
+                }
+
+                strNew += ch;
+            }
+
+            return strNew;
+        };
+        
         var open = function(){
-            var query = input.val();
+            var query = key(input.val());
             trigger('send');
             options.source(query, function(objs){
                 trigger('received');
@@ -199,7 +224,7 @@
         
         return init(param1, param2, function(){
             create();            
-            input.keydown(open);
+            input.keyup(open);
             $(window).resize(position);
         });
     };
