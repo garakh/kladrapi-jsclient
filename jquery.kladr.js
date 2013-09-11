@@ -186,6 +186,12 @@
             });
         };
         
+        var trigger = function(event, obj){
+            if(!event) return;
+            input.trigger('kladr_'+event, obj);
+            options[event] && options[event](obj);
+        };
+        
         return init(param1, param2, function(){
             create();            
             input.keydown(open);
