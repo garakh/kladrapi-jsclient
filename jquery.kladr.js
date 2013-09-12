@@ -55,8 +55,7 @@
 (function( $, undefined ){
     $.fn.kladr = function( param1, param2 ){
         var input = this;
-        var ac = null;
-        
+        var ac = null;        
         var spinner = null;
         
         var options = null;
