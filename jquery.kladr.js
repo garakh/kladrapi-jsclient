@@ -191,13 +191,19 @@
         
         var create = function(){
             var container = $(document.getElementById('kladr_autocomplete'));
+            var inputName = input.attr('name');
+            
             if(!container.length){
                 container = $('<div id="kladr_autocomplete"></div>').appendTo('body');
             }
             
             input.attr('autocomplete', 'off');
-            ac = $('<ul style="display: none;"></ul>').appendTo(container); 
-            spinner = $('<div class="spinner" style="display: none;"></div>').appendTo(container); 
+            
+            ac = $('<ul class="kladr_autocomplete_'+inputName+'" style="display: none;"></ul>');
+            ac.appendTo(container); 
+            
+            spinner = $('<div class="spinner kladr_autocomplete_'+inputName+'_spinner" style="display: none;"></div>');
+            spinner.appendTo(container);
         };
         
         var position = function(){
