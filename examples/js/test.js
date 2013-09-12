@@ -8,6 +8,7 @@ $(function(){
         type: $.kladr.type.city,
         select: function(obj){
             streetInput.kladr('parentId', obj.id);
+            alert(cityInput.kladr('current').name);
         },
         check: function(obj){
             if(obj){
