@@ -298,9 +298,8 @@
         };
         
         var open = function( event ){
-            for(var i in keys){
-                if(keys[i] == event.which) return;
-            }
+            // return on keyup control keys
+            if(event.which < 48) return;
                         
             var query = key(input.val());
             if(!$.trim(query)) return;
