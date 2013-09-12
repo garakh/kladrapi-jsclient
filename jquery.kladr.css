@@ -1,10 +1,11 @@
 #kladr_autocomplete ul{
+    position: absolute;
     display: block;
     margin: 0;
     padding: 0;
     border: 1px solid rgb(94, 94, 94);
     border-radius: 3px;
-    position: absolute;
+    background-color: white;
 }
 
 #kladr_autocomplete li{

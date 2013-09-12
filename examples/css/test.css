@@ -1,8 +1,15 @@
-div {
+form {
     width: 300px;
     margin: 30px auto;
 }
 
 label {
-    margin-right: 10px;
+    display: block;
+    width: 50px;
+    float: left;
+    margin-top: 2px;
+}
+
+input {
+    width: 200px;
 }
