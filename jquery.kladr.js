@@ -67,6 +67,7 @@
             parentId: null,
             limit: 10,
             withParents: false,
+            verify: true,
             showSpinner: true,
             current: null,
             
@@ -293,6 +294,8 @@
         };
         
         var change = function(){
+            if(options.verify) return;
+            
             var query = key(input.val());
             if(!$.trim(query)) return;
             

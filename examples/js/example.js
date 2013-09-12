@@ -6,6 +6,7 @@ $(function(){
         token: 'token',
         key: 'key',
         type: $.kladr.type.city,
+        verify: false,
         select: function(obj){
             streetInput.kladr('parentId', obj.id);
         },
