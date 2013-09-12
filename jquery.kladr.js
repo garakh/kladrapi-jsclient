@@ -294,7 +294,7 @@
         };
         
         var change = function(){
-            if(options.verify) return;
+            if(!options.verify) return;
             
             var query = key(input.val());
             if(!$.trim(query)) return;
