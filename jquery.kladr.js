@@ -202,7 +202,7 @@
             ac = $('<ul class="kladr_autocomplete_'+inputName+'" style="display: none;"></ul>');
             ac.appendTo(container); 
             
-            spinner = $('<div class="spinner kladr_autocomplete_'+inputName+'_spinner" style="display: none;"></div>');
+            spinner = $('<div class="spinner kladr_autocomplete_'+inputName+'_spinner" class="spinner" style="display: none;"></div>');
             spinner.appendTo(container);
         };
         
