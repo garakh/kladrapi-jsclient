@@ -308,10 +308,14 @@
         
         var open = function( event ){
             // return on keyup control keys
-            if(event.which < 48) return;
-                        
+            if((event.which > 8) && (event.which < 46)) return;
+                         
             var query = key(input.val());
-            if(!$.trim(query)) return;
+            if(!$.trim(query)){
+                ac.empty();
+                close();
+                return;
+            }
             
             spinnerShow();
             trigger('send');
@@ -319,10 +323,16 @@
             options.source(query, function(objs){
                 spinnerHide();
                 trigger('received');
-                render(objs, query);
-                position();           
-                ac.slideDown(50);
-                trigger('open');
+                
+                if(!$.trim(input.val())){
+                    ac.empty();
+                    close();
+                } else {
+                    render(objs, query);
+                    position();           
+                    ac.slideDown(50);
+                    trigger('open');
+                }
             });
         };
         
