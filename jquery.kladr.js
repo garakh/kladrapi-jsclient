@@ -280,6 +280,9 @@
                 case keys.esc:
                     close();
                     break;
+                case keys.enter:
+                    close();
+                    return false;
             }
         };
         
