@@ -6,11 +6,10 @@ $(function(){
         token: 'token',
         key: 'key',
         type: $.kladr.type.city,
+        verify: false,
         select: function(obj){
-            streetInput.kladr('parentId', obj.id);
-        },
-        check: function(obj){
             if(obj){
+                cityInput.prev().text(obj.type);
                 streetInput.kladr('parentId', obj.id);
             }
         }
@@ -20,6 +19,12 @@ $(function(){
         token: 'token',
         key: 'key',
         type: $.kladr.type.street,
-        parentType: $.kladr.type.city
+        parentType: $.kladr.type.city,
+        verify: false,
+        select: function(obj){
+            if(obj){
+                streetInput.prev().text(obj.type);
+            }
+        }
     });
 });

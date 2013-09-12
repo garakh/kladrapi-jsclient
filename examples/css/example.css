@@ -1,11 +1,11 @@
 form {
-    width: 300px;
+    width: 350px;
     margin: 30px auto;
 }
 
 label {
     display: block;
-    width: 50px;
+    width: 70px;
     float: left;
     margin-top: 2px;
 }
