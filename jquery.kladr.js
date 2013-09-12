@@ -227,15 +227,15 @@
         };
 
         var render = function(objs, query){        
-            ac.empty();            
+            ac.empty();  
             for(var i in objs){
                 var obj = objs[i];                
                 var value = options.valueFormat(obj, query);
                 var label = options.labelFormat(obj, query);
-                
+
                 var a = $('<a data-val="'+value+'">'+label+'</a>');
                 a.data('kladr-object', obj);
-                                
+
                 var li = $('<li></li>').append(a);                
                 li.appendTo(ac);
             }
@@ -309,7 +309,7 @@
         var open = function( event ){
             // return on keyup control keys
             if((event.which > 8) && (event.which < 46)) return;
-                         
+            
             var query = key(input.val());
             if(!$.trim(query)){
                 ac.empty();
@@ -324,15 +324,16 @@
                 spinnerHide();
                 trigger('received');
                 
-                if(!$.trim(input.val())){
+                if(!$.trim(input.val()) || !objs.length){
                     ac.empty();
                     close();
-                } else {
-                    render(objs, query);
-                    position();           
-                    ac.slideDown(50);
-                    trigger('open');
-                }
+                    return;
+                } 
+                
+                render(objs, query);
+                position();  
+                ac.slideDown(50);
+                trigger('open');
             });
         };
         
