@@ -300,7 +300,14 @@
             if(!$.trim(query)) return;
             
             options.source(query, function(objs){
-                var obj = (objs.length > 0) ? objs[0] : false;                
+                var obj = (objs.length > 0) ? objs[0] : false;  
+                
+                if(obj){
+                    var queryLowerCase = query.toLowerCase();
+                    var nameLowerCase = obj.name.toLowerCase();
+                    obj = (queryLowerCase == nameLowerCase) ? obj : false;  
+                }
+             
                 if(obj) input.val(options.valueFormat(obj, query));
                 
                 options.current = obj;

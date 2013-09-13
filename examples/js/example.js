@@ -6,6 +6,7 @@ $(function(){
         token: 'token',
         key: 'key',
         type: $.kladr.type.city,
+        verify: true,
         select: function(obj){
             if(obj){
                 cityInput.prev().text(obj.type);
