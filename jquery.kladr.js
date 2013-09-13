@@ -322,7 +322,6 @@
             
             var query = key(input.val());
             if(!$.trim(query)){
-                ac.empty();
                 close();
                 return;
             }
@@ -334,8 +333,12 @@
                 spinnerHide();
                 trigger('received');
                 
+                if(!input.is(':focus')){
+                    close();
+                    return;
+                }
+                
                 if(!$.trim(input.val()) || !objs.length){
-                    ac.empty();
                     close();
                     return;
                 } 
