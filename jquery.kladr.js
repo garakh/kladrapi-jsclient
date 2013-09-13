@@ -299,7 +299,13 @@
             var query = key(input.val());
             if(!$.trim(query)) return;
             
+            spinnerShow();
+            trigger('send');
+            
             options.source(query, function(objs){
+                spinnerHide();
+                trigger('received');
+                
                 var obj = (objs.length > 0) ? objs[0] : false;  
                 
                 if(obj){
