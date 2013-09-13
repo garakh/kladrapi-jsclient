@@ -6,6 +6,7 @@
     border: 1px solid rgb(138, 138, 138);
     border-radius: 3px;
     background-color: white;
+    z-index: 9999;
 }
 
 #kladr_autocomplete li{
@@ -39,4 +40,5 @@
     background-image: url("jquery.kladr.images/spinner.gif");
     background-position: center center;
     background-repeat: no-repeat;
+    z-index: 9999;
 }
