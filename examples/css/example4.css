@@ -28,7 +28,7 @@
     cursor: move;
 }
 
-.add-panel__request-ui input[type="text"],
+.add-panel__request-ui input[type="text"]
 {
     width: 240px;
 }
