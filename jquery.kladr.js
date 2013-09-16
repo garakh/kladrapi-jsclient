@@ -129,6 +129,8 @@
             enter: 13
         };
         
+        var spinnerInterval = null;
+        
         var init = function( param1, param2, callback ){
             options = input.data('kladr-options');
             
@@ -203,20 +205,8 @@
             ac = $('<ul class="kladr_autocomplete_'+inputName+'" style="display: none;"></ul>');
             ac.appendTo(container); 
             
-            spinner = $('<div class="spinner kladr_autocomplete_'+inputName+'_spinner" class="spinner"  style="display: none;"></div>');
+            spinner = $('<div class="spinner kladr_autocomplete_'+inputName+'_spinner" class="spinner" style="display: none;"></div>');
             spinner.appendTo(container);
-            runSpinner();
-        };
-        
-        var runSpinner = function(){
-            if(options.showSpinner){
-                var top = -0.2;
-                setInterval(function(){
-                    spinner.css('background-position', '0% '+top+'%');
-                    top += 5.585;
-                    if(top > 95) top = -0.2;
-                }, 30);
-            }
         };
         
         var position = function(){
@@ -231,12 +221,14 @@
             
             var differ = ac.outerWidth() - ac.width();
             ac.width(inputWidth - differ);
+            
+            var spinnerWidth = spinner.width();
+            var spinnerHeight = spinner.height();
                       
             spinner.css({
-                top:  inputOffset.top,
-                left: inputOffset.left + inputWidth - inputHeight,
+                top:  inputOffset.top + (inputHeight - spinnerHeight)/2 - 1,
+                left: inputOffset.left + inputWidth - spinnerWidth - 2,
             });
-            spinner.width(inputHeight).height(inputHeight);
         };
 
         var render = function(objs, query){        
@@ -374,8 +366,29 @@
             trigger('close');
         };
         
+        var spinnerStart = function(){
+            if(spinnerInterval) return;
+            
+            var top = -0.2;
+            spinnerInterval = setInterval(function(){
+                if(!spinner.is(':visible')){
+                    clearInterval(spinnerInterval);
+                    spinnerInterval = null;
+                    return;
+                }
+                
+                spinner.css('background-position', '0% '+top+'%');
+                
+                top += 5.555556;
+                if(top > 95) top = -0.2;
+            }, 30);
+        };
+        
         var spinnerShow = function(){
-            if(options.showSpinner) spinner.show();
+            if(options.showSpinner) {
+                spinner.show();
+                spinnerStart();
+            }
         };
         
         var spinnerHide = function(){

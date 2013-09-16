@@ -36,6 +36,8 @@
     display: block;
     margin: 0;
     padding: 0;
+    width: 20px;
+    height: 20px;
     background-color: transparent;
     background-image: url("jquery.kladr.images/spinner.png");
     background-position: center center;
