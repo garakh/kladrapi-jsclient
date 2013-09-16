@@ -203,8 +203,20 @@
             ac = $('<ul class="kladr_autocomplete_'+inputName+'" style="display: none;"></ul>');
             ac.appendTo(container); 
             
-            spinner = $('<div class="spinner kladr_autocomplete_'+inputName+'_spinner" class="spinner" style="display: none;"></div>');
+            spinner = $('<div class="spinner kladr_autocomplete_'+inputName+'_spinner" class="spinner"  style="display: none;"></div>');
             spinner.appendTo(container);
+            runSpinner();
+        };
+        
+        var runSpinner = function(){
+            if(options.showSpinner){
+                var top = -0.2;
+                setInterval(function(){
+                    spinner.css('background-position', '0% '+top+'%');
+                    top += 5.585;
+                    if(top > 95) top = -0.2;
+                }, 30);
+            }
         };
         
         var position = function(){
