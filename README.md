@@ -35,6 +35,7 @@ $( 'input' ).kladr('option1', 123);
 Свойства объекта $.kladr
 --------------------------------------------------------------------------------
 
+* **url** - url сервиса, по-умолчанию [https://kladr-api.ru/api.php] [1].
 * **type** - перечисление используемых типов объектов. Список значений: *region*, 
 *district*, *city*, *street*, *building*.
 * **api** *= function( query, callback ) {}* - функция непосредственно выполняющая
@@ -152,3 +153,4 @@ $( 'input' ).kladr({
 
 
 [1]: http://kladr-api.ru/        "КЛАДР API"
+[2]: https://kladr-api.ru/api.php        "API"
