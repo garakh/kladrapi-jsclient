@@ -66,11 +66,13 @@ $(function() {
         },
         check: function(obj) {
             if(obj){
+                region.text(obj.name);
                 region.parent().find('label').text(obj.type);
                 district.kladr('parentType', $.kladr.type.region);
                 district.kladr('parentId', obj.id);
                 city.kladr('parentType', $.kladr.type.region);
                 city.kladr('parentId', obj.id);
+                tooltip.hide();
             } else {
                 ShowError(region, 'Неверно введено название региона');
             }
@@ -90,9 +92,11 @@ $(function() {
         },
         check: function(obj) {
             if(obj){
+                district.text(obj.name);
                 district.parent().find('label').text(obj.type);
                 city.kladr('parentType', $.kladr.type.district);
                 city.kladr('parentId', obj.id);
+                tooltip.hide();
             } else {
                 ShowError(district, 'Неверно введено название района');
             }
@@ -113,11 +117,13 @@ $(function() {
         },
         check: function(obj) {
             if(obj){
+                city.text(obj.name);
                 city.parent().find('label').text(obj.type);
                 street.kladr('parentType', $.kladr.type.city);
                 street.kladr('parentId', obj.id);
                 building.kladr('parentType', $.kladr.type.city);
                 building.kladr('parentId', obj.id);
+                tooltip.hide();
             } else {
                 ShowError(city, 'Неверно введено название населённого пункта');
             }
@@ -135,9 +141,11 @@ $(function() {
         },
         check: function(obj) {
             if(obj){
+                street.text(obj.name);
                 street.parent().find('label').text(obj.type);
                 building.kladr('parentType', $.kladr.type.street);
                 building.kladr('parentId', obj.id);
+                tooltip.hide();
             } else {
                 ShowError(street, 'Неверно введено название улицы');
             }
