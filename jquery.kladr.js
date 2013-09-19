@@ -246,6 +246,45 @@
             }
         };
         
+        var validate = function(){
+            switch(options.type){
+                case $.kladr.type.region:
+                case $.kladr.type.district:
+                case $.kladr.type.city:
+                    break;
+                case $.kladr.type.street:
+                    if(options.parentType != $.kladr.type.city){
+                        console.error('parentType must equal "city"');
+                        return false;
+                    }
+                    if(!options.parentId){
+                        console.error('parentId must defined');
+                        return false;
+                    }
+                    break;
+                case $.kladr.type.building:
+                    if(options.parentType != $.kladr.type.street){
+                        console.error('parentType must equal "street"');
+                        return false;
+                    }
+                    if(!options.parentId){
+                        console.error('parentId must defined');
+                        return false;
+                    }
+                    break;
+                default:
+                    console.error('type must defined and equal "region", "district", "city", "street" or "building"');
+                    return false;
+            }
+            
+            if(options.limit < 1){
+                console.error('limit must greater than 0');
+                return false;
+            }
+            
+            return true;
+        };
+        
         var select = function(){
             var a = ac.find('.active a');
             if(!a.length) return;
@@ -300,6 +339,8 @@
         var change = function(){
             if(!options.verify) return;
             
+            if(!validate()) return;
+            
             var query = key(input.val());
             if(!$.trim(query)) return;
             
@@ -329,6 +370,8 @@
         var open = function( event ){
             // return on keyup control keys
             if((event.which > 8) && (event.which < 46)) return;
+            
+            if(!validate()) return;
             
             var query = key(input.val());
             if(!$.trim(query)){
