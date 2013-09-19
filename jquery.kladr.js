@@ -265,21 +265,21 @@
                     break;
                 case $.kladr.type.street:
                     if(options.parentType != $.kladr.type.city){
-                        console.error('parentType must equal "city"');
+                        console.error('For street parentType must equal "city"');
                         return false;
                     }
                     if(!options.parentId){
-                        console.error('parentId must defined');
+                        console.error('For street parentId must defined');
                         return false;
                     }
                     break;
                 case $.kladr.type.building:
                     if(options.parentType != $.kladr.type.street){
-                        console.error('parentType must equal "street"');
+                        console.error('For building parentType must equal "street"');
                         return false;
                     }
                     if(!options.parentId){
-                        console.error('parentId must defined');
+                        console.error('For building parentId must defined');
                         return false;
                     }
                     break;
