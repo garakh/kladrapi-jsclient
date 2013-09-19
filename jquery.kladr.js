@@ -29,12 +29,23 @@
         if( query.withParents ) params.withParent = 1;
         params.limit = query.limit ? query.limit : 2000;
         
+        var completed = false;
+        
         $.getJSON($.kladr.url + "?callback=?",
             params,
             function( data ) {
+                if(completed) return;
+                completed = true;                
                 callback && callback( data.result );
             }
         );
+            
+        setTimeout(function(){
+            if(completed) return;
+            completed = true;   
+            console.error('Request error');
+            callback && callback( [] );
+        }, 2000);
     };
     
     // Check existence object
