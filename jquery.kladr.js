@@ -45,7 +45,7 @@
             completed = true;   
             console.error('Request error');
             callback && callback( [] );
-        }, 2000);
+        }, 5000);
     };
     
     // Check existence object
@@ -362,12 +362,14 @@
                 spinnerHide();
                 trigger('received');
                 
-                var obj = (objs.length > 0) ? objs[0] : false;  
-                
-                if(obj){
+                var obj = null;                
+                for(var i=0; i<objs.length; i++){
                     var queryLowerCase = query.toLowerCase();
-                    var nameLowerCase = obj.name.toLowerCase();
-                    obj = (queryLowerCase == nameLowerCase) ? obj : false;  
+                    var nameLowerCase = objs[i].name.toLowerCase();
+                    if(queryLowerCase == nameLowerCase){
+                        obj = objs[i];
+                        break;
+                    }
                 }
              
                 if(obj) input.val(options.valueFormat(obj, query));
