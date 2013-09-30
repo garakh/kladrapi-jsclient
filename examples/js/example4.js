@@ -142,21 +142,21 @@
             var cityObj = city.kladr('current');
             if(cityObj){
                 if(address) address += ', ';
-                address += cityObj.typeShort + ' ' + cityObj.name;
+                address += cityObj.type + ' ' + cityObj.name;
                 zoom = 12;
             }
 
             var streetObj = street.kladr('current');
             if(streetObj){
                 if(address) address += ', ';
-                address += streetObj.typeShort + ' ' + streetObj.name;
+                address += streetObj.type + ' ' + streetObj.name;
                 zoom = 14;
             }
 
             var buildingVal = $.trim(building.val());
             if(buildingVal){
                 if(address) address += ', ';
-                address += 'д. ' + buildingVal;
+                address += 'дом ' + buildingVal;
                 zoom = 16;
             }
 
