@@ -344,9 +344,11 @@
                     select();
                     break;
                 case keys.esc:
+                    active.removeClass('active');
                     close();
                     break;
                 case keys.enter:
+                    active.removeClass('active');
                     close();
                     return false;
             }
