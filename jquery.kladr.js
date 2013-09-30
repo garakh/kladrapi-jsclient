@@ -262,6 +262,11 @@
                 case $.kladr.type.region:
                 case $.kladr.type.district:
                 case $.kladr.type.city:
+                    if(options.parentType && !options.parentId)
+                    {
+                        console.error('parentType is defined and parentId in not');
+                        return false;
+                    }
                     break;
                 case $.kladr.type.street:
                     if(options.parentType != $.kladr.type.city){
