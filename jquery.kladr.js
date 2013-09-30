@@ -205,7 +205,7 @@
             var trigger = function(event, obj){
                 if(!event) return;
                 input.trigger('kladr_'+event, obj);
-                options[event] && options[event](obj);
+                if(options[event]) options[event].call(input.get(0), obj);
             };
 
             var create = function(){
