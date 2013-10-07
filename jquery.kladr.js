@@ -471,7 +471,9 @@
 
                 input.keyup(open);
                 input.keydown(keyselect);
-                input.change(change);
+                input.change(function(){
+                    if(!isActive) change();
+                });
                 input.blur(function(){
                     if(!isActive) close();
                 });
