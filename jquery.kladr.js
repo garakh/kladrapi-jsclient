@@ -1,4 +1,4 @@
-(function($){
+(function($) {
     $.kladr = {};
     
     // Service URL
@@ -14,7 +14,7 @@
     };
     
     // Send query to service
-    $.kladr.api = function( query, callback ){
+    $.kladr.api = function(query, callback) {
         var params = {};
         
         if( query.token ) params.token = query.token;
@@ -33,14 +33,14 @@
         
         $.getJSON($.kladr.url + "?callback=?",
             params,
-            function( data ) {
+            function(data) {
                 if(completed) return;
                 completed = true;                
                 callback && callback( data.result );
             }
         );
             
-        setTimeout(function(){
+        setTimeout(function() {
             if(completed) return;
             completed = true;   
             console.error('Request error');
@@ -49,11 +49,11 @@
     };
     
     // Check existence object
-    $.kladr.check = function( query, callback ){
+    $.kladr.check = function(query, callback) {
         query.withParents = false;
         query.limit = 1;
         
-        $.kladr.api(query, function(objs){
+        $.kladr.api(query, function(objs) {
             if(objs && objs.length){
                 callback && callback(objs[0]); 
             } else {
@@ -63,14 +63,14 @@
     };
 })(jQuery);
 
-(function( $, undefined ){
-    $.fn.kladr = function( param1, param2 ){
+(function($, undefined) {
+    $.fn.kladr = function(param1, param2) {
         
-        this.each(function(){
+        this.each(function() {
             kladr($(this), param1, param2);
         });
         
-        function kladr( input, param1, param2 ){
+        function kladr(input, param1, param2) {
             var ac = null;        
             var spinner = null;
 
@@ -146,8 +146,36 @@
             };
 
             var spinnerInterval = null;
+            
+            return init(param1, param2, function() {
+                var isActive = false;
 
-            var init = function( param1, param2, callback ){
+                create(); 
+                position();
+
+                input.keyup(open);
+                input.keydown(keyselect);
+                input.change(function(){
+                    if(!isActive) change();
+                });
+                input.blur(function(){
+                    if(!isActive) close();
+                });
+
+                ac.on('click', 'li, a', mouseselect);
+                ac.on('mouseenter', 'li', function(){ 
+                    $(this).addClass('active');
+                    isActive = true;
+                });
+                ac.on('mouseleave', 'li', function(){
+                    $(this).removeClass('active'); 
+                    isActive = false;
+                });
+
+                $(window).resize(position);
+            });
+
+            function init( param1, param2, callback ) {
                 options = input.data('kladr-options');
 
                 if(param2 !== undefined){
@@ -177,38 +205,7 @@
                 return input;
             };
 
-            var key = function( val ){
-                var en = "1234567890qazwsxedcrfvtgbyhnujmik,ol.p;[']- " +
-                         "QAZWSXEDCRFVTGBYHNUJMIK<OL>P:{\"} ";
-
-                var ru = "1234567890йфяцычувскамепинртгоьшлбщдюзжхэъ- " +
-                         "ЙФЯЦЫЧУВСКАМЕПИНРТГОЬШЛБЩДЮЗЖХЭЪ ";
-
-                var strNew = '';
-                var ch;
-                var index;
-                for( var i=0; i<val.length; i++ ){
-                    ch = val[i];                    
-                    index = en.indexOf(ch);
-
-                    if(index > -1){
-                        strNew += ru[index];
-                        continue;
-                    }
-
-                    strNew += ch;
-                }
-
-                return strNew;
-            };
-
-            var trigger = function(event, obj){
-                if(!event) return;
-                input.trigger('kladr_'+event, obj);
-                if(options[event]) options[event].call(input.get(0), obj);
-            };
-
-            var create = function(){
+            function create() {
                 var container = $(document.getElementById('kladr_autocomplete'));
                 var inputName = input.attr('name');
 
@@ -224,8 +221,23 @@
                 spinner = $('<div class="spinner kladr_autocomplete_'+inputName+'_spinner" class="spinner" style="display: none;"></div>');
                 spinner.appendTo(container);
             };
+            
+            function render(objs, query) {        
+                ac.empty();  
+                for(var i in objs){
+                    var obj = objs[i];                
+                    var value = options.valueFormat(obj, query);
+                    var label = options.labelFormat(obj, query);
 
-            var position = function(){
+                    var a = $('<a data-val="'+value+'">'+label+'</a>');
+                    a.data('kladr-object', obj);
+
+                    var li = $('<li></li>').append(a);                
+                    li.appendTo(ac);
+                }
+            };
+
+            function position() {
                 var inputOffset = input.offset();
                 var inputWidth = input.outerWidth();
                 var inputHeight = input.outerHeight();
@@ -247,22 +259,49 @@
                 });
             };
 
-            var render = function(objs, query){        
-                ac.empty();  
-                for(var i in objs){
-                    var obj = objs[i];                
-                    var value = options.valueFormat(obj, query);
-                    var label = options.labelFormat(obj, query);
+            function open(event) {
+                // return on keyup control keys
+                if((event.which > 8) && (event.which < 46)) return;
 
-                    var a = $('<a data-val="'+value+'">'+label+'</a>');
-                    a.data('kladr-object', obj);
+                if(!validate()) return;
 
-                    var li = $('<li></li>').append(a);                
-                    li.appendTo(ac);
+                var query = key(input.val());
+                if(!$.trim(query)){
+                    close();
+                    return;
                 }
+
+                spinnerShow();
+                trigger('send');
+
+                options.source(query, function(objs) {
+                    spinnerHide();
+                    trigger('received');
+
+                    if(!input.is(':focus')){
+                        close();
+                        return;
+                    }
+
+                    if(!$.trim(input.val()) || !objs.length){
+                        close();
+                        return;
+                    } 
+
+                    render(objs, query);
+                    position();  
+                    ac.slideDown(50);
+                    trigger('open');
+                });
             };
 
-            var validate = function(){
+            function close() {
+                select();            
+                ac.hide();
+                trigger('close');
+            };
+            
+            function validate() {
                 switch(options.type){
                     case $.kladr.type.region:
                     case $.kladr.type.district:
@@ -305,8 +344,8 @@
 
                 return true;
             };
-
-            var select = function(){
+            
+            function select() {
                 var a = ac.find('.active a');
                 if(!a.length) return;
 
@@ -314,18 +353,9 @@
                 options.current = a.data('kladr-object');
                 input.data('kladr-options', options);
                 trigger('select', options.current);
-            };
-
-            var mouseselect = function(){
-                var a = $(this);
-                if(a.is('li')) a = a.find('a');
-                select(a);
-                close();
-                input.focus();
-                return false;
-            };
-
-            var keyselect = function( event ){
+            }; 
+            
+            function keyselect(event) {
                 var active = ac.find('li.active');  
                 switch(event.which){
                     case keys.up:
@@ -358,8 +388,17 @@
                         return false;
                 }
             };
-
-            var change = function(){
+            
+            function mouseselect() {
+                var a = $(this);
+                if(a.is('li')) a = a.find('a');
+                select(a);
+                close();
+                input.focus();
+                return false;
+            };
+            
+            function change() {
                 if(!options.verify) return;
 
                 if(!validate()) return;
@@ -370,7 +409,7 @@
                 spinnerShow();
                 trigger('send');
 
-                options.source(query, function(objs){
+                options.source(query, function(objs) {
                     spinnerHide();
                     trigger('received');
 
@@ -392,53 +431,42 @@
                 });
             };
 
-            var open = function( event ){
-                // return on keyup control keys
-                if((event.which > 8) && (event.which < 46)) return;
+            function key(val) {
+                var en = "1234567890qazwsxedcrfvtgbyhnujmik,ol.p;[']- " +
+                         "QAZWSXEDCRFVTGBYHNUJMIK<OL>P:{\"} ";
 
-                if(!validate()) return;
+                var ru = "1234567890йфяцычувскамепинртгоьшлбщдюзжхэъ- " +
+                         "ЙФЯЦЫЧУВСКАМЕПИНРТГОЬШЛБЩДЮЗЖХЭЪ ";
 
-                var query = key(input.val());
-                if(!$.trim(query)){
-                    close();
-                    return;
-                }
+                var strNew = '';
+                var ch;
+                var index;
+                for( var i=0; i<val.length; i++ ){
+                    ch = val[i];                    
+                    index = en.indexOf(ch);
 
-                spinnerShow();
-                trigger('send');
-
-                options.source(query, function(objs){
-                    spinnerHide();
-                    trigger('received');
-
-                    if(!input.is(':focus')){
-                        close();
-                        return;
+                    if(index > -1){
+                        strNew += ru[index];
+                        continue;
                     }
 
-                    if(!$.trim(input.val()) || !objs.length){
-                        close();
-                        return;
-                    } 
+                    strNew += ch;
+                }
 
-                    render(objs, query);
-                    position();  
-                    ac.slideDown(50);
-                    trigger('open');
-                });
+                return strNew;
             };
 
-            var close = function(){
-                select();            
-                ac.hide();
-                trigger('close');
+            function trigger(event, obj) {
+                if(!event) return;
+                input.trigger('kladr_'+event, obj);
+                if(options[event]) options[event].call(input.get(0), obj);
             };
 
-            var spinnerStart = function(){
+            function spinnerStart() {
                 if(spinnerInterval) return;
 
                 var top = -0.2;
-                spinnerInterval = setInterval(function(){
+                spinnerInterval = setInterval(function() {
                     if(!spinner.is(':visible')){
                         clearInterval(spinnerInterval);
                         spinnerInterval = null;
@@ -452,44 +480,16 @@
                 }, 30);
             };
 
-            var spinnerShow = function(){
+            function spinnerShow() {
                 if(options.showSpinner) {
                     spinner.show();
                     spinnerStart();
                 }
             };
 
-            var spinnerHide = function(){
+            function spinnerHide() {
                 spinner.hide();
             };
-
-            return init(param1, param2, function(){
-                var isActive = false;
-
-                create(); 
-                position();
-
-                input.keyup(open);
-                input.keydown(keyselect);
-                input.change(function(){
-                    if(!isActive) change();
-                });
-                input.blur(function(){
-                    if(!isActive) close();
-                });
-
-                ac.on('click', 'li, a', mouseselect);
-                ac.on('mouseenter', 'li', function(){ 
-                    $(this).addClass('active');
-                    isActive = true;
-                });
-                ac.on('mouseleave', 'li', function(){
-                    $(this).removeClass('active'); 
-                    isActive = false;
-                });
-
-                $(window).resize(position);
-            });
         };
     };
 })(jQuery);
