@@ -94,7 +94,7 @@
                 select: null,
                 check: null,
 
-                source: function( query, callback ){
+                source: function(query, callback) {
                     var params = {
                         token: options.token,
                         key: options.token,
@@ -109,7 +109,7 @@
                     $.kladr.api(params, callback);
                 },
 
-                labelFormat: function( obj, query ){
+                labelFormat: function(obj, query) {
                     var label = '';
 
                     var name = obj.name.toLowerCase();
@@ -133,7 +133,7 @@
                     return label;
                 },
 
-                valueFormat: function( obj, query ){
+                valueFormat: function(obj, query) {
                     return obj.name;
                 }
             };
