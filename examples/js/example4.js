@@ -55,7 +55,6 @@
             withParents: true,
             labelFormat: LabelFormat,
             verify: true,
-            arrowSelect: false,
             select: function( obj ) {
                 city.parent().find( 'label' ).text( obj.type );
                 street.kladr( 'parentType', $.kladr.type.city );
@@ -78,9 +77,6 @@
                 Log(obj);
                 AddressUpdate();
                 MapUpdate();                
-            },
-            preselect: function( obj ) {
-                console.log(obj.name);
             }
         });
 
