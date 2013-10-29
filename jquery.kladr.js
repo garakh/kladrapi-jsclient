@@ -85,6 +85,7 @@
                 withParents: false,
                 verify: false,
                 showSpinner: true,
+                arrowSelect: true,
                 current: null,
 
                 open: null,
@@ -164,8 +165,14 @@
 
                 ac.on('click', 'li, a', mouseselect);
                 ac.on('mouseenter', 'li', function(){ 
+                    var $this = $(this);
+                    
                     ac.find('li.active').removeClass('active');
-                    $(this).addClass('active');
+                    $this.addClass('active');
+                    
+                    var obj = $this.find('a').data('kladr-object');
+                    trigger('preselect', obj);
+                    
                     isActive = true;
                 });
                 ac.on('mouseleave', 'li', function(){
@@ -367,7 +374,11 @@
                             active = ac.find('li').last();
                         }
                         active.addClass('active');
-                        select();
+                        
+                        var obj = active.find('a').data('kladr-object');
+                        trigger('preselect', obj);
+                        
+                        if(options.arrowSelect) select();
                         break;
                     case keys.down:                    
                         if(active.length) {
@@ -377,13 +388,18 @@
                             active = ac.find('li').first();
                         }
                         active.addClass('active');
-                        select();
+                        
+                        var obj = active.find('a').data('kladr-object');
+                        trigger('preselect', obj);
+                        
+                        if(options.arrowSelect) select();
                         break;
                     case keys.esc:
                         active.removeClass('active');
                         close();
                         break;
                     case keys.enter:
+                        if(!options.arrowSelect) select();
                         active.removeClass('active');
                         close();
                         return false;
