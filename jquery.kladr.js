@@ -164,6 +164,7 @@
 
                 ac.on('click', 'li, a', mouseselect);
                 ac.on('mouseenter', 'li', function(){ 
+                    ac.find('li.active').removeClass('active');
                     $(this).addClass('active');
                     isActive = true;
                 });
