@@ -66,9 +66,13 @@
 (function($, undefined) {
     $.fn.kladr = function(param1, param2) {
         
+        var result = undefined;        
         this.each(function() {
-            kladr($(this), param1, param2);
+            var res = kladr($(this), param1, param2);
+            if(result == undefined) result = res;
         });
+        
+        return result;
         
         function kladr(input, param1, param2) {
             var ac = null;        
