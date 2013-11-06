@@ -413,7 +413,6 @@
             function mouseselect() {
                 var a = $(this);
                 if(a.is('li')) a = a.find('a');
-                select(a);
                 close();
                 input.focus();
                 return false;
