@@ -1,0 +1,13 @@
+{
+  "name": "kladrapi-jsclient",
+  "version": "1.4.1",
+  "homepage": "https://github.com/garakh/kladrapi-jsclient",
+  "authors": [
+    "Iliya Garakh <garakh@primepix.ru>"
+  ],
+  "description": "Плагин для автодополнения полей адреса при вводе.",
+  "keywords": [
+    "kladr",
+    "jquery"
+  ],
+}
