@@ -459,6 +459,13 @@
                 var strNew = '';
                 var ch;
                 var index;
+                var length = val.length;
+                
+                if ( val[ length - 1 ] === '.' )
+                {
+                    length--;
+                }
+                
                 for( var i=0; i<val.length; i++ ){
                     ch = val[i];                    
                     index = en.indexOf(ch);
