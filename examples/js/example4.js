@@ -3,6 +3,8 @@
         var token = '51dfe5d42fb2b43e3300006e';
         var key = '86a2c2a06f1b2451a87d05512cc2c3edfdf41969';        
         
+        var region = $( '[name="region"]' );
+        var district = $( '[name="district"]' );
         var city = $( '[name="city"]' );
         var street = $( '[name="street"]' );
         var building = $( '[name="building"]' );
@@ -47,6 +49,73 @@
             return label;
         };
         
+        // Подключение плагина для поля ввода региона
+        region.kladr({
+            token: token,
+            key: key,
+            type: $.kladr.type.region,
+            withParents: true,
+            labelFormat: LabelFormat,
+            verify: true,
+            select: function( obj ) {
+                region.parent().find( 'label' ).text( obj.type );
+                district.kladr( 'parentType', $.kladr.type.region );
+                district.kladr( 'parentId', obj.id );
+                Log(obj);
+                AddressUpdate();
+                MapUpdate();
+            },
+            check: function( obj ) {
+                if(obj) {
+                    city.parent().find( 'label' ).text( obj.type );
+                    district.kladr( 'parentType', $.kladr.type.region );
+                    district.kladr( 'parentId', obj.id );
+                } else {
+                    district.parent().find( 'label' ).text('Регион');
+                    district.kladr( 'parentType', null );
+                    district.kladr( 'parentId', null );
+                }
+                Log(obj);
+                AddressUpdate();
+                MapUpdate();
+            }
+        });
+
+        // Подключение плагина для поля ввода области
+        district.kladr({
+            token: token,
+            key: key,
+            type: $.kladr.type.district,
+            withParents: true,
+            labelFormat: LabelFormat,
+            verify: true,
+            select: function( obj ) {
+                district.parent().find( 'label' ).text( obj.type );
+                city.kladr( 'parentType', $.kladr.type.district );
+                city.kladr( 'parentId', obj.id );
+                building.kladr( 'parentType', $.kladr.type.district );
+                building.kladr( 'parentId', obj.id );
+                Log(obj);
+                AddressUpdate();
+                MapUpdate();
+            },
+            check: function( obj ) {
+                if(obj) {
+                    city.parent().find( 'label' ).text( obj.type );
+                    city.kladr( 'parentType', $.kladr.type.district );
+                    city.kladr( 'parentId', obj.id );
+                } else {
+                    district.parent().find( 'label' ).text('Район');
+                    city.kladr( 'parentType', null );
+                    city.kladr( 'parentId', null );
+                }
+
+                Log(obj);
+                AddressUpdate();
+                MapUpdate();
+            }
+        });
+
         // Подключение плагина для поля ввода города
         city.kladr({
             token: token,
@@ -72,11 +141,10 @@
                     street.kladr( 'parentId', obj.id );
                     building.kladr( 'parentType', $.kladr.type.city );
                     building.kladr( 'parentId', obj.id );
-                } 
-                
+                }
                 Log(obj);
                 AddressUpdate();
-                MapUpdate();                
+                MapUpdate();
             }
         });
 
@@ -101,10 +169,9 @@
                     building.kladr( 'parentType', $.kladr.type.street );
                     building.kladr( 'parentId', obj.id );
                 }
-                
                 Log(obj);
                 AddressUpdate();
-                MapUpdate();                 
+                MapUpdate();
             }
         });
 
@@ -123,22 +190,62 @@
             check: function( obj ) {
                 Log(obj);
                 AddressUpdate();
-                MapUpdate();                
+                MapUpdate();
             }
         });
-        
+
         // Проверка названия корпуса
         buildingAdd.change(function(){
             Log(null);
             AddressUpdate();
-            MapUpdate(); 
+            MapUpdate();
         });
-        
+
         // Обновляет карту
         var MapUpdate = function(){
             var zoom = 12;
             var address = '';
             
+            // Регион
+            var name = null;
+            var type = null;
+            var obj = region.kladr('current');
+            var value = $.trim(region.val());
+
+            if(obj){
+                name = obj.name;
+                type = obj.type;
+            } else if(value){
+                name = value;
+                type = 'город';
+            }
+
+            if(name){
+                if(address) address += ', ';
+                address += name + ' ' + type;
+                zoom = 8;
+            }
+
+            // Район
+            var name = null;
+            var type = null;
+            var obj = district.kladr('current');
+            var value = $.trim(district.val());
+
+            if(obj){
+                name = obj.name;
+                type = obj.type;
+            } else if(value){
+                name = value;
+                type = '';
+            }
+
+            if(name){
+                if(address) address += ', ';
+                address += name + ' ' + type;
+                zoom = 10;
+            }
+
             // Город
             var name = null;
             var type = null;            
@@ -147,44 +254,44 @@
             
             if(obj){
                 name = obj.name;
-                type = obj.type + '.';
+                type = obj.type;
             } else if(value){
                 name = value;
                 type = 'город';
             }
-            
+
             if(name){
                 if(address) address += ', ';
                 address += type + ' ' + name;
                 zoom = 12;
             }
-            
+
             // Улица
             name = null;
-            type = null;            
+            type = null;
             obj = street.kladr('current');
             value = $.trim(street.val());
-            
+
             if(obj){
                 name = obj.name;
-                type = obj.type + '.';
+                type = obj.type;
             } else if(value){
                 name = value;
                 type = 'улица';
             }
-            
+
             if(name){
                 if(address) address += ', ';
                 address += type + ' ' + name;
                 zoom = 14;
             }
-            
+
             // Дом
             name = null;
-            type = null;            
+            type = null;
             obj = building.kladr('current');
             value = $.trim(building.val());
-            
+
             if(obj){
                 name = obj.name;
                 type = 'дом';
@@ -192,29 +299,29 @@
                 name = value;
                 type = 'дом';
             }
-            
-            if(name){
-                if(address) address += ', ';
-                address += type + ' ' + name;
-                zoom = 16;
-            }
-            
-            // Корпус
-            name = null;
-            type = null;            
-            value = $.trim(buildingAdd.val());
-            
-            if(value){
-                name = value;
-                type = 'корпус';
-            }
-            
+
             if(name){
                 if(address) address += ', ';
                 address += type + ' ' + name;
                 zoom = 16;
             }
 
+            // Корпус
+            name = null;
+            type = null;
+            value = $.trim(buildingAdd.val());
+
+            if(value){
+                name = value;
+                type = 'корпус';
+            }
+
+            if(name){
+                if(address) address += ', ';
+                address += type + ' ' + name;
+                zoom = 16;
+            }
+            console.log(address);
             if(address && map_created){
                 var geocode = ymaps.geocode(address);
                 geocode.then(function(res){
@@ -237,12 +344,54 @@
             var address = '';
             var zip = '';
             
+            // Регион
+            var name = null;
+            var type = null;
+            var obj = region.kladr('current');
+            var value = $.trim(region.val());
+
+            if(obj){
+                name = obj.name;
+                type = obj.typeShort + '.';
+                if(obj.zip) zip = obj.zip;
+            } else if(value){
+                name = value;
+                type = '';
+            }
+
+            if(name){
+                if(address) address += ', ';
+                address += name + ' ' + type;
+            }
+
+            // Район
+            var name = null;
+            var type = null;
+            var obj = district.kladr('current');
+            var value = $.trim(district.val());
+
+            if(obj){
+                name = obj.name;
+                type = obj.typeShort + '.';
+                if(obj.zip) zip = obj.zip;
+            } else {
+                name = value;
+                if(value){
+                    type = '';
+                }
+            }
+
+            if(name){
+                if(address) address += ', ';
+                address += name + ' ' + type;
+            }
+
             // Город
             var name = null;
-            var type = null;            
+            var type = null;
             var obj = city.kladr('current');
             var value = $.trim(city.val());
-            
+
             if(obj){
                 name = obj.name;
                 type = obj.typeShort + '.';
@@ -251,18 +400,18 @@
                 name = value;
                 type = 'г.';
             }
-            
+
             if(name){
                 if(address) address += ', ';
                 address += type + ' ' + name;
             }
-            
+
             // Улица
             name = null;
-            type = null;            
+            type = null;
             obj = street.kladr('current');
             value = $.trim(street.val());
-            
+
             if(obj){
                 name = obj.name;
                 type = obj.typeShort + '.';
@@ -271,7 +420,7 @@
                 name = value;
                 type = 'ул.';
             }
-            
+
             if(name){
                 if(address) address += ', ';
                 address += type + ' ' + name;
@@ -365,10 +514,11 @@
 
             map = new ymaps.Map('map', {
                 center: [55.76, 37.64],
-                zoom: 12
+                zoom: 12,
+                controls: ['smallMapDefaultSet']
             });
 
-            map.controls.add('smallZoomControl', { top: 5, left: 5 });
+            // map.controls.add('smallZoomControl', { top: 5, left: 5 });
         });
     });
 })(jQuery);
