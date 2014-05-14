@@ -516,8 +516,6 @@
                 zoom: 12,
                 controls: ['smallMapDefaultSet']
             });
-
-            // map.controls.add('smallZoomControl', { top: 5, left: 5 });
         });
     });
 })(jQuery);
