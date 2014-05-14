@@ -321,7 +321,6 @@
                 address += type + ' ' + name;
                 zoom = 16;
             }
-            console.log(address);
             if(address && map_created){
                 var geocode = ymaps.geocode(address);
                 geocode.then(function(res){
