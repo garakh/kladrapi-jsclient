@@ -514,8 +514,15 @@
             map = new ymaps.Map('map', {
                 center: [55.76, 37.64],
                 zoom: 12,
-                controls: ['smallMapDefaultSet']
+                controls: []
             });
+
+			map.controls.add('zoomControl', {
+				position: {
+					left: 10,
+					top: 10
+				}
+			});
         });
     });
 })(jQuery);
