@@ -11,12 +11,24 @@
         <script src="../jquery.kladr.min.js" type="text/javascript"></script>
         <script src="js/example4.js" type="text/javascript"></script>
 
-        <script src="http://api-maps.yandex.ru/2.0.18/?load=package.standard&mode=release&lang=ru-RU" type="text/javascript"></script>
+        <script src="http://api-maps.yandex.ru/2.1/?load=package.full&lang=ru_RU" type="text/javascript"></script>
     </head>
     <body>
         <div class="add-panel">
             <div class="wrp">
                 <form class="add-panel__request regular__ctrls">
+                    <div class="ffield">
+                        <label class="ffield__lbl">
+                            Регион
+                        </label>
+                        <input name="region" type="text" class="long">
+                    </div>
+                    <div class="ffield">
+                        <label class="ffield__lbl">
+                            Район
+                        </label>
+                        <input name="district" type="text" class="long">
+                    </div>
                     <div class="ffield">
                         <label class="ffield__lbl">
                             Город

@@ -419,10 +419,20 @@
             function change() {
                 if(!options.verify) return;
 
-                if(!validate()) return;
+                if(!validate()){
+                    options.current = null;
+                    input.data('kladr-options', options);
+                    trigger('check', options.current);
+                    return;
+                };
 
                 var query = key(input.val());
-                if(!$.trim(query)) return;
+                if(!$.trim(query)){
+                    options.current = null;
+                    input.data('kladr-options', options);
+                    trigger('check', options.current);
+                    return;
+                }
 
                 spinnerShow();
                 trigger('send');
