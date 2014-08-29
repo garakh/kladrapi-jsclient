@@ -108,7 +108,7 @@
 		});
 	};
 
-	var toApiFormat = function (query) {
+	function toApiFormat(query) {
 		var params = {},
 			fields = {
 				token: 'token',
@@ -130,11 +130,11 @@
 		}
 
 		return params;
-	};
+	}
 
-	var error = function (error) {
+	function error(error) {
 		window.console && window.console.error && window.console.error(error);
-	};
+	}
 })(jQuery);
 
 (function ($, undefined) {
@@ -200,8 +200,49 @@
 	};
 
 	$.fn.kladr = function (param1, param2) {
+		var params = readParams(param1, param2),
+			result = undefined;
+
+		this.each(function () {
+			var res = kladr($(this), params);
+			if (result == undefined) result = res;
+		});
+
+		if (params.str && params.str.length == 1) {
+			return result;
+		}
+
+		return this;
+	};
+
+	function kladr(input, params) {
 
 	}
+
+	function readParams(param1, param2) {
+		var params = {
+			obj: false,
+			str: false
+		};
+
+		if ($.type(param1) === 'object') {
+			params.obj = param1;
+			return params;
+		}
+
+		if ($.type(param1) === 'string') {
+			params.str = [];
+			for (var i in arguments) {
+				if (arguments.hasOwnProperty(i)) {
+					params.str[i] = arguments[i];
+				}
+			}
+		}
+
+		return params;
+	}
+
+
 
 
 
