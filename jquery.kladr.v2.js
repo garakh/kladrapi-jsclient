@@ -15,32 +15,31 @@
 
 	// Validate query
 	$.kladr.validate = function (query) {
-		switch(query.type){
+		switch (query.type) {
 			case $.kladr.type.region:
 			case $.kladr.type.district:
 			case $.kladr.type.city:
-				if(query.parentType && !query.parentId)
-				{
+				if (query.parentType && !query.parentId) {
 					error('parentId undefined');
 					return false;
 				}
 				break;
 			case $.kladr.type.street:
-				if(query.parentType != $.kladr.type.city){
+				if (query.parentType != $.kladr.type.city) {
 					error('parentType must equal "city"');
 					return false;
 				}
-				if(!query.parentId){
+				if (!query.parentId) {
 					error('parentId undefined');
 					return false;
 				}
 				break;
 			case $.kladr.type.building:
-				if(query.parentType != $.kladr.type.street){
+				if (query.parentType != $.kladr.type.street) {
 					error('parentType must equal "street"');
 					return false;
 				}
-				if(!query.parentId){
+				if (!query.parentId) {
 					error('parentId undefined');
 					return false;
 				}
@@ -50,7 +49,7 @@
 				return false;
 		}
 
-		if(query.limit < 1){
+		if (query.limit < 1) {
 			error('limit must greater than 0');
 			return false;
 		}
