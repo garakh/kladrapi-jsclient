@@ -138,7 +138,80 @@
 })(jQuery);
 
 (function ($, undefined) {
+	var defaultOptions = {
+
+		// Api params
+		token: null,
+		key: null,
+		type: null,
+		parentType: null,
+		parentId: null,
+		limit: 10,
+		withParents: false,
+
+		// Plugin options
+		verify: false,
+		spinner: true,
+
+		// Plugin events
+		open: null,
+		close: null,
+		send: null,
+		received: null,
+		select: null,
+		check: null,
+
+		// Plugin events before actions
+		openBefore: null,
+		closeBefore: null,
+		sendBefore: null,
+		selectBefore: null,
+
+		source: function (query, callback) {
+
+		},
+
+		labelFormat: function (obj, query) {
+
+		},
+
+		valueFormat: function (obj, query) {
+
+		},
+
+		showSpinner: function () {
+
+		},
+
+		hideSpinner: function () {
+
+		}
+	};
+
+	var readOnlyParams = {
+		current: true
+	};
+
+	var keys = {
+		up: 38,
+		down: 40,
+		esc: 27,
+		enter: 13
+	};
+
 	$.fn.kladr = function (param1, param2) {
+
+	}
+
+
+
+
+
+
+
+
+	// Old plugin
+	$.fn._kladr = function (param1, param2) {
 
 		var result = undefined;
 		this.each(function () {
