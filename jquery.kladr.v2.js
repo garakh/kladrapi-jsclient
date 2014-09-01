@@ -124,7 +124,7 @@
 		}
 
 		for (var i in query) {
-			if (query.hasOwnProperty(i) && fields.hasOwnProperty(i)) {
+			if (query.hasOwnProperty(i) && fields.hasOwnProperty(i) && query[i]) {
 				params[fields[i]] = query[i];
 			}
 		}
@@ -189,7 +189,7 @@
 	};
 
 	var readOnlyParams = {
-		current: true
+		current: null
 	};
 
 	var keys = {
@@ -205,10 +205,14 @@
 
 		this.each(function () {
 			var res = kladr($(this), params);
-			if (result == undefined) result = res;
+
+			if (params.isGet) {
+				result = res;
+				return false;
+			}
 		});
 
-		if (params.str && params.str.length == 1) {
+		if (params.isGet) {
 			return result;
 		}
 
@@ -216,13 +220,59 @@
 	};
 
 	function kladr(input, params) {
+		var options = (function () {
+			var data = input.data('kladr-data');
 
+			if (!data) {
+				data = $.extend({}, defaultOptions, readOnlyParams);
+				input.data('kladr-data', data);
+			}
+
+			return {
+				set: function (params) {
+					if (params.obj) {
+						for (var i in params.obj) {
+							if (params.obj.hasOwnProperty(i) && defaultOptions.hasOwnProperty(i)) {
+								data[i] = params.obj[i];
+							}
+						}
+					}
+					else if (params.str && params.str.length > 1 && defaultOptions.hasOwnProperty(params.str[0])) {
+						data[params.str[0]] = params.str[1];
+					}
+
+					input.data('kladr-data', data);
+				},
+
+				get: function (param) {
+					if (defaultOptions.hasOwnProperty(param) || readOnlyParams.hasOwnProperty(param)) {
+						return data[param];
+					}
+
+					return undefined;
+				},
+
+				_set: function (param, value) {
+					data[param] = value;
+					input.data('kladr-data', data);
+				},
+
+				_get: function (param) {
+					if (data.hasOwnProperty(param)) {
+						return data[param];
+					}
+
+					return undefined;
+				}
+			};
+		})();
 	}
 
 	function readParams(param1, param2) {
 		var params = {
 			obj: false,
-			str: false
+			str: false,
+			isGet: false
 		};
 
 		if ($.type(param1) === 'object') {
@@ -236,6 +286,10 @@
 				if (arguments.hasOwnProperty(i)) {
 					params.str[i] = arguments[i];
 				}
+			}
+
+			if (params.str.length == 1) {
+				params.isGet = true;
 			}
 		}
 
