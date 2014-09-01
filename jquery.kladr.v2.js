@@ -266,6 +266,35 @@
 				}
 			};
 		})();
+
+		init(params, function () {
+			// init plugin code
+		});
+
+		function init (params, callback) {
+			if (params.isGet) {
+				return options.get(params.str[0]);
+			}
+
+			options.set(params);
+			callback();
+		}
+
+		function trigger (event, obj) {
+			if (!event) return true;
+
+			var eventProp = event.replace(/_([a-z])/ig, function (all, letter) {
+				return letter.toUpperCase();
+			});
+
+			input.trigger('kladr_' + event, obj);
+
+			if ($.type(options._get(eventProp)) === 'function') {
+				return options._get(eventProp).call(input.get(0), obj);
+			}
+
+			return true;
+		}
 	}
 
 	function readParams(param1, param2) {
@@ -299,6 +328,8 @@
 
 
 
+
+	
 
 
 
