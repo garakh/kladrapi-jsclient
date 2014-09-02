@@ -219,13 +219,13 @@
 		return this;
 	};
 
-	function kladr(input, params) {
+	function kladr($input, params) {
 		var options = (function () {
-			var data = input.data('kladr-data');
+			var data = $input.data('kladr-data');
 
 			if (!data) {
 				data = $.extend({}, defaultOptions, readOnlyParams);
-				input.data('kladr-data', data);
+				$input.data('kladr-data', data);
 			}
 
 			return {
@@ -241,7 +241,7 @@
 						data[params.str[0]] = params.str[1];
 					}
 
-					input.data('kladr-data', data);
+					$input.data('kladr-data', data);
 				},
 
 				get: function (param) {
@@ -254,7 +254,7 @@
 
 				_set: function (param, value) {
 					data[param] = value;
-					input.data('kladr-data', data);
+					$input.data('kladr-data', data);
 				},
 
 				_get: function (param) {
@@ -267,10 +267,6 @@
 			};
 		})();
 
-		init(params, function () {
-			// init plugin code
-		});
-
 		function init (params, callback) {
 			if (params.isGet) {
 				return options.get(params.str[0]);
@@ -280,21 +276,74 @@
 			callback();
 		}
 
-		function trigger (event, obj) {
-			if (!event) return true;
+		init(params, function () {
+			var $ac = null;
+			var $spinner = null;
 
-			var eventProp = event.replace(/_([a-z])/ig, function (all, letter) {
-				return letter.toUpperCase();
-			});
+			function create () {
+				var $container = $(document.getElementById('kladr-autocomplete'));
 
-			input.trigger('kladr_' + event, obj);
+				if (!$container.length) {
+					$container = $('<div id="kladr_autocomplete"></div>').appendTo(document.body);
+				}
 
-			if ($.type(options._get(eventProp)) === 'function') {
-				return options._get(eventProp).call(input.get(0), obj);
+				var guid = options._get('guid');
+
+				if (guid) {
+					$ac = $container.find('.autocomplete' + guid);
+					$spinner = $container.find('.spinner' + guid);
+				}
+				else {
+					guid = getGuid();
+					options._set('guid', guid);
+
+					$input.attr('autocomplete', 'off');
+
+					$ac = $('<ul class="autocomplete' + guid + ' autocomplete" style="display: none;"></ul>')
+						.appendTo($container);
+
+					$spinner = $('<div class="spinner' + guid + ' spinner" style="display: none;"></div>')
+						.appendTo($container);
+				}
 			}
 
-			return true;
-		}
+			function render (objs, query) {
+				var obj, value, label, $a;
+
+				$ac.empty();
+
+				for (var i in objs) {
+					if (objs.hasOwnProperty(i)) {
+						obj = objs[i];
+						value = options._get('valueFormat')(obj, query);
+						label = options._get('labelFormat')(obj, query);
+
+						$a = $('<a data-val="' + value + '">' + label + '</a>');
+						$a.data('kladr-object', obj);
+
+						$('<li></li>')
+							.append($a)
+							.appendTo($ac);
+					}
+				}
+			}
+
+			function trigger (event, obj) {
+				if (!event) return true;
+
+				var eventProp = event.replace(/_([a-z])/ig, function (all, letter) {
+					return letter.toUpperCase();
+				});
+
+				$input.trigger('kladr_' + event, obj);
+
+				if ($.type(options._get(eventProp)) === 'function') {
+					return options._get(eventProp).call($input.get(0), obj);
+				}
+
+				return true;
+			}
+		});
 	}
 
 	function readParams(param1, param2) {
@@ -325,11 +374,22 @@
 		return params;
 	}
 
+	function getGuid() {
+		if (!getGuid.guid) getGuid.guid = 0;
+		return getGuid.guid++;
+	}
 
 
 
 
-	
+
+
+
+
+
+
+
+
 
 
 
