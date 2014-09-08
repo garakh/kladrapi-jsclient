@@ -363,16 +363,7 @@
 					return;
 				}
 
-				var query = {
-					token:       get('token'),
-					key:         get('key'),
-					type:        get('type'),
-					name:        name,
-					parentType:  get('parentType'),
-					parentId:    get('parentId'),
-					withParents: get('withParents'),
-					limit:       get('limit')
-				};
+				var query = getQuery(name);
 
 				if (!trigger('send-before', query)) {
 					close();
@@ -404,13 +395,80 @@
 			}
 
 			function close () {
-				if (!trigger('close-before')) {
-					return;
-				}
+				if (!trigger('close-before')) return;
 
 //				select();
 				$ac.hide();
 				trigger('close');
+			}
+
+			function select () {
+				if (!trigger('select-before')) return;
+
+				var $a = $ac.find('.active a');
+				if (!$a.length) return;
+
+				$input.val($a.attr('data-val'));
+				set('current', $a.data('kladr-object'));
+
+				trigger('select', get('current'));
+			}
+
+			function check () {
+				if (!options.verify) return;
+
+				var name = $.trim($input.val());
+
+				if (!name) {
+					ret(null);
+					return;
+				}
+
+				var query = getQuery(name);
+
+				if (!trigger('send-before', query)) {
+					ret(null);
+					return;
+				}
+
+				get('showSpinner')();
+				trigger('send');
+
+				get('source')(query, function (objs) {
+					get('hideSpinner')();
+					trigger('received');
+
+					if (!$.trim($input.val())) {
+						ret(null);
+						return;
+					}
+
+					var nameLowerCase = query.name.toLowerCase(),
+						valueLowerCase = null,
+						obj = null;
+
+					for (var i = 0; i < objs.length; i++) {
+						if (objs.hasOwnProperty(i)) {
+							valueLowerCase = objs[i].name.toLowerCase();
+
+							if (nameLowerCase == valueLowerCase) {
+								obj = objs[i];
+								break;
+							}
+						}
+					}
+
+					if (obj) {
+						$input.val(get('valueFormat')(obj, query));
+					}
+
+					ret(obj);
+				});
+
+				function ret(obj) {
+					set('current', obj);
+					trigger('check', obj);
+				}
 			}
 
 			function trigger (event, obj) {
@@ -427,6 +485,19 @@
 				}
 
 				return true;
+			}
+
+			function getQuery (name) {
+				return {
+					token:       get('token'),
+					key:         get('key'),
+					type:        get('type'),
+					name:        name,
+					parentType:  get('parentType'),
+					parentId:    get('parentId'),
+					withParents: get('withParents'),
+					limit:       get('limit')
+				};
 			}
 
 			function get (param) {
@@ -471,6 +542,18 @@
 		if (!getGuid.guid) getGuid.guid = 0;
 		return getGuid.guid++;
 	}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 	// Old plugin
