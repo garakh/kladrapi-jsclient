@@ -287,7 +287,7 @@
 					$container = $('<div id="kladr_autocomplete"></div>').appendTo(document.body);
 				}
 
-				var guid = options._get('guid');
+				var guid = get('guid');
 
 				if (guid) {
 					$ac = $container.find('.autocomplete' + guid);
@@ -295,7 +295,7 @@
 				}
 				else {
 					guid = getGuid();
-					options._set('guid', guid);
+					set('guid', guid);
 
 					$input.attr('autocomplete', 'off');
 
@@ -315,8 +315,8 @@
 				for (var i in objs) {
 					if (objs.hasOwnProperty(i)) {
 						obj = objs[i];
-						value = options._get('valueFormat')(obj, query);
-						label = options._get('labelFormat')(obj, query);
+						value = get('valueFormat')(obj, query);
+						label = get('labelFormat')(obj, query);
 
 						$a = $('<a data-val="' + value + '">' + label + '</a>');
 						$a.data('kladr-object', obj);
@@ -337,12 +337,20 @@
 
 				$input.trigger('kladr_' + event, obj);
 
-				if ($.type(options._get(eventProp)) === 'function') {
-					return options._get(eventProp).call($input.get(0), obj);
+				if ($.type(get(eventProp)) === 'function') {
+					return get(eventProp).call($input.get(0), obj);
 				}
 
 				return true;
 			}
+
+            function get (param) {
+                return options._get(param);
+            }
+
+            function set (param, value) {
+                options._set(param, value);
+            }
 		});
 	}
 
