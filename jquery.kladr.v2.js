@@ -397,7 +397,7 @@
 			function close () {
 				if (!trigger('close-before')) return;
 
-//				select();
+				select();
 				$ac.hide();
 				trigger('close');
 			}
