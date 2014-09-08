@@ -6,10 +6,10 @@
 
 	// Enum KLADR object types
 	$.kladr.type = {
-		region: 'region',
+		region:   'region',
 		district: 'district',
-		city: 'city',
-		street: 'street',
+		city:     'city',
+		street:   'street',
 		building: 'building'
 	};
 
@@ -108,15 +108,15 @@
 		});
 	};
 
-	function toApiFormat(query) {
+	function toApiFormat (query) {
 		var params = {},
 			fields = {
-				token: 'token',
-				key: 'key',
-				type: 'contentType',
-				name: 'query',
+				token:       'token',
+				key:         'key',
+				type:        'contentType',
+				name:        'query',
 				withParents: 'withParent',
-				limit: 'limit'
+				limit:       'limit'
 			};
 
 		if (query.parentType && query.parentId) {
@@ -132,7 +132,7 @@
 		return params;
 	}
 
-	function error(error) {
+	function error (error) {
 		window.console && window.console.error && window.console.error(error);
 	}
 })(jQuery);
@@ -141,30 +141,30 @@
 	var defaultOptions = {
 
 		// Api params
-		token: null,
-		key: null,
-		type: null,
-		parentType: null,
-		parentId: null,
-		limit: 10,
-		withParents: false,
+		token:        null,
+		key:          null,
+		type:         null,
+		parentType:   null,
+		parentId:     null,
+		limit:        10,
+		withParents:  false,
 
 		// Plugin options
-		verify: false,
-		spinner: true,
+		verify:       false,
+		spinner:      true,
 
 		// Plugin events
-		open: null,
-		close: null,
-		send: null,
-		received: null,
-		select: null,
-		check: null,
+		open:         null,
+		close:        null,
+		send:         null,
+		received:     null,
+		select:       null,
+		check:        null,
 
 		// Plugin events before actions
-		openBefore: null,
-		closeBefore: null,
-		sendBefore: null,
+		openBefore:   null,
+		closeBefore:  null,
+		sendBefore:   null,
 		selectBefore: null,
 
 		source: function (query, callback) {
@@ -193,9 +193,9 @@
 	};
 
 	var keys = {
-		up: 38,
-		down: 40,
-		esc: 27,
+		up:    38,
+		down:  40,
+		esc:   27,
 		enter: 13
 	};
 
@@ -219,7 +219,7 @@
 		return this;
 	};
 
-	function kladr($input, params) {
+	function kladr ($input, params) {
 		var options = (function () {
 			var data = $input.data('kladr-data');
 
@@ -328,6 +328,91 @@
 				}
 			}
 
+			function position () {
+				var inputOffset = $input.offset(),
+					inputWidth = $input.outerWidth(),
+					inputHeight = $input.outerHeight();
+
+				$ac.css({
+					top:  inputOffset.top + inputHeight + 'px',
+					left: inputOffset.left
+				});
+
+				var differ = $ac.outerWidth() - $ac.width();
+				$ac.width(inputWidth - differ);
+
+				var spinnerWidth = $spinner.width(),
+					spinnerHeight = $spinner.height();
+
+				$spinner.css({
+					top:  inputOffset.top + (inputHeight - spinnerHeight) / 2 - 1,
+					left: inputOffset.left + inputWidth - spinnerWidth - 2
+				});
+			}
+
+			function open () {
+				if (!trigger('open-before')) {
+					close();
+					return;
+				}
+
+				var name = $input.val();
+
+				if (!$.trim(name)) {
+					close();
+					return;
+				}
+
+				var query = {
+					token:       get('token'),
+					key:         get('key'),
+					type:        get('type'),
+					name:        name,
+					parentType:  get('parentType'),
+					parentId:    get('parentId'),
+					withParents: get('withParents'),
+					limit:       get('limit')
+				};
+
+				if (!trigger('send-before', query)) {
+					close();
+					return;
+				}
+
+				get('showSpinner')();
+				trigger('send');
+
+				get('source')(query, function (objs) {
+					get('hideSpinner')();
+					trigger('received');
+
+					if (!$input.is(':focus')) {
+						close();
+						return;
+					}
+
+					if (!$.trim($input.val()) || !objs.length) {
+						close();
+						return;
+					}
+
+					render(objs, query);
+					position();
+					$ac.slideDown(50);
+					trigger('open');
+				});
+			}
+
+			function close () {
+				if (!trigger('close-before')) {
+					return;
+				}
+
+//				select();
+				$ac.hide();
+				trigger('close');
+			}
+
 			function trigger (event, obj) {
 				if (!event) return true;
 
@@ -344,20 +429,20 @@
 				return true;
 			}
 
-            function get (param) {
-                return options._get(param);
-            }
+			function get (param) {
+				return options._get(param);
+			}
 
-            function set (param, value) {
-                options._set(param, value);
-            }
+			function set (param, value) {
+				options._set(param, value);
+			}
 		});
 	}
 
-	function readParams(param1, param2) {
+	function readParams (param1, param2) {
 		var params = {
-			obj: false,
-			str: false,
+			obj:   false,
+			str:   false,
 			isGet: false
 		};
 
@@ -382,26 +467,10 @@
 		return params;
 	}
 
-	function getGuid() {
+	function getGuid () {
 		if (!getGuid.guid) getGuid.guid = 0;
 		return getGuid.guid++;
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 	// Old plugin
@@ -415,41 +484,41 @@
 
 		return result;
 
-		function kladr(input, param1, param2) {
+		function kladr (input, param1, param2) {
 			var ac = null;
 			var spinner = null;
 
 			var options = null;
 			var defaultOptions = {
-				token: null,
-				key: null,
-				type: null,
-				parentType: null,
-				parentId: null,
-				limit: 10,
+				token:       null,
+				key:         null,
+				type:        null,
+				parentType:  null,
+				parentId:    null,
+				limit:       10,
 				withParents: false,
-				verify: false,
+				verify:      false,
 				showSpinner: true,
 				arrowSelect: true,
-				current: null,
+				current:     null,
 
-				open: null,
-				close: null,
-				send: null,
+				open:     null,
+				close:    null,
+				send:     null,
 				received: null,
-				select: null,
-				check: null,
+				select:   null,
+				check:    null,
 
 				source: function (query, callback) {
 					var params = {
-						token: options.token,
-						key: options.token,
-						type: options.type,
-						name: query,
-						parentType: options.parentType,
-						parentId: options.parentId,
+						token:       options.token,
+						key:         options.token,
+						type:        options.type,
+						name:        query,
+						parentType:  options.parentType,
+						parentId:    options.parentId,
 						withParents: options.withParents,
-						limit: options.limit
+						limit:       options.limit
 					};
 
 					$.kladr.api(params, callback);
@@ -485,9 +554,9 @@
 			};
 
 			var keys = {
-				up: 38,
-				down: 40,
-				esc: 27,
+				up:    38,
+				down:  40,
+				esc:   27,
 				enter: 13
 			};
 
@@ -534,7 +603,7 @@
 					.on('resize', position);
 			});
 
-			function init(param1, param2, callback) {
+			function init (param1, param2, callback) {
 				options = input.data('kladr-options');
 
 				if (param2 !== undefined) {
@@ -564,7 +633,7 @@
 				return input;
 			}
 
-			function create() {
+			function create () {
 				var container = $(document.getElementById('kladr_autocomplete'));
 				var inputName = input.attr('name');
 
@@ -581,7 +650,7 @@
 				spinner.appendTo(container);
 			}
 
-			function render(objs, query) {
+			function render (objs, query) {
 				ac.empty();
 				for (var i in objs) {
 					var obj = objs[i];
@@ -596,13 +665,13 @@
 				}
 			}
 
-			function position() {
+			function position () {
 				var inputOffset = input.offset();
 				var inputWidth = input.outerWidth();
 				var inputHeight = input.outerHeight();
 
 				ac.css({
-					top: inputOffset.top + inputHeight + 'px',
+					top:  inputOffset.top + inputHeight + 'px',
 					left: inputOffset.left
 				});
 
@@ -613,12 +682,12 @@
 				var spinnerHeight = spinner.height();
 
 				spinner.css({
-					top: inputOffset.top + (inputHeight - spinnerHeight) / 2 - 1,
+					top:  inputOffset.top + (inputHeight - spinnerHeight) / 2 - 1,
 					left: inputOffset.left + inputWidth - spinnerWidth - 2,
 				});
 			}
 
-			function open(event) {
+			function open (event) {
 				// return on keyup control keys
 				if ((event.which > 8) && (event.which < 46)) return;
 
@@ -654,13 +723,13 @@
 				});
 			}
 
-			function close() {
+			function close () {
 				select();
 				ac.hide();
 				trigger('close');
 			}
 
-			function validate() {
+			function validate () {
 				switch (options.type) {
 					case $.kladr.type.region:
 					case $.kladr.type.district:
@@ -703,7 +772,7 @@
 				return true;
 			}
 
-			function select() {
+			function select () {
 				var a = ac.find('.active a');
 				if (!a.length) return;
 
@@ -713,7 +782,7 @@
 				trigger('select', options.current);
 			}
 
-			function keyselect(event) {
+			function keyselect (event) {
 				var active = ac.find('li.active');
 				switch (event.which) {
 					case keys.up:
@@ -756,13 +825,13 @@
 				}
 			}
 
-			function mouseselect() {
+			function mouseselect () {
 				close();
 				input.focus();
 				return false;
 			}
 
-			function change() {
+			function change () {
 				if (!options.verify) return;
 
 				if (!validate()) {
@@ -805,7 +874,7 @@
 				})
 			}
 
-			function key(val) {
+			function key (val) {
 				var en = "1234567890qazwsxedcrfvtgbyhnujmik,ol.p;[']- " +
 					"QAZWSXEDCRFVTGBYHNUJMIK<OL>P:{\"} ";
 
@@ -830,13 +899,13 @@
 				return strNew;
 			}
 
-			function trigger(event, obj) {
+			function trigger (event, obj) {
 				if (!event) return;
 				input.trigger('kladr_' + event, obj);
 				if (options[event]) options[event].call(input.get(0), obj);
 			}
 
-			function spinnerStart() {
+			function spinnerStart () {
 				if (spinnerInterval) return;
 
 				var top = -0.2;
@@ -854,14 +923,14 @@
 				}, 30);
 			}
 
-			function spinnerShow() {
+			function spinnerShow () {
 				if (options.showSpinner) {
 					spinner.show();
 					spinnerStart();
 				}
 			}
 
-			function spinnerHide() {
+			function spinnerHide () {
 				spinner.hide();
 			}
 		}
