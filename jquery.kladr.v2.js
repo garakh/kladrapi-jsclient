@@ -166,6 +166,7 @@
 		closeBefore:  null,
 		sendBefore:   null,
 		selectBefore: null,
+		checkBefore:  null,
 
 		source: function (query, callback) {
 
@@ -351,7 +352,7 @@
 			}
 
 			function open () {
-				if (!trigger('open-before')) {
+				if (!trigger('open_before')) {
 					close();
 					return;
 				}
@@ -365,7 +366,7 @@
 
 				var query = getQuery(name);
 
-				if (!trigger('send-before', query)) {
+				if (!trigger('send_before', query)) {
 					close();
 					return;
 				}
@@ -395,7 +396,7 @@
 			}
 
 			function close () {
-				if (!trigger('close-before')) return;
+				if (!trigger('close_before')) return;
 
 				select();
 				$ac.hide();
@@ -403,7 +404,7 @@
 			}
 
 			function select () {
-				if (!trigger('select-before')) return;
+				if (!trigger('select_before')) return;
 
 				var $a = $ac.find('.active a');
 				if (!$a.length) return;
@@ -417,6 +418,11 @@
 			function check () {
 				if (!options.verify) return;
 
+				if (!trigger('check_before')) {
+					ret(null);
+					return;
+				}
+
 				var name = $.trim($input.val());
 
 				if (!name) {
@@ -426,7 +432,7 @@
 
 				var query = getQuery(name);
 
-				if (!trigger('send-before', query)) {
+				if (!trigger('send_before', query)) {
 					ret(null);
 					return;
 				}
@@ -447,7 +453,7 @@
 						valueLowerCase = null,
 						obj = null;
 
-					for (var i = 0; i < objs.length; i++) {
+					for (var i in objs) {
 						if (objs.hasOwnProperty(i)) {
 							valueLowerCase = objs[i].name.toLowerCase();
 
