@@ -169,15 +169,35 @@
 		checkBefore:  null,
 
 		source: function (query, callback) {
-
+			$.kladr.api(query, callback);
 		},
 
 		labelFormat: function (obj, query) {
+			var label = '';
 
+			var objName = obj.name.toLowerCase(),
+				queryName = query.name.toLowerCase();
+
+			var start = objName.indexOf(queryName);
+			start = start > 0 ? start : 0;
+
+			if (obj.typeShort) {
+				label += obj.typeShort + '. ';
+			}
+
+			if (queryName.length < objName.length) {
+				label += obj.name.substr(0, start);
+				label += '<strong>' + obj.name.substr(start, queryName.length) + '</strong>';
+				label += obj.name.substr(start + queryName.length, objName.length - queryName.length - start);
+			} else {
+				label += '<strong>' + obj.name + '</strong>';
+			}
+
+			return label;
 		},
 
 		valueFormat: function (obj, query) {
-
+			return obj.name;
 		},
 
 		showSpinner: function () {
@@ -281,6 +301,38 @@
 			var $ac = null;
 			var $spinner = null;
 
+			(function () {
+				var isActive = false;
+
+				create();
+				position();
+
+				// Subscribe on input events
+				$input
+					.on('keyup', open)
+					.on('keydown', keySelect)
+					.on('change', function () {
+						if (!isActive) check();
+					})
+					.on('blur', function () {
+						if (!isActive) close();
+					});
+
+				// Subscribe on autocomplete list events
+				$ac
+					.on('click', 'li, a', mouseSelect)
+					.on('touchstart mouseenter', 'li', function () {
+						isActive = true;
+					})
+					.on('touchend mouseleave', 'li', function () {
+						isActive = false;
+					});
+
+				// Subscribe on window events
+				$(window)
+					.on('resize', position);
+			})();
+
 			function create () {
 				var $container = $(document.getElementById('kladr-autocomplete'));
 
@@ -351,7 +403,11 @@
 				});
 			}
 
-			function open () {
+			function open (event) {
+				// return on control keys
+				if ((event.which > 8) && (event.which < 46))
+					return;
+
 				if (!trigger('open_before')) {
 					close();
 					return;
@@ -398,9 +454,61 @@
 			function close () {
 				if (!trigger('close_before')) return;
 
-				select();
-				$ac.hide();
+				$ac.empty().hide();
 				trigger('close');
+			}
+
+			function keySelect (event) {
+				var $active = $ac.find('li.active');
+
+				switch (event.which) {
+					case keys.up:
+						if ($active.length) {
+							$active.removeClass('active');
+							$active = $active.prev();
+						} else {
+							$active = $ac.find('li').last();
+						}
+
+						$active.addClass('active');
+						select();
+						break;
+
+					case keys.down:
+						if ($active.length) {
+							$active.removeClass('active');
+							$active = $active.next();
+						} else {
+							$active = $ac.find('li').first();
+						}
+						$active.addClass('active');
+						select();
+						break;
+
+					case keys.esc:
+						close();
+						break;
+
+					case keys.enter:
+						select();
+						close();
+						return false;
+				}
+			}
+
+			function mouseSelect () {
+				var $li = $(this);
+
+				if($li.is('a'))
+					$li = $li.parents('li');
+
+				$li.addClass('active');
+
+				select();
+				close();
+				$input.focus();
+
+				return false;
 			}
 
 			function select () {
