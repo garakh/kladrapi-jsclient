@@ -200,12 +200,26 @@
 			return obj.name;
 		},
 
-		showSpinner: function () {
+		showSpinner: function ($spinner) {
+			var top = -0.2,
+				spinnerInterval = setInterval(function () {
+					if (!$spinner.is(':visible')) {
+						clearInterval(spinnerInterval);
+						spinnerInterval = null;
+						return;
+					}
 
+					$spinner.css('background-position', '0% ' + top + '%');
+
+					top += 5.555556;
+					if (top > 95) top = -0.2;
+				}, 30);
+
+			$spinner.show();
 		},
 
-		hideSpinner: function () {
-
+		hideSpinner: function ($spinner) {
+			$spinner.hide();
 		}
 	};
 
@@ -427,11 +441,10 @@
 					return;
 				}
 
-				get('showSpinner')();
+				get('showSpinner')($spinner);
 				trigger('send');
 
 				get('source')(query, function (objs) {
-					get('hideSpinner')();
 					trigger('received');
 
 					if (!$input.is(':focus')) {
@@ -446,6 +459,9 @@
 
 					render(objs, query);
 					position();
+
+					get('hideSpinner')($spinner);
+
 					$ac.slideDown(50);
 					trigger('open');
 				});
@@ -545,11 +561,10 @@
 					return;
 				}
 
-				get('showSpinner')();
+				get('showSpinner')($spinner);
 				trigger('send');
 
 				get('source')(query, function (objs) {
-					get('hideSpinner')();
 					trigger('received');
 
 					if (!$.trim($input.val())) {
@@ -576,6 +591,7 @@
 						$input.val(get('valueFormat')(obj, query));
 					}
 
+					get('hideSpinner')($spinner);
 					ret(obj);
 				});
 
