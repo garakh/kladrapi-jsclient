@@ -359,7 +359,7 @@
 
 				// Subscribe on autocomplete list events
 				$ac
-					.on('click', 'li, a', mouseSelect)
+					.on('touchstart click', 'li, a', mouseSelect)
 					.on('touchstart mouseenter', 'li', function () {
 						isActive = true;
 					})
