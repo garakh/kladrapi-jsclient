@@ -340,39 +340,30 @@
 			var $ac = null;
 			var $spinner = null;
 
-			(function () {
+			create(function () {
 				var isActive = false;
 
-				create();
-				position();
-
-				// Subscribe on input events
 				$input
-					.on('keyup', open)
-					.on('keydown', keySelect)
-					.on('change', function () {
+					.on('keyup.kladr', open)
+					.on('keydown.kladr', keySelect)
+					.on('change.kladr', function () {
 						if (!isActive) check();
 					})
-					.on('blur', function () {
+					.on('blur.kladr', function () {
 						if (!isActive) close();
 					});
 
-				// Subscribe on autocomplete list events
 				$ac
-					.on('touchstart click', 'li, a', mouseSelect)
-					.on('touchstart mouseenter', 'li', function () {
+					.on('touchstart.kladr click.kladr', 'li, a', mouseSelect)
+					.on('touchstart.kladr mouseenter.kladr', 'li', function () {
 						isActive = true;
 					})
-					.on('touchend mouseleave', 'li', function () {
+					.on('touchend.kladr mouseleave.kladr', 'li', function () {
 						isActive = false;
 					});
+			});
 
-				// Subscribe on window events
-				$(window)
-					.on('resize', position);
-			})();
-
-			function create () {
+			function create (callback) {
 				var $container = $(document.getElementById('kladr-autocomplete'));
 
 				if (!$container.length) {
@@ -384,6 +375,9 @@
 				if (guid) {
 					$ac = $container.find('.autocomplete' + guid);
 					$spinner = $container.find('.spinner' + guid);
+
+					$input.off('.kladr');
+					$ac.off('.kladr');
 				}
 				else {
 					guid = getGuid();
@@ -397,6 +391,8 @@
 					$spinner = $('<div class="spinner' + guid + ' spinner" style="display: none;"></div>')
 						.appendTo($container);
 				}
+
+				callback();
 			}
 
 			function render (objs, query) {
@@ -424,6 +420,18 @@
 				var inputOffset = $input.offset(),
 					inputWidth = $input.outerWidth(),
 					inputHeight = $input.outerHeight();
+
+				if ((position.top == inputOffset.top)
+					&& (position.left == inputOffset.left)
+					&& (position.width == inputWidth)
+					&& (position.height == inputHeight)) {
+					return;
+				}
+
+				position.top = inputOffset.top;
+				position.left = inputOffset.left;
+				position.width = inputWidth;
+				position.height = inputHeight;
 
 				$ac.css({
 					top:  inputOffset.top + inputHeight + 'px',
@@ -473,22 +481,27 @@
 					trigger('received');
 
 					if (!$input.is(':focus')) {
+						hs();
 						close();
 						return;
 					}
 
 					if (!$.trim($input.val()) || !objs.length) {
+						hs();
 						close();
 						return;
 					}
 
 					render(objs, query);
 					position();
-
-					get('hideSpinner')($spinner);
+					hs();
 
 					$ac.slideDown(50);
 					trigger('open');
+
+					function hs () {
+						get('hideSpinner')($spinner);
+					}
 				});
 			}
 
@@ -595,7 +608,7 @@
 					trigger('received');
 
 					if (!$.trim($input.val())) {
-						ret(null);
+						ret2(null);
 						return;
 					}
 
@@ -618,11 +631,15 @@
 						$input.val(get('valueFormat')(obj, query));
 					}
 
-					get('hideSpinner')($spinner);
-					ret(obj);
+					ret2(obj);
+
+					function ret2 (obj) {
+						get('hideSpinner')($spinner);
+						ret(obj);
+					}
 				});
 
-				function ret(obj) {
+				function ret (obj) {
 					set('current', obj);
 					trigger('check', obj);
 				}
