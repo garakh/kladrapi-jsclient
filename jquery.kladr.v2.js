@@ -364,7 +364,7 @@
 			});
 
 			function create (callback) {
-				var $container = $(document.getElementById('kladr-autocomplete'));
+				var $container = $(document.getElementById('kladr_autocomplete'));
 
 				if (!$container.length) {
 					$container = $('<div id="kladr_autocomplete"></div>').appendTo(document.body);
