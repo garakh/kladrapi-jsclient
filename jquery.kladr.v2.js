@@ -344,6 +344,7 @@
 				var isActive = false;
 
 				$input
+					.attr('data-kladr-type', get('type'))
 					.on('keyup.kladr', open)
 					.on('keydown.kladr', keySelect)
 					.on('change.kladr', function () {
@@ -593,7 +594,7 @@
 				if (!$a.length) return;
 
 				$input.val($a.attr('data-val'));
-				set('current', $a.data('kladr-object'));
+				setCurrent($a.data('kladr-object'));
 
 				trigger('select', get('current'));
 			}
@@ -659,7 +660,7 @@
 				});
 
 				function ret (obj) {
-					set('current', obj);
+					setCurrent(obj);
 					trigger('check', obj);
 				}
 			}
@@ -691,6 +692,14 @@
 					withParents: get('withParents'),
 					limit:       get('limit')
 				};
+			}
+
+			function setCurrent (obj) {
+				set('current', obj);
+
+				if (obj.id) {
+					$input.attr('data-kladr-id', obj.id);
+				}
 			}
 
 			function get (param) {
