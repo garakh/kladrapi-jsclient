@@ -519,10 +519,21 @@
 					case keys.up:
 						if ($active.length) {
 							$active.removeClass('active');
-							$active = $active.prev();
+							if ($active.prev().length) $active = $active.prev();
 						} else {
 							$active = $ac.find('li').last();
 						}
+
+						(function () {
+							var acScroll = $ac.scrollTop(),
+								acOffset = $ac.offset(),
+								activeHeight = $active.outerHeight(),
+								activeOffset = $active.offset();
+
+							if ((activeOffset.top - acOffset.top) < 0) {
+								$ac.scrollTop(acScroll - activeHeight);
+							}
+						})();
 
 						$active.addClass('active');
 						select();
@@ -531,10 +542,23 @@
 					case keys.down:
 						if ($active.length) {
 							$active.removeClass('active');
-							$active = $active.next();
+							if ($active.next().length) $active = $active.next();
 						} else {
 							$active = $ac.find('li').first();
 						}
+
+						(function () {
+							var acScroll = $ac.scrollTop(),
+								acHeight = $ac.height(),
+								acOffset = $ac.offset(),
+								activeHeight = $active.outerHeight(),
+								activeOffset = $active.offset();
+
+							if ((activeOffset.top - acOffset.top + activeHeight) > acHeight) {
+								$ac.scrollTop(acScroll + activeHeight);
+							}
+						})();
+
 						$active.addClass('active');
 						select();
 						break;
@@ -542,11 +566,6 @@
 					case keys.esc:
 						close();
 						break;
-
-					case keys.enter:
-						select();
-						close();
-						return false;
 				}
 
 				return undefined;
