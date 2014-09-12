@@ -752,6 +752,6 @@
 
 	function getGuid () {
 		if (!getGuid.guid) getGuid.guid = 0;
-		return getGuid.guid++;
+		return ++getGuid.guid;
 	}
 })(jQuery);
