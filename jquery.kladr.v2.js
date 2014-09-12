@@ -172,11 +172,36 @@
 			$.kladr.api(query, callback);
 		},
 
-		labelFormat: function (obj, query) {
+		labelFormat: function self (obj, query) {
+			if (!self.key) {
+				self.key = function (val) {
+					var en = "qazwsxedcrfvtgbyhnujmik,ol.p;[']",
+						ru = "йфяцычувскамепинртгоьшлбщдюзжхэъ",
+						strNew = '',
+						ch,
+						index;
+
+					for (var i = 0; i < val.length; i++) {
+						ch = val[i];
+						index = en.indexOf(ch);
+
+						if (index > -1) {
+							strNew += ru[index];
+							continue;
+						}
+
+						strNew += ch;
+					}
+
+					return strNew;
+				}
+			}
+
+
 			var label = '';
 
 			var objName = obj.name.toLowerCase(),
-				queryName = key(query.name.toLowerCase());
+				queryName = self.key(query.name.toLowerCase());
 
 			var start = objName.indexOf(queryName);
 			start = start > 0 ? start : 0;
@@ -191,28 +216,6 @@
 				label += obj.name.substr(start + queryName.length, objName.length - queryName.length - start);
 			} else {
 				label += '<strong>' + obj.name + '</strong>';
-			}
-
-			function key (val) {
-				var en = "qazwsxedcrfvtgbyhnujmik,ol.p;[']",
-					ru = "йфяцычувскамепинртгоьшлбщдюзжхэъ",
-					strNew = '',
-					ch,
-					index;
-
-				for (var i = 0; i < val.length; i++) {
-					ch = val[i];
-					index = en.indexOf(ch);
-
-					if (index > -1) {
-						strNew += ru[index];
-						continue;
-					}
-
-					strNew += ch;
-				}
-
-				return strNew;
 			}
 
 			return label;
@@ -252,7 +255,6 @@
 	var keys = {
 		up:    38,
 		down:  40,
-		esc:   27,
 		enter: 13
 	};
 
@@ -475,34 +477,30 @@
 					return;
 				}
 
-				get('showSpinner')($spinner);
+				showSpinner();
 				trigger('send');
 
 				get('source')(query, function (objs) {
 					trigger('received');
 
 					if (!$input.is(':focus')) {
-						hs();
+						hideSpinner();
 						close();
 						return;
 					}
 
 					if (!$.trim($input.val()) || !objs.length) {
-						hs();
+						hideSpinner();
 						close();
 						return;
 					}
 
 					render(objs, query);
 					position();
-					hs();
+					hideSpinner();
 
 					$ac.slideDown(50);
 					trigger('open');
-
-					function hs () {
-						get('hideSpinner')($spinner);
-					}
 				});
 			}
 
@@ -564,7 +562,7 @@
 						select();
 						break;
 
-					case keys.esc:
+					case keys.enter:
 						close();
 						break;
 				}
@@ -621,7 +619,7 @@
 					return;
 				}
 
-				get('showSpinner')($spinner);
+				showSpinner();
 				trigger('send');
 
 				get('source')(query, function (objs) {
@@ -654,7 +652,7 @@
 					ret2(obj);
 
 					function ret2 (obj) {
-						get('hideSpinner')($spinner);
+						hideSpinner();
 						ret(obj);
 					}
 				});
@@ -679,6 +677,18 @@
 				}
 
 				return true;
+			}
+
+			function showSpinner() {
+				if (get('spinner')) {
+					get('showSpinner')($spinner);
+				}
+			}
+
+			function hideSpinner() {
+				if (get('spinner')) {
+					get('hideSpinner')($spinner);
+				}
 			}
 
 			function getQuery (name) {
