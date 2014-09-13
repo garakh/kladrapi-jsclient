@@ -338,7 +338,7 @@
 			return undefined;
 		}
 
-		init(params, function () {
+		return init(params, function () {
 			var $ac = null;
 			var $spinner = null;
 
@@ -349,10 +349,8 @@
 					.attr('data-kladr-type', get('type'))
 					.on('keyup.kladr', open)
 					.on('keydown.kladr', keySelect)
-					.on('change.kladr', function () {
-						if (!isActive) check();
-					})
 					.on('blur.kladr', function () {
+						check();
 						if (!isActive) close();
 					});
 
@@ -393,6 +391,8 @@
 
 					$spinner = $('<div class="spinner' + guid + ' spinner" style="display: none;"></div>')
 						.appendTo($container);
+
+					position();
 				}
 
 				callback();
@@ -466,6 +466,7 @@
 				var name = $input.val();
 
 				if (!$.trim(name)) {
+					error(false);
 					close();
 					return;
 				}
@@ -573,7 +574,7 @@
 			function mouseSelect () {
 				var $li = $(this);
 
-				if($li.is('a'))
+				if ($li.is('a'))
 					$li = $li.parents('li');
 
 				$li.addClass('active');
@@ -592,30 +593,28 @@
 				if (!$a.length) return;
 
 				$input.val($a.attr('data-val'));
-				setCurrent($a.data('kladr-object'));
 
+				error(false);
+				setCurrent($a.data('kladr-object'));
 				trigger('select', get('current'));
 			}
 
 			function check () {
-				if (!options.verify) return;
-
-				if (!trigger('check_before')) {
-					ret(null);
-					return;
-				}
+				if (!get('verify')) return;
+				if (!trigger('check_before')) return;
 
 				var name = $.trim($input.val());
 
 				if (!name) {
-					ret(null);
+					ret(null, false);
 					return;
 				}
 
 				var query = getQuery(name);
 
 				if (!trigger('send_before', query)) {
-					ret(null);
+					ret(null, false);
+					trigger('check', null);
 					return;
 				}
 
@@ -626,7 +625,7 @@
 					trigger('received');
 
 					if (!$.trim($input.val())) {
-						ret2(null);
+						ret2(null, false);
 						return;
 					}
 
@@ -649,17 +648,18 @@
 						$input.val(get('valueFormat')(obj, query));
 					}
 
-					ret2(obj);
+					ret2(obj, !obj);
+					trigger('check', obj);
 
-					function ret2 (obj) {
+					function ret2 (obj, er) {
 						hideSpinner();
-						ret(obj);
+						ret(obj, er);
 					}
 				});
 
-				function ret (obj) {
+				function ret (obj, er) {
+					error(er);
 					setCurrent(obj);
-					trigger('check', obj);
 				}
 			}
 
@@ -679,13 +679,13 @@
 				return true;
 			}
 
-			function showSpinner() {
+			function showSpinner () {
 				if (get('spinner')) {
 					get('showSpinner')($spinner);
 				}
 			}
 
-			function hideSpinner() {
+			function hideSpinner () {
 				if (get('spinner')) {
 					get('hideSpinner')($spinner);
 				}
@@ -696,7 +696,7 @@
 					token:       get('token'),
 					key:         get('key'),
 					type:        get('type'),
-					name:        name,
+					name:        fixName(name),
 					parentType:  get('parentType'),
 					parentId:    get('parentId'),
 					withParents: get('withParents'),
@@ -704,12 +704,49 @@
 				};
 			}
 
+			function fixName (name) {
+				var noCorrect = 'abcdefghijklmnopqrstuvwxyz',
+					pattern = 'Ёё',
+					replace = 'Ее';
+
+				var testName = name.toLowerCase(),
+					result = '',
+					ch,
+					index;
+
+				for (var i = 0; i < testName.length; i++) {
+					if (noCorrect.indexOf(testName[i]) > -1) {
+						error(true);
+						return name;
+					}
+
+					ch = name[i];
+					index = pattern.indexOf(ch);
+
+					if (index > -1) {
+						result += replace[index];
+						continue;
+					}
+
+					result += ch;
+				}
+
+				error(false);
+				return result;
+			}
+
 			function setCurrent (obj) {
 				set('current', obj);
 
-				if (obj.id) {
+				if (obj && obj.id) {
 					$input.attr('data-kladr-id', obj.id);
 				}
+			}
+
+			function error (error) {
+				error
+					? $input.addClass('kladr-error')
+					: $input.removeClass('kladr-error');
 			}
 
 			function get (param) {
@@ -742,7 +779,7 @@
 				}
 			}
 
-			if (params.str.length == 1) {
+			if (params.str[1] === undefined) {
 				params.isGet = true;
 			}
 		}
