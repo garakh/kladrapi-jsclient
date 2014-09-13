@@ -1,3 +1,7 @@
+input.kladr-error {
+    color: #b94a48;
+}
+
 #kladr_autocomplete ul{
     position: absolute;
     display: block;

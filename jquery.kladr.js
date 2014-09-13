@@ -1,529 +1,772 @@
-(function($) {
-    $.kladr = {};
-    
-    // Service URL
-    $.kladr.url = 'http://kladr-api.ru/api.php';
-    
-    // Enum KLADR object types
-    $.kladr.type = {
-        region: 'region',
-        district: 'district',
-        city: 'city',
-        street: 'street',
-        building: 'building'
-    };
-    
-    // Send query to service
-    $.kladr.api = function(query, callback) {
-        var params = {};
-        
-        if( query.token ) params.token = query.token;
-        if( query.key ) params.key = query.key;
-        if( query.type ) params.contentType = query.type;
-        if( query.name ) params.query = query.name;
-        
-        if( query.parentType && query.parentId ){
-            params[query.parentType+'Id'] = query.parentId;
-        }
-        
-        if( query.withParents ) params.withParent = 1;
-        params.limit = query.limit ? query.limit : 2000;
-        
-        var completed = false;
-        
-        $.getJSON($.kladr.url + "?callback=?",
-            params,
-            function(data) {
-                if(completed) return;
-                completed = true;                
-                callback && callback( data.result );
-            }
-        );
-            
-        setTimeout(function() {
-            if(completed) return;
-            completed = true;   
-            console.error('Request error');
-            callback && callback( [] );
-        }, 5000);
-    };
-    
-    // Check existence object
-    $.kladr.check = function(query, callback) {
-        query.withParents = false;
-        query.limit = 1;
-        
-        $.kladr.api(query, function(objs) {
-            if(objs && objs.length){
-                callback && callback(objs[0]); 
-            } else {
-                callback && callback(false);
-            }
-        });
-    };
+(function ($) {
+	$.kladr = {};
+
+	// Service URL
+	$.kladr.url = 'http://kladr-api.ru/api.php';
+
+	// Enum KLADR object types
+	$.kladr.type = {
+		region:   'region',
+		district: 'district',
+		city:     'city',
+		street:   'street',
+		building: 'building'
+	};
+
+	// Validate query
+	$.kladr.validate = function (query) {
+		switch (query.type) {
+			case $.kladr.type.region:
+			case $.kladr.type.district:
+			case $.kladr.type.city:
+				if (query.parentType && !query.parentId) {
+					error('parentId undefined');
+					return false;
+				}
+				break;
+			case $.kladr.type.street:
+				if (query.parentType != $.kladr.type.city) {
+					error('parentType must equal "city"');
+					return false;
+				}
+				if (!query.parentId) {
+					error('parentId undefined');
+					return false;
+				}
+				break;
+			case $.kladr.type.building:
+				if (query.parentType != $.kladr.type.street) {
+					error('parentType must equal "street"');
+					return false;
+				}
+				if (!query.parentId) {
+					error('parentId undefined');
+					return false;
+				}
+				break;
+			default:
+				error('type incorrect');
+				return false;
+		}
+
+		if (query.limit < 1) {
+			error('limit must greater than 0');
+			return false;
+		}
+
+		return true;
+	};
+
+	// Send query to service
+	$.kladr.api = function (query, callback) {
+		if (!callback) {
+			error('Callback undefined');
+			return;
+		}
+
+		if (!$.kladr.validate(query)) {
+			callback([]);
+			return;
+		}
+
+		var def = $.Deferred();
+
+		def.done(callback);
+		def.fail(function (er) {
+			error(er);
+			callback([]);
+		});
+
+		$.getJSON($.kladr.url + "?callback=?",
+			toApiFormat(query),
+			function (data) {
+				def.resolve(data.result);
+			}
+		);
+
+		setTimeout(function () {
+			def.reject('Request error');
+		}, 3000);
+	};
+
+	// Check exist object
+	$.kladr.check = function (query, callback) {
+		if (!callback) {
+			error('Callback undefined');
+			return;
+		}
+
+		query.withParents = false;
+		query.limit = 1;
+
+		$.kladr.api(query, function (objs) {
+			if (objs && objs.length) {
+				callback(objs[0]);
+			} else {
+				callback(false);
+			}
+		});
+	};
+
+	function toApiFormat (query) {
+		var params = {},
+			fields = {
+				token:       'token',
+				key:         'key',
+				type:        'contentType',
+				name:        'query',
+				withParents: 'withParent',
+				limit:       'limit'
+			};
+
+		if (query.parentType && query.parentId) {
+			params[query.parentType + 'Id'] = query.parentId;
+		}
+
+		for (var i in query) {
+			if (query.hasOwnProperty(i) && fields.hasOwnProperty(i) && query[i]) {
+				params[fields[i]] = query[i];
+			}
+		}
+
+		return params;
+	}
+
+	function error (error) {
+		window.console && window.console.error && window.console.error(error);
+	}
 })(jQuery);
 
-(function($, undefined) {
-    $.fn.kladr = function(param1, param2) {
-        
-        var result = undefined;        
-        this.each(function() {
-            var res = kladr($(this), param1, param2);
-            if(result == undefined) result = res;
-        });
-        
-        return result;
-        
-        function kladr(input, param1, param2) {
-            var ac = null;        
-            var spinner = null;
+(function ($, undefined) {
+	var defaultOptions = {
 
-            var options = null;
-            var defaultOptions = {
-                token: null,
-                key: null,
-                type: null,
-                parentType: null,
-                parentId: null,
-                limit: 10,
-                withParents: false,
-                verify: false,
-                showSpinner: true,
-                arrowSelect: true,
-                current: null,
+		// Api params
+		token:        null,
+		key:          null,
+		type:         null,
+		parentType:   null,
+		parentId:     null,
+		limit:        10,
+		withParents:  false,
 
-                open: null,
-                close: null,
-                send: null,
-                received: null,
-                select: null,
-                check: null,
+		// Plugin options
+		verify:       false,
+		spinner:      true,
 
-                source: function(query, callback) {
-                    var params = {
-                        token: options.token,
-                        key: options.token,
-                        type: options.type,
-                        name: query,
-                        parentType: options.parentType,
-                        parentId: options.parentId,
-                        withParents: options.withParents,
-                        limit: options.limit
-                    };
+		// Plugin events
+		open:         null,
+		close:        null,
+		send:         null,
+		received:     null,
+		select:       null,
+		check:        null,
 
-                    $.kladr.api(params, callback);
-                },
+		// Plugin events before actions
+		openBefore:   null,
+		closeBefore:  null,
+		sendBefore:   null,
+		selectBefore: null,
+		checkBefore:  null,
 
-                labelFormat: function(obj, query) {
-                    var label = '';
+		source: function (query, callback) {
+			$.kladr.api(query, callback);
+		},
 
-                    var name = obj.name.toLowerCase();
-                    query = query.toLowerCase();
+		labelFormat: function self (obj, query) {
+			var label = '';
 
-                    var start = name.indexOf(query);
-                    start = start > 0 ? start : 0;
+			var objName = obj.name.toLowerCase(),
+				queryName = query.name.toLowerCase();
 
-                    if(obj.typeShort){
-                        label += obj.typeShort + '. ';
-                    }
+			var start = objName.indexOf(queryName);
+			start = start > 0 ? start : 0;
 
-                    if(query.length < obj.name.length){
-                        label += obj.name.substr(0, start);
-                        label += '<strong>' + obj.name.substr(start, query.length) + '</strong>';
-                        label += obj.name.substr(start+query.length, obj.name.length-query.length-start);
-                    } else {
-                        label += '<strong>' + obj.name + '</strong>';
-                    }
+			if (obj.typeShort) {
+				label += obj.typeShort + '. ';
+			}
 
-                    return label;
-                },
+			if (queryName.length < objName.length) {
+				label += obj.name.substr(0, start);
+				label += '<strong>' + obj.name.substr(start, queryName.length) + '</strong>';
+				label += obj.name.substr(start + queryName.length, objName.length - queryName.length - start);
+			} else {
+				label += '<strong>' + obj.name + '</strong>';
+			}
 
-                valueFormat: function(obj, query) {
-                    return obj.name;
-                }
-            };
+			return label;
+		},
 
-            var keys = {
-                up:    38,
-                down:  40,
-                esc:   27,
-                enter: 13
-            };
+		valueFormat: function (obj, query) {
+			return obj.name;
+		},
 
-            var spinnerInterval = null;
-            
-            return init(param1, param2, function() {
-                var isActive = false;
+		showSpinner: function ($spinner) {
+			var top = -0.2,
+				spinnerInterval = setInterval(function () {
+					if (!$spinner.is(':visible')) {
+						clearInterval(spinnerInterval);
+						spinnerInterval = null;
+						return;
+					}
 
-                create(); 
-                position();
+					$spinner.css('background-position', '0% ' + top + '%');
 
-				// Subscribe on input events
-				input
-					.on('keyup', open)
-					.on('keydown', keyselect)
-					.on('change', function(){
-						if(!isActive) change();
-					})
-					.on('blur', function(){
-						if(!isActive) close();
+					top += 5.555556;
+					if (top > 95) top = -0.2;
+				}, 30);
+
+			$spinner.show();
+		},
+
+		hideSpinner: function ($spinner) {
+			$spinner.hide();
+		}
+	};
+
+	var readOnlyParams = {
+		current: null
+	};
+
+	var keys = {
+		up:    38,
+		down:  40,
+		enter: 13
+	};
+
+	$.fn.kladr = function (param1, param2) {
+		var params = readParams(param1, param2),
+			result = undefined;
+
+		this.each(function () {
+			var res = kladr($(this), params);
+
+			if (params.isGet) {
+				result = res;
+				return false;
+			}
+
+			return undefined;
+		});
+
+		if (params.isGet) {
+			return result;
+		}
+
+		return this;
+	};
+
+	function kladr ($input, params) {
+		var options = (function () {
+			var data = $input.data('kladr-data');
+
+			if (!data) {
+				data = $.extend({}, defaultOptions, readOnlyParams);
+				$input.data('kladr-data', data);
+			}
+
+			return {
+				set: function (params) {
+					if (params.obj) {
+						for (var i in params.obj) {
+							if (params.obj.hasOwnProperty(i) && defaultOptions.hasOwnProperty(i)) {
+								data[i] = params.obj[i];
+							}
+						}
+					}
+					else if (params.str && params.str.length > 1 && defaultOptions.hasOwnProperty(params.str[0])) {
+						data[params.str[0]] = params.str[1];
+					}
+
+					$input.data('kladr-data', data);
+				},
+
+				get: function (param) {
+					if (defaultOptions.hasOwnProperty(param) || readOnlyParams.hasOwnProperty(param)) {
+						return data[param];
+					}
+
+					return undefined;
+				},
+
+				_set: function (param, value) {
+					data[param] = value;
+					$input.data('kladr-data', data);
+				},
+
+				_get: function (param) {
+					if (data.hasOwnProperty(param)) {
+						return data[param];
+					}
+
+					return undefined;
+				}
+			};
+		})();
+
+		function init (params, callback) {
+			if (params.isGet) {
+				return options.get(params.str[0]);
+			}
+
+			options.set(params);
+			callback();
+			return undefined;
+		}
+
+		return init(params, function () {
+			var $ac = null;
+			var $spinner = null;
+
+			create(function () {
+				var isActive = false;
+
+				$input
+					.attr('data-kladr-type', get('type'))
+					.on('keyup.kladr', open)
+					.on('keydown.kladr', keySelect)
+					.on('blur.kladr', function () {
+						check();
+						if (!isActive) close();
 					});
 
-				// Subscribe on autocomplete list events
-                ac
-					.on('click', 'li, a', mouseselect)
-                	.on('touchstart mouseenter', 'li', function(){
-						var $this = $(this);
-
-						ac.find('li.active').removeClass('active');
-						$this.addClass('active');
-
-						var obj = $this.find('a').data('kladr-object');
-						trigger('preselect', obj);
-
+				$ac
+					.on('touchstart.kladr click.kladr', 'li, a', mouseSelect)
+					.on('touchstart.kladr mouseenter.kladr', 'li', function () {
 						isActive = true;
 					})
-					.on('touchleave mouseleave', 'li', function(){
-						$(this).removeClass('active');
+					.on('touchend.kladr mouseleave.kladr', 'li', function () {
 						isActive = false;
 					});
+			});
 
-				// Subscribe on window events
-                $(window)
-					.on('resize', position);
-            });
+			function create (callback) {
+				var $container = $(document.getElementById('kladr_autocomplete'));
 
-            function init( param1, param2, callback ) {
-                options = input.data('kladr-options');
+				if (!$container.length) {
+					$container = $('<div id="kladr_autocomplete"></div>').appendTo(document.body);
+				}
 
-                if(param2 !== undefined){
-                    options[param1] = param2;
-                    input.data('kladr-options', options);
-                    return input;
-                }
+				var guid = get('guid');
 
-                if($.type(param1) === 'string'){
-                    if(!options) return null;
-                    return options[param1];
-                }
+				if (guid) {
+					$ac = $container.find('.autocomplete' + guid);
+					$spinner = $container.find('.spinner' + guid);
 
-                if(options){
-                    return input;
-                }
+					$input.off('.kladr');
+					$ac.off('.kladr');
+				}
+				else {
+					guid = getGuid();
+					set('guid', guid);
 
-                options = defaultOptions;
-                if($.type(param1) === 'object'){
-                    for(var i in param1){
-                        options[i] = param1[i];
-                    }
-                }
+					$input.attr('autocomplete', 'off');
 
-                input.data('kladr-options', options);
-                callback && callback();
-                return input;
-            }
+					$ac = $('<ul class="autocomplete' + guid + ' autocomplete" style="display: none;"></ul>')
+						.appendTo($container);
 
-            function create() {
-                var container = $(document.getElementById('kladr_autocomplete'));
-                var inputName = input.attr('name');
+					$spinner = $('<div class="spinner' + guid + ' spinner" style="display: none;"></div>')
+						.appendTo($container);
 
-                if(!container.length){
-                    container = $('<div id="kladr_autocomplete"></div>').appendTo('body');
-                }
+					position();
+				}
 
-                input.attr('autocomplete', 'off');
+				callback();
+			}
 
-                ac = $('<ul class="kladr_autocomplete_'+inputName+'" style="display: none;"></ul>');
-                ac.appendTo(container); 
+			function render (objs, query) {
+				var obj, value, label, $a;
 
-                spinner = $('<div class="spinner kladr_autocomplete_'+inputName+'_spinner" class="spinner" style="display: none;"></div>');
-                spinner.appendTo(container);
-            }
-            
-            function render(objs, query) {        
-                ac.empty();  
-                for(var i in objs){
-                    var obj = objs[i];                
-                    var value = options.valueFormat(obj, query);
-                    var label = options.labelFormat(obj, query);
+				$ac.empty();
 
-                    var a = $('<a data-val="'+value+'">'+label+'</a>');
-                    a.data('kladr-object', obj);
+				for (var i in objs) {
+					if (objs.hasOwnProperty(i)) {
+						obj = objs[i];
+						value = get('valueFormat')(obj, query);
+						label = get('labelFormat')(obj, query);
 
-                    var li = $('<li></li>').append(a);                
-                    li.appendTo(ac);
-                }
-            }
+						$a = $('<a data-val="' + value + '">' + label + '</a>');
+						$a.data('kladr-object', obj);
 
-            function position() {
-                var inputOffset = input.offset();
-                var inputWidth = input.outerWidth();
-                var inputHeight = input.outerHeight();
+						$('<li></li>')
+							.append($a)
+							.appendTo($ac);
+					}
+				}
+			}
 
-                ac.css({
-                   top:  inputOffset.top + inputHeight + 'px',
-                   left: inputOffset.left
-                });
+			function position () {
+				var inputOffset = $input.offset(),
+					inputWidth = $input.outerWidth(),
+					inputHeight = $input.outerHeight();
 
-                var differ = ac.outerWidth() - ac.width();
-                ac.width(inputWidth - differ);
+				if ((position.top == inputOffset.top)
+					&& (position.left == inputOffset.left)
+					&& (position.width == inputWidth)
+					&& (position.height == inputHeight)) {
+					return;
+				}
 
-                var spinnerWidth = spinner.width();
-                var spinnerHeight = spinner.height();
+				position.top = inputOffset.top;
+				position.left = inputOffset.left;
+				position.width = inputWidth;
+				position.height = inputHeight;
 
-                spinner.css({
-                    top:  inputOffset.top + (inputHeight - spinnerHeight)/2 - 1,
-                    left: inputOffset.left + inputWidth - spinnerWidth - 2,
-                });
-            }
+				$ac.css({
+					top:  inputOffset.top + inputHeight + 'px',
+					left: inputOffset.left
+				});
 
-            function open(event) {
-                // return on keyup control keys
-                if((event.which > 8) && (event.which < 46)) return;
+				var differ = $ac.outerWidth() - $ac.width();
+				$ac.width(inputWidth - differ);
 
-                if(!validate()) return;
+				var spinnerWidth = $spinner.width(),
+					spinnerHeight = $spinner.height();
 
-                var query = key(input.val());
-                if(!$.trim(query)){
-                    close();
-                    return;
-                }
+				$spinner.css({
+					top:  inputOffset.top + (inputHeight - spinnerHeight) / 2 - 1,
+					left: inputOffset.left + inputWidth - spinnerWidth - 2
+				});
+			}
 
-                spinnerShow();
-                trigger('send');
+			function open (event) {
+				// return on control keys
+				if ((event.which > 8) && (event.which < 46))
+					return;
 
-                options.source(query, function(objs) {
-                    spinnerHide();
-                    trigger('received');
+				if (!trigger('open_before')) {
+					close();
+					return;
+				}
 
-                    if(!input.is(':focus')){
-                        close();
-                        return;
-                    }
+				var name = $input.val();
 
-                    if(!$.trim(input.val()) || !objs.length){
-                        close();
-                        return;
-                    } 
+				if (!$.trim(name)) {
+					error(false);
+					close();
+					return;
+				}
 
-                    render(objs, query);
-                    position();  
-                    ac.slideDown(50);
-                    trigger('open');
-                });
-            }
+				var query = getQuery(name);
 
-            function close() {
-                select();            
-                ac.hide();
-                trigger('close');
-            }
-            
-            function validate() {
-                switch(options.type){
-                    case $.kladr.type.region:
-                    case $.kladr.type.district:
-                    case $.kladr.type.city:
-                        if(options.parentType && !options.parentId)
-                        {
-                            console.error('parentType is defined and parentId in not');
-                            return false;
-                        }
-                        break;
-                    case $.kladr.type.street:
-                        if(options.parentType != $.kladr.type.city){
-                            console.error('For street parentType must equal "city"');
-                            return false;
-                        }
-                        if(!options.parentId){
-                            console.error('For street parentId must defined');
-                            return false;
-                        }
-                        break;
-                    case $.kladr.type.building:
-                        if(options.parentType != $.kladr.type.street){
-                            console.error('For building parentType must equal "street"');
-                            return false;
-                        }
-                        if(!options.parentId){
-                            console.error('For building parentId must defined');
-                            return false;
-                        }
-                        break;
-                    default:
-                        console.error('type must defined and equal "region", "district", "city", "street" or "building"');
-                        return false;
-                }
+				if (!trigger('send_before', query)) {
+					close();
+					return;
+				}
 
-                if(options.limit < 1){
-                    console.error('limit must greater than 0');
-                    return false;
-                }
+				showSpinner();
+				trigger('send');
 
-                return true;
-            }
-            
-            function select() {
-                var a = ac.find('.active a');
-                if(!a.length) return;
+				get('source')(query, function (objs) {
+					trigger('received');
 
-                input.val(a.attr('data-val'));
-                options.current = a.data('kladr-object');
-                input.data('kladr-options', options);
-                trigger('select', options.current);
-            }
-            
-            function keyselect(event) {
-                var active = ac.find('li.active');  
-                switch(event.which){
-                    case keys.up:
-                        if(active.length) {
-                            active.removeClass('active');
-                            active = active.prev();
-                        } else {
-                            active = ac.find('li').last();
-                        }
-                        active.addClass('active');
-                        
-                        var obj = active.find('a').data('kladr-object');
-                        trigger('preselect', obj);
-                        
-                        if(options.arrowSelect) select();
-                        break;
-                    case keys.down:                    
-                        if(active.length) {
-                            active.removeClass('active');
-                            active = active.next();
-                        } else {
-                            active = ac.find('li').first();
-                        }
-                        active.addClass('active');
-                        
-                        var obj = active.find('a').data('kladr-object');
-                        trigger('preselect', obj);
-                        
-                        if(options.arrowSelect) select();
-                        break;
-                    case keys.esc:
-                        active.removeClass('active');
-                        close();
-                        break;
-                    case keys.enter:
-                        if(!options.arrowSelect) select();
-                        active.removeClass('active');
-                        close();
-                        return false;
-                }
-            }
-            
-            function mouseselect() {
-                close();
-                input.focus();
-                return false;
-            }
-            
-            function change() {
-                if(!options.verify) return;
+					if (!$input.is(':focus')) {
+						hideSpinner();
+						close();
+						return;
+					}
 
-                if(!validate()){
-                    options.current = null;
-                    input.data('kladr-options', options);
-                    trigger('check', options.current);
-                    return;
-                }
+					if (!$.trim($input.val()) || !objs.length) {
+						hideSpinner();
+						close();
+						return;
+					}
 
-                var query = key(input.val());
-                if(!$.trim(query)){
-                    options.current = null;
-                    input.data('kladr-options', options);
-                    trigger('check', options.current);
-                    return;
-                }
+					render(objs, query);
+					position();
+					hideSpinner();
 
-                spinnerShow();
-                trigger('send');
+					$ac.slideDown(50);
+					trigger('open');
+				});
+			}
 
-                options.source(query, function(objs) {
-                    spinnerHide();
-                    trigger('received');
+			function close () {
+				if (!trigger('close_before')) return;
 
-                    var obj = null;                
-                    for(var i=0; i<objs.length; i++){
-                        var queryLowerCase = query.toLowerCase();
-                        var nameLowerCase = objs[i].name.toLowerCase();
-                        if(queryLowerCase == nameLowerCase){
-                            obj = objs[i];
-                            break;
-                        }
-                    }
+				$ac.empty().hide();
+				trigger('close');
+			}
 
-                    if(obj) input.val(options.valueFormat(obj, query));
+			function keySelect (event) {
+				var $active = $ac.find('li.active');
 
-                    options.current = obj;
-                    input.data('kladr-options', options);
-                    trigger('check', options.current);
-                })
-            }
+				switch (event.which) {
+					case keys.up:
+						if ($active.length) {
+							$active.removeClass('active');
+							if ($active.prev().length) $active = $active.prev();
+						} else {
+							$active = $ac.find('li').last();
+						}
 
-            function key(val) {
-                var en = "1234567890qazwsxedcrfvtgbyhnujmik,ol.p;[']- " +
-                         "QAZWSXEDCRFVTGBYHNUJMIK<OL>P:{\"} ";
+						(function () {
+							var acScroll = $ac.scrollTop(),
+								acOffset = $ac.offset(),
+								activeHeight = $active.outerHeight(),
+								activeOffset = $active.offset();
 
-                var ru = "1234567890йфяцычувскамепинртгоьшлбщдюзжхэъ- " +
-                         "ЙФЯЦЫЧУВСКАМЕПИНРТГОЬШЛБЩДЮЗЖХЭЪ ";
+							if ((activeOffset.top - acOffset.top) < 0) {
+								$ac.scrollTop(acScroll - activeHeight);
+							}
+						})();
 
-                var strNew = '';
-                var ch;
-                var index;
-                for( var i=0; i<val.length; i++ ){
-                    ch = val[i];                    
-                    index = en.indexOf(ch);
+						$active.addClass('active');
+						select();
+						break;
 
-                    if(index > -1){
-                        strNew += ru[index];
-                        continue;
-                    }
+					case keys.down:
+						if ($active.length) {
+							$active.removeClass('active');
+							if ($active.next().length) $active = $active.next();
+						} else {
+							$active = $ac.find('li').first();
+						}
 
-                    strNew += ch;
-                }
+						(function () {
+							var acScroll = $ac.scrollTop(),
+								acHeight = $ac.height(),
+								acOffset = $ac.offset(),
+								activeHeight = $active.outerHeight(),
+								activeOffset = $active.offset();
 
-                return strNew;
-            }
+							if ((activeOffset.top - acOffset.top + activeHeight) > acHeight) {
+								$ac.scrollTop(acScroll + activeHeight);
+							}
+						})();
 
-            function trigger(event, obj) {
-                if(!event) return;
-                input.trigger('kladr_'+event, obj);
-                if(options[event]) options[event].call(input.get(0), obj);
-            }
+						$active.addClass('active');
+						select();
+						break;
 
-            function spinnerStart() {
-                if(spinnerInterval) return;
+					case keys.enter:
+						close();
+						break;
+				}
 
-                var top = -0.2;
-                spinnerInterval = setInterval(function() {
-                    if(!spinner.is(':visible')){
-                        clearInterval(spinnerInterval);
-                        spinnerInterval = null;
-                        return;
-                    }
+				return undefined;
+			}
 
-                    spinner.css('background-position', '0% '+top+'%');
+			function mouseSelect () {
+				var $li = $(this);
 
-                    top += 5.555556;
-                    if(top > 95) top = -0.2;
-                }, 30);
-            }
+				if ($li.is('a'))
+					$li = $li.parents('li');
 
-            function spinnerShow() {
-                if(options.showSpinner) {
-                    spinner.show();
-                    spinnerStart();
-                }
-            }
+				$li.addClass('active');
 
-            function spinnerHide() {
-                spinner.hide();
-            }
-        }
-    }
+				select();
+				close();
+				$input.focus();
+
+				return false;
+			}
+
+			function select () {
+				if (!trigger('select_before')) return;
+
+				var $a = $ac.find('.active a');
+				if (!$a.length) return;
+
+				$input.val($a.attr('data-val'));
+
+				error(false);
+				setCurrent($a.data('kladr-object'));
+				trigger('select', get('current'));
+			}
+
+			function check () {
+				if (!get('verify')) return;
+				if (!trigger('check_before')) return;
+
+				var name = $.trim($input.val());
+
+				if (!name) {
+					ret(null, false);
+					return;
+				}
+
+				var query = getQuery(name);
+
+				query.withParents = false;
+				query.limit = 10;
+
+				if (!trigger('send_before', query)) {
+					ret(null, false);
+					trigger('check', null);
+					return;
+				}
+
+				showSpinner();
+				trigger('send');
+
+				get('source')(query, function (objs) {
+					trigger('received');
+
+					if (!$.trim($input.val())) {
+						ret2(null, false);
+						return;
+					}
+
+					var nameLowerCase = query.name.toLowerCase(),
+						valueLowerCase = null,
+						obj = null;
+
+					for (var i in objs) {
+						if (objs.hasOwnProperty(i)) {
+							valueLowerCase = objs[i].name.toLowerCase();
+
+							if (nameLowerCase == valueLowerCase) {
+								obj = objs[i];
+								break;
+							}
+						}
+					}
+
+					if (obj) {
+						$input.val(get('valueFormat')(obj, query));
+					}
+
+					ret2(obj, !obj);
+					trigger('check', obj);
+
+					function ret2 (obj, er) {
+						hideSpinner();
+						ret(obj, er);
+					}
+				});
+
+				function ret (obj, er) {
+					error(er);
+					setCurrent(obj);
+				}
+			}
+
+			function trigger (event, obj) {
+				if (!event) return true;
+
+				var eventProp = event.replace(/_([a-z])/ig, function (all, letter) {
+					return letter.toUpperCase();
+				});
+
+				$input.trigger('kladr_' + event, obj);
+
+				if ($.type(get(eventProp)) === 'function') {
+					return get(eventProp).call($input.get(0), obj);
+				}
+
+				return true;
+			}
+
+			function showSpinner () {
+				if (get('spinner')) {
+					get('showSpinner')($spinner);
+				}
+			}
+
+			function hideSpinner () {
+				if (get('spinner')) {
+					get('hideSpinner')($spinner);
+				}
+			}
+
+			function getQuery (name) {
+				return {
+					token:       get('token'),
+					key:         get('key'),
+					type:        get('type'),
+					name:        fixName(name),
+					parentType:  get('parentType'),
+					parentId:    get('parentId'),
+					withParents: get('withParents'),
+					limit:       get('limit')
+				};
+			}
+
+			function fixName (name) {
+				var noCorrect = 'abcdefghijklmnopqrstuvwxyz',
+					pattern = 'Ёё',
+					replace = 'Ее';
+
+				var testName = name.toLowerCase(),
+					result = '',
+					ch,
+					index;
+
+				for (var i = 0; i < testName.length; i++) {
+					if (noCorrect.indexOf(testName[i]) > -1) {
+						error(true);
+						return name;
+					}
+
+					ch = name[i];
+					index = pattern.indexOf(ch);
+
+					if (index > -1) {
+						result += replace[index];
+						continue;
+					}
+
+					result += ch;
+				}
+
+				error(false);
+				return result;
+			}
+
+			function setCurrent (obj) {
+				set('current', obj);
+
+				if (obj && obj.id) {
+					$input.attr('data-kladr-id', obj.id);
+				}
+			}
+
+			function error (error) {
+				error
+					? $input.addClass('kladr-error')
+					: $input.removeClass('kladr-error');
+			}
+
+			function get (param) {
+				return options._get(param);
+			}
+
+			function set (param, value) {
+				options._set(param, value);
+			}
+		});
+	}
+
+	function readParams (param1, param2) {
+		var params = {
+			obj:   false,
+			str:   false,
+			isGet: false
+		};
+
+		if ($.type(param1) === 'object') {
+			params.obj = param1;
+			return params;
+		}
+
+		if ($.type(param1) === 'string') {
+			params.str = [];
+			for (var i in arguments) {
+				if (arguments.hasOwnProperty(i)) {
+					params.str[i] = arguments[i];
+				}
+			}
+
+			if (params.str[1] === undefined) {
+				params.isGet = true;
+			}
+		}
+
+		return params;
+	}
+
+	function getGuid () {
+		if (!getGuid.guid) getGuid.guid = 0;
+		return ++getGuid.guid;
+	}
 })(jQuery);

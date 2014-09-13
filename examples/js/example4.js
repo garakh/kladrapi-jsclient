@@ -19,7 +19,7 @@
             var label = '';
             
             var name = obj.name.toLowerCase();
-            query = query.toLowerCase();
+            query = query.name.toLowerCase();
             
             var start = name.indexOf(query);
             start = start > 0 ? start : 0;
@@ -67,7 +67,7 @@
             },
             check: function( obj ) {
                 if(obj) {
-                    city.parent().find( 'label' ).text( obj.type );
+					region.parent().find( 'label' ).text( obj.type );
                     district.kladr( 'parentType', $.kladr.type.region );
                     district.kladr( 'parentId', obj.id );
                 } else {
@@ -101,7 +101,7 @@
             },
             check: function( obj ) {
                 if(obj) {
-                    city.parent().find( 'label' ).text( obj.type );
+					district.parent().find( 'label' ).text( obj.type );
                     city.kladr( 'parentType', $.kladr.type.district );
                     city.kladr( 'parentId', obj.id );
                 } else {

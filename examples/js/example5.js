@@ -14,7 +14,7 @@ $(function() {
         var label = '';
 
         var name = obj.name.toLowerCase();
-        query = query.toLowerCase();
+        query = query.name.toLowerCase();
 
         var start = name.indexOf(query);
         start = start > 0 ? start : 0;
