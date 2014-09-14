@@ -255,6 +255,24 @@
 		return this;
 	};
 
+	$.getKladrInputs = function (selector) {
+		var $inputs = $(),
+			inputSelector = '[data-kladr-type]';
+
+		$(selector || document.body)
+			.each(function () {
+				var $el = $(this);
+
+				$inputs = $inputs.add(
+					$el.is(inputSelector)
+						? $el
+						: $el.find(inputSelector)
+				);
+			});
+
+		return $inputs;
+	}
+
 	function kladr ($input, params) {
 		var options = (function () {
 			var data = $input.data('kladr-data');
