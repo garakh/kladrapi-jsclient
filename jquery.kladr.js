@@ -150,6 +150,7 @@
 		withParents:  false,
 
 		// Plugin options
+		parentInput:  null,
 		verify:       false,
 		spinner:      true,
 
@@ -170,6 +171,10 @@
 
 		source: function (query, callback) {
 			$.kladr.api(query, callback);
+		},
+
+		getTypes: function () {
+			return $.kladr.type;
 		},
 
 		labelFormat: function self (obj, query) {
@@ -688,16 +693,61 @@
 			}
 
 			function getQuery (name) {
-				return {
-					token:       get('token'),
-					key:         get('key'),
-					type:        get('type'),
-					name:        fixName(name),
-					parentType:  get('parentType'),
-					parentId:    get('parentId'),
-					withParents: get('withParents'),
-					limit:       get('limit')
-				};
+				var query = {
+						token:       get('token'),
+						key:         get('key'),
+						type:        get('type'),
+						name:        fixName(name),
+						parentType:  get('parentType'),
+						parentId:    get('parentId'),
+						withParents: get('withParents'),
+						limit:       get('limit')
+					},
+					parentInput = get('parentInput'),
+					parent;
+
+				if (parentInput) {
+					parent = getParent(parentInput, query.type);
+
+					if (parent) {
+						query.parentType = parent.type;
+						query.parentId = parent.id;
+					}
+				}
+
+				return query;
+			}
+
+			function getParent (selector, type) {
+				var $inputs = $.getKladrInputs(selector),
+					types = get('getTypes')(),
+					parents = {},
+					parent = null,
+					t;
+
+				$inputs.each(function () {
+					var $this = $(this),
+						id;
+
+					if (id = $this.attr('data-kladr-id')) {
+						parents[$this.attr('data-kladr-type')] = id;
+					}
+				});
+
+				for (t in types) {
+					if (t == type) {
+						return parent;
+					}
+
+					if (types.hasOwnProperty(t) && parents[t]) {
+						parent = {
+							type: t,
+							id:   parents[t]
+						}
+					}
+				}
+
+				return parent;
 			}
 
 			function fixName (name) {
