@@ -11,6 +11,8 @@ input.kladr-error {
     border-radius: 3px;
     background-color: white;
     z-index: 9999;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 #kladr_autocomplete li{
