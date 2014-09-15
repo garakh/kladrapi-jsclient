@@ -173,10 +173,6 @@
 			$.kladr.api(query, callback);
 		},
 
-		getTypes: function () {
-			return $.kladr.type;
-		},
-
 		labelFormat: function self (obj, query) {
 			var label = '';
 
@@ -260,23 +256,52 @@
 		return this;
 	};
 
-	$.getKladrInputs = function (selector) {
-		var $inputs = $(),
-			inputSelector = '[data-kladr-type]';
+	$.kladr = $.extend($.kladr, {
+		setDefault: function (param1, param2) {
+			var params = readParams(param1, param2);
 
-		$(selector || document.body)
-			.each(function () {
-				var $el = $(this);
+			if (params.obj) {
+				for (var i in params.obj) {
+					if (defaultOptions.hasOwnProperty(i)) {
+						defaultOptions[i] = params.obj[i];
+					}
+				}
+			}
+			else if (params.str && params.str.length > 1 && defaultOptions.hasOwnProperty(params.str[0])) {
+				defaultOptions[params.str[0]] = params.str[1];
+			}
+		},
 
-				$inputs = $inputs.add(
-					$el.is(inputSelector)
-						? $el
-						: $el.find(inputSelector)
-				);
-			});
+		getDefault: function (param) {
+			if (defaultOptions.hasOwnProperty(param)) {
+				return defaultOptions[param];
+			}
 
-		return $inputs;
-	}
+			return undefined;
+		},
+
+		getTypes: function () {
+			return $.kladr.type;
+		},
+
+		getInputs:  function (selector) {
+			var $inputs = $(),
+				inputSelector = '[data-kladr-type]';
+
+			$(selector || document.body)
+				.each(function () {
+					var $el = $(this);
+
+					$inputs = $inputs.add(
+						$el.is(inputSelector)
+							? $el
+							: $el.find(inputSelector)
+					);
+				});
+
+			return $inputs;
+		}
+	});
 
 	function kladr ($input, params) {
 		var options = (function () {
@@ -719,8 +744,8 @@
 			}
 
 			function getParent (selector, type) {
-				var $inputs = $.getKladrInputs(selector),
-					types = get('getTypes')(),
+				var $inputs = $.kladr.getInputs(selector),
+					types = $.kladr.getTypes(),
 					parents = {},
 					parent = null,
 					t;
