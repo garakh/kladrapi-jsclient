@@ -267,7 +267,7 @@
 					}
 				}
 			}
-			else if (params.str && params.str.length > 1 && defaultOptions.hasOwnProperty(params.str[0])) {
+			else if (params.str && !params.isGet && defaultOptions.hasOwnProperty(params.str[0])) {
 				defaultOptions[params.str[0]] = params.str[1];
 			}
 		},
@@ -321,7 +321,7 @@
 							}
 						}
 					}
-					else if (params.str && params.str.length > 1 && defaultOptions.hasOwnProperty(params.str[0])) {
+					else if (params.str && !params.isGet && defaultOptions.hasOwnProperty(params.str[0])) {
 						data[params.str[0]] = params.str[1];
 					}
 
