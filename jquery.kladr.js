@@ -234,28 +234,6 @@
 		enter: 13
 	};
 
-	$.fn.kladr = function (param1, param2) {
-		var params = readParams(param1, param2),
-			result = undefined;
-
-		this.each(function () {
-			var res = kladr($(this), params);
-
-			if (params.isGet) {
-				result = res;
-				return false;
-			}
-
-			return undefined;
-		});
-
-		if (params.isGet) {
-			return result;
-		}
-
-		return this;
-	};
-
 	$.kladr = $.extend($.kladr, {
 		setDefault: function (param1, param2) {
 			var params = readParams(param1, param2);
@@ -357,6 +335,28 @@
 			return build(sorted);
 		}
 	});
+
+	$.fn.kladr = function (param1, param2) {
+		var params = readParams(param1, param2),
+			result = undefined;
+
+		this.each(function () {
+			var res = kladr($(this), params);
+
+			if (params.isGet) {
+				result = res;
+				return false;
+			}
+
+			return undefined;
+		});
+
+		if (params.isGet) {
+			return result;
+		}
+
+		return this;
+	};
 
 	function kladr ($input, params) {
 		var options = (function () {
