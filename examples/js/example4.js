@@ -1,528 +1,182 @@
-(function($){
-    $(function() {
-        var token = '51dfe5d42fb2b43e3300006e';
-        var key = '86a2c2a06f1b2451a87d05512cc2c3edfdf41969';        
-        
-        var region = $( '[name="region"]' );
-        var district = $( '[name="district"]' );
-        var city = $( '[name="city"]' );
-        var street = $( '[name="street"]' );
-        var building = $( '[name="building"]' );
-        var buildingAdd = $( '[name="building-add"]' );
+$(function () {
+	var $region = $('[name="region"]'),
+		$district = $('[name="district"]'),
+		$city = $('[name="city"]'),
+		$street = $('[name="street"]'),
+		$building = $('[name="building"]'),
+		$buildingAdd = $('[name="building-add"]');
 
-        var map = null;
-        var placemark = null;
-        var map_created = false;
+	var map = null,
+		placemark = null,
+		map_created = false;
 
-        // Формирует подписи в autocomplete
-        var LabelFormat = function( obj, query ){
-            var label = '';
-            
-            var name = obj.name.toLowerCase();
-            query = query.name.toLowerCase();
-            
-            var start = name.indexOf(query);
-            start = start > 0 ? start : 0;
+	$.kladr.setDefault({
+		token: '51dfe5d42fb2b43e3300006e',
+		key: '86a2c2a06f1b2451a87d05512cc2c3edfdf41969',
+		parentInput: '.js-form-address',
+		withParents: true,
+		verify: true,
+		labelFormat: function (obj, query) {
+			var label = '';
 
-            if(obj.typeShort){
-                label += '<span class="ac-s2">' + obj.typeShort + '. ' + '</span>';
-            }
+			var name = obj.name.toLowerCase();
+			query = query.name.toLowerCase();
 
-            if(query.length < obj.name.length){
-                label += '<span class="ac-s2">' + obj.name.substr(0, start) + '</span>';
-                label += '<span class="ac-s">' + obj.name.substr(start, query.length) + '</span>';
-                label += '<span class="ac-s2">' + obj.name.substr(start+query.length, obj.name.length-query.length-start) + '</span>';
-            } else {
-                label += '<span class="ac-s">' + obj.name + '</span>';
-            }
+			var start = name.indexOf(query);
+			start = start > 0 ? start : 0;
 
-            if(obj.parents){
-                for(var k = obj.parents.length-1; k>-1; k--){
-                    var parent = obj.parents[k];
-                    if(parent.name){
-                        if(label) label += '<span class="ac-st">, </span>';
-                        label += '<span class="ac-st">' + parent.name + ' ' + parent.typeShort + '.</span>';
-                    }
-                }
-            }
+			if (obj.typeShort) {
+				label += '<span class="ac-s2">' + obj.typeShort + '. ' + '</span>';
+			}
 
-            return label;
-        };
-        
-        // Подключение плагина для поля ввода региона
-        region.kladr({
-            token: token,
-            key: key,
-            type: $.kladr.type.region,
-            withParents: true,
-            labelFormat: LabelFormat,
-            verify: true,
-            select: function( obj ) {
-                region.parent().find( 'label' ).text( obj.type );
-                district.kladr( 'parentType', $.kladr.type.region );
-                district.kladr( 'parentId', obj.id );
-                Log(obj);
-                AddressUpdate();
-                MapUpdate();
-            },
-            check: function( obj ) {
-                if(obj) {
-					region.parent().find( 'label' ).text( obj.type );
-                    district.kladr( 'parentType', $.kladr.type.region );
-                    district.kladr( 'parentId', obj.id );
-                } else {
-                    district.parent().find( 'label' ).text('Регион');
-                    district.kladr( 'parentType', null );
-                    district.kladr( 'parentId', null );
-                }
-                Log(obj);
-                AddressUpdate();
-                MapUpdate();
-            }
-        });
+			if (query.length < obj.name.length) {
+				label += '<span class="ac-s2">' + obj.name.substr(0, start) + '</span>';
+				label += '<span class="ac-s">' + obj.name.substr(start, query.length) + '</span>';
+				label += '<span class="ac-s2">' + obj.name.substr(start + query.length, obj.name.length - query.length - start) + '</span>';
+			} else {
+				label += '<span class="ac-s">' + obj.name + '</span>';
+			}
 
-        // Подключение плагина для поля ввода области
-        district.kladr({
-            token: token,
-            key: key,
-            type: $.kladr.type.district,
-            withParents: true,
-            labelFormat: LabelFormat,
-            verify: true,
-            select: function( obj ) {
-                district.parent().find( 'label' ).text( obj.type );
-                city.kladr( 'parentType', $.kladr.type.district );
-                city.kladr( 'parentId', obj.id );
-                building.kladr( 'parentType', $.kladr.type.district );
-                building.kladr( 'parentId', obj.id );
-                Log(obj);
-                AddressUpdate();
-                MapUpdate();
-            },
-            check: function( obj ) {
-                if(obj) {
-					district.parent().find( 'label' ).text( obj.type );
-                    city.kladr( 'parentType', $.kladr.type.district );
-                    city.kladr( 'parentId', obj.id );
-                } else {
-                    district.parent().find( 'label' ).text('Район');
-                    city.kladr( 'parentType', null );
-                    city.kladr( 'parentId', null );
-                }
-
-                Log(obj);
-                AddressUpdate();
-                MapUpdate();
-            }
-        });
-
-        // Подключение плагина для поля ввода города
-        city.kladr({
-            token: token,
-            key: key,
-            type: $.kladr.type.city,
-            withParents: true,
-            labelFormat: LabelFormat,
-            verify: true,
-            select: function( obj ) {
-                city.parent().find( 'label' ).text( obj.type );
-                street.kladr( 'parentType', $.kladr.type.city );
-                street.kladr( 'parentId', obj.id );
-                building.kladr( 'parentType', $.kladr.type.city );
-                building.kladr( 'parentId', obj.id );
-                Log(obj);
-                AddressUpdate();
-                MapUpdate();                
-            },
-            check: function( obj ) {
-                if(obj) {
-                    city.parent().find( 'label' ).text( obj.type );
-                    street.kladr( 'parentType', $.kladr.type.city );
-                    street.kladr( 'parentId', obj.id );
-                    building.kladr( 'parentType', $.kladr.type.city );
-                    building.kladr( 'parentId', obj.id );
-                }
-                Log(obj);
-                AddressUpdate();
-                MapUpdate();
-            }
-        });
-
-        // Подключение плагина для поля ввода улицы
-        street.kladr({
-            token: token,
-            key: key,
-            type: $.kladr.type.street,
-            labelFormat: LabelFormat,
-            verify: true,
-            select: function( obj ) {
-                street.parent().find( 'label' ).text( obj.type );
-                building.kladr( 'parentType', $.kladr.type.street );
-                building.kladr( 'parentId', obj.id );
-                Log(obj);
-                AddressUpdate();
-                MapUpdate();
-            },
-            check: function( obj ) {
-                if(obj) {
-                    street.parent().find( 'label' ).text( obj.type );
-                    building.kladr( 'parentType', $.kladr.type.street );
-                    building.kladr( 'parentId', obj.id );
-                }
-                Log(obj);
-                AddressUpdate();
-                MapUpdate();
-            }
-        });
-
-        // Подключение плагина для поля ввода номера дома
-        building.kladr({
-            token: token,
-            key: key,
-            type: $.kladr.type.building,
-            labelFormat: LabelFormat,
-            verify: true,
-            select: function( obj ) {
-                Log(obj);
-                AddressUpdate();
-                MapUpdate();
-            },
-            check: function( obj ) {
-                Log(obj);
-                AddressUpdate();
-                MapUpdate();
-            }
-        });
-
-        // Проверка названия корпуса
-        buildingAdd.change(function(){
-            Log(null);
-            AddressUpdate();
-            MapUpdate();
-        });
-
-        // Обновляет карту
-        var MapUpdate = function(){
-            var zoom = 12;
-            var address = '';
-            
-            // Регион
-            var name = null;
-            var type = null;
-            var obj = region.kladr('current');
-            var value = $.trim(region.val());
-
-            if(obj){
-                name = obj.name;
-                type = obj.type;
-            } else if(value){
-                name = value;
-                type = 'город';
-            }
-
-            if(name){
-                if(address) address += ', ';
-                address += name + ' ' + type;
-                zoom = 8;
-            }
-
-            // Район
-            var name = null;
-            var type = null;
-            var obj = district.kladr('current');
-            var value = $.trim(district.val());
-
-            if(obj){
-                name = obj.name;
-                type = obj.type;
-            } else if(value){
-                name = value;
-                type = '';
-            }
-
-            if(name){
-                if(address) address += ', ';
-                address += name + ' ' + type;
-                zoom = 10;
-            }
-
-            // Город
-            var name = null;
-            var type = null;            
-            var obj = city.kladr('current');
-            var value = $.trim(city.val());
-            
-            if(obj){
-                name = obj.name;
-                type = obj.type;
-            } else if(value){
-                name = value;
-                type = 'город';
-            }
-
-            if(name){
-                if(address) address += ', ';
-                address += type + ' ' + name;
-                zoom = 12;
-            }
-
-            // Улица
-            name = null;
-            type = null;
-            obj = street.kladr('current');
-            value = $.trim(street.val());
-
-            if(obj){
-                name = obj.name;
-                type = obj.type;
-            } else if(value){
-                name = value;
-                type = 'улица';
-            }
-
-            if(name){
-                if(address) address += ', ';
-                address += type + ' ' + name;
-                zoom = 14;
-            }
-
-            // Дом
-            name = null;
-            type = null;
-            obj = building.kladr('current');
-            value = $.trim(building.val());
-
-            if(obj){
-                name = obj.name;
-                type = 'дом';
-            } else if(value){
-                name = value;
-                type = 'дом';
-            }
-
-            if(name){
-                if(address) address += ', ';
-                address += type + ' ' + name;
-                zoom = 16;
-            }
-
-            // Корпус
-            name = null;
-            type = null;
-            value = $.trim(buildingAdd.val());
-
-            if(value){
-                name = value;
-                type = 'корпус';
-            }
-
-            if(name){
-                if(address) address += ', ';
-                address += type + ' ' + name;
-                zoom = 16;
-            }
-            if(address && map_created){
-                var geocode = ymaps.geocode(address);
-                geocode.then(function(res){
-                    map.geoObjects.each(function (geoObject) {
-                            map.geoObjects.remove(geoObject);
-                    });
-
-                    var position = res.geoObjects.get(0).geometry.getCoordinates();
-
-                    placemark = new ymaps.Placemark(position, {}, {});
-
-                    map.geoObjects.add(placemark);
-                    map.setCenter(position, zoom);
-                });
-            }
-        }
-        
-        // Обновляет текстовое представление адреса
-        var AddressUpdate = function(){
-            var address = '';
-            var zip = '';
-            
-            // Регион
-            var name = null;
-            var type = null;
-            var obj = region.kladr('current');
-            var value = $.trim(region.val());
-
-            if(obj){
-                name = obj.name;
-                type = obj.typeShort + '.';
-                if(obj.zip) zip = obj.zip;
-            } else if(value){
-                name = value;
-                type = '';
-            }
-
-            if(name){
-                if(address) address += ', ';
-                address += name + ' ' + type;
-            }
-
-            // Район
-            var name = null;
-            var type = null;
-            var obj = district.kladr('current');
-            var value = $.trim(district.val());
-
-            if(obj){
-                name = obj.name;
-                type = obj.typeShort + '.';
-                if(obj.zip) zip = obj.zip;
-            } else {
-                name = value;
-                if(value){
-                    type = '';
-                }
-            }
-
-            if(name){
-                if(address) address += ', ';
-                address += name + ' ' + type;
-            }
-
-            // Город
-            var name = null;
-            var type = null;
-            var obj = city.kladr('current');
-            var value = $.trim(city.val());
-
-            if(obj){
-                name = obj.name;
-                type = obj.typeShort + '.';
-                if(obj.zip) zip = obj.zip;
-            } else if(value){
-                name = value;
-                type = 'г.';
-            }
-
-            if(name){
-                if(address) address += ', ';
-                address += type + ' ' + name;
-            }
-
-            // Улица
-            name = null;
-            type = null;
-            obj = street.kladr('current');
-            value = $.trim(street.val());
-
-            if(obj){
-                name = obj.name;
-                type = obj.typeShort + '.';
-                if(obj.zip) zip = obj.zip;
-            } else if(value){
-                name = value;
-                type = 'ул.';
-            }
-
-            if(name){
-                if(address) address += ', ';
-                address += type + ' ' + name;
-            }
-            
-            // Дом
-            name = null;
-            type = null;            
-            obj = building.kladr('current');
-            value = $.trim(building.val());
-            
-            if(obj){
-                name = obj.name;
-                type = 'д.';
-                if(obj.zip) zip = obj.zip;
-            } else if(value){
-                name = value;
-                type = 'д.';
-            }
-            
-            if(name){
-                if(address) address += ', ';
-                address += type + ' ' + name;
-            }
-            
-            // Корпус
-            name = null;
-            type = null;            
-            value = $.trim(buildingAdd.val());
-            
-            if(value){
-                name = value;
-                type = 'к.';
-            }
-            
-            if(name){
-                if(address) address += ', ';
-                address += type + ' ' + name;
-            }
-            
-            address = (zip ? zip + ', ' : '') + address;
-            $('#address').text(address);
-        }
-        
-        // Обновляет лог текущего выбранного объекта
-        var Log = function(obj){
-            var logId = $('#id');
-            if(obj && obj.id){
-                logId.find('.value').text(obj.id);
-                logId.show();
-            } else {
-                logId.hide();
-            }
-            
-            var logName = $('#name');
-            if(obj && obj.name){
-                logName.find('.value').text(obj.name);
-                logName.show();
-            } else {
-                logName.hide();
-            }
-            
-            var logZip = $('#zip');
-            if(obj && obj.zip){
-                logZip.find('.value').text(obj.zip);
-                logZip.show();
-            } else {
-                logZip.hide();
-            }
-            
-            var logType = $('#type');
-            if(obj && obj.type){
-                logType.find('.value').text(obj.type);
-                logType.show();
-            } else {
-                logType.hide();
-            }
-            
-            var logTypeShort = $('#type_short');
-            if(obj && obj.typeShort){
-                logTypeShort.find('.value').text(obj.typeShort);
-                logTypeShort.show();
-            } else {
-                logTypeShort.hide();
-            }
-        }
-
-        ymaps.ready(function(){
-            if(map_created) return;
-            map_created = true;
-
-            map = new ymaps.Map('map', {
-                center: [55.76, 37.64],
-                zoom: 12,
-                controls: []
-            });
-
-			map.controls.add('zoomControl', {
-				position: {
-					left: 10,
-					top: 10
+			if (obj.parents) {
+				for (var k = obj.parents.length - 1; k > -1; k--) {
+					var parent = obj.parents[k];
+					if (parent.name) {
+						if (label) label += '<span class="ac-st">, </span>';
+						label += '<span class="ac-st">' + parent.name + ' ' + parent.typeShort + '.</span>';
+					}
 				}
+			}
+
+			return label;
+		},
+		select: function (obj) {
+			$(this).parent().find('label').text(obj.type);
+
+			log(obj);
+			addressUpdate();
+			mapUpdate();
+		},
+		check: function (obj) {
+			if (obj) {
+				$(this).parent().find('label').text(obj.type);
+			}
+
+			log(obj);
+			addressUpdate();
+			mapUpdate();
+		}
+	});
+
+	$region.kladr('type', $.kladr.type.region);
+	$district.kladr('type', $.kladr.type.district);
+	$city.kladr('type', $.kladr.type.city);
+	$street.kladr('type', $.kladr.type.street);
+	$building.kladr('type', $.kladr.type.building);
+
+	$buildingAdd.change(function () {
+		log(null);
+		addressUpdate();
+		mapUpdate();
+	});
+
+	ymaps.ready(function () {
+		if (map_created) return;
+		map_created = true;
+
+		map = new ymaps.Map('map', {
+			center: [55.76, 37.64],
+			zoom: 12,
+			controls: []
+		});
+
+		map.controls.add('zoomControl', {
+			position: {
+				left: 10,
+				top: 10
+			}
+		});
+	});
+
+	function mapUpdate () {
+		var zoom = 4;
+
+		var address = $.kladr.getAddress('.js-form-address', function (objs) {
+			var result = '',
+				name = '',
+				type = '';
+
+			for (var i in objs) {
+				if (objs.hasOwnProperty(i)) {
+					if ($.type(objs[i]) === 'object') {
+						name = objs[i].name;
+						type = ' ' + objs[i].type;
+					}
+					else {
+						name = objs[i];
+						type = '';
+					}
+
+					if (result) result += ', ';
+					result += type + name;
+
+					zoom += 3;
+				}
+			}
+
+			return result;
+		});
+
+		// Корпус
+		var name = $.trim($buildingAdd.val());
+		if (name) {
+			if (address) address += ', ';
+			address += 'корпус ' + name;
+		}
+
+		if (address && map_created) {
+			var geocode = ymaps.geocode(address);
+			geocode.then(function (res) {
+				map.geoObjects.each(function (geoObject) {
+					map.geoObjects.remove(geoObject);
+				});
+
+				var position = res.geoObjects.get(0).geometry.getCoordinates();
+
+				placemark = new ymaps.Placemark(position, {}, {});
+
+				map.geoObjects.add(placemark);
+				map.setCenter(position, zoom);
 			});
-        });
-    });
-})(jQuery);
+		}
+	}
+
+	function addressUpdate () {
+		var address = $.kladr.getAddress('.js-form-address');
+
+		// Корпус
+		var name = $.trim($buildingAdd.val());
+		if (name) {
+			if (address) address += ', ';
+			address += 'к. ' + name;
+		}
+
+		$('#address').text(address);
+	}
+
+	function log (obj) {
+		var $log, i;
+
+		for (i in obj) {
+			$log = $('#' + i);
+
+			if ($log.length) {
+				if (obj && obj[i]) {
+					$log.find('.value').text(obj[i]);
+					$log.show();
+				} else {
+					$log.hide();
+				}
+			}
+		}
+	}
+});
