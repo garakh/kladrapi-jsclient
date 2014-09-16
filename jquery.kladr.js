@@ -544,6 +544,7 @@
 				var name = $input.val();
 
 				if (!$.trim(name)) {
+					setCurrent(null);
 					error(false);
 					close();
 					return;
@@ -570,6 +571,7 @@
 
 					if (!$.trim($input.val()) || !objs.length) {
 						hideSpinner();
+						setCurrent(null);
 						close();
 						return;
 					}
@@ -866,6 +868,8 @@
 
 				if (obj && obj.id) {
 					$input.attr('data-kladr-id', obj.id);
+				} else {
+					$input.removeAttr('data-kladr-id');
 				}
 			}
 
