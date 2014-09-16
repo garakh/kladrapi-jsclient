@@ -300,6 +300,61 @@
 				});
 
 			return $inputs;
+		},
+
+		getAddress: function (selector, build) {
+			var $inputs = $.kladr.getInputs(selector),
+				types = $.kladr.getTypes(),
+				filtered = {},
+				sorted = {},
+				t;
+
+			build = build || function (objs) {
+				var address = '',
+					zip = '',
+					name = '',
+					type = '';
+
+				for (var i in objs) {
+					if (objs.hasOwnProperty(i)) {
+						if ($.type(objs[i]) === 'object') {
+							name = objs[i].name;
+							type = objs[i].typeShort + '. ';
+							zip = objs[i].zip || zip;
+						}
+						else {
+							name = objs[i];
+							type = '';
+						}
+
+						if(address) address += ', ';
+						address += type + name;
+					}
+				}
+
+				address = (zip ? zip + ', ' : '') + address;
+
+				return address;
+			};
+
+			$inputs.each(function () {
+				var $this = $(this);
+
+				if ($this.attr('data-kladr-id')) {
+					filtered[$this.attr('data-kladr-type')] = $this.kladr('current');
+				}
+				else {
+					filtered[$this.attr('data-kladr-type')] = $this.val();
+				}
+			});
+
+			for (t in types) {
+				if (types.hasOwnProperty(t) && filtered[t]) {
+					sorted[t] = filtered[t];
+				}
+			}
+
+			return build(sorted);
 		}
 	});
 
