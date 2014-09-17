@@ -82,7 +82,7 @@
 		$.getJSON($.kladr.url + "?callback=?",
 			toApiFormat(query),
 			function (data) {
-				def.resolve(data.result);
+				def.resolve(data.result || []);
 			}
 		);
 
@@ -180,32 +180,38 @@
 			$.kladr.api(query, callback);
 		},
 
-		labelFormat: function self (obj, query) {
-			var label = '';
+		labelFormat: function (obj, query) {
+			if (obj.fullName) return obj.fullName;
 
-			var objName = obj.name.toLowerCase(),
-				queryName = query.name.toLowerCase();
-
-			var start = objName.indexOf(queryName);
-			start = start > 0 ? start : 0;
+			var label = '',
+				name,
+				objName,
+				queryName,
+				start;
 
 			if (obj.typeShort) {
 				label += obj.typeShort + '. ';
 			}
 
+			name = obj.name;
+			objName = name.toLowerCase();
+			queryName = query.name.toLowerCase();
+			start = objName.indexOf(queryName);
+			start = start > 0 ? start : 0;
+
 			if (queryName.length < objName.length) {
-				label += obj.name.substr(0, start);
-				label += '<strong>' + obj.name.substr(start, queryName.length) + '</strong>';
-				label += obj.name.substr(start + queryName.length, objName.length - queryName.length - start);
+				label += name.substr(0, start);
+				label += '<strong>' + name.substr(start, queryName.length) + '</strong>';
+				label += name.substr(start + queryName.length, objName.length - queryName.length - start);
 			} else {
-				label += '<strong>' + obj.name + '</strong>';
+				label += '<strong>' + name + '</strong>';
 			}
 
 			return label;
 		},
 
 		valueFormat: function (obj, query) {
-			return obj.name;
+			return obj.fullName || obj.name;
 		},
 
 		showSpinner: function ($spinner) {
