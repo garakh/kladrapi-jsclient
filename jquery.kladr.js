@@ -6,6 +6,7 @@
 
 	// Enum KLADR object types
 	$.kladr.type = {
+		all:      'all',
 		region:   'region',
 		district: 'district',
 		city:     'city',
@@ -16,6 +17,7 @@
 	// Validate query
 	$.kladr.validate = function (query) {
 		switch (query.type) {
+			case $.kladr.type.all:
 			case $.kladr.type.region:
 			case $.kladr.type.district:
 			case $.kladr.type.city:
@@ -121,6 +123,11 @@
 
 		if (query.parentType && query.parentId) {
 			params[query.parentType + 'Id'] = query.parentId;
+		}
+
+		if (query.type && query.type == $.kladr.type.all) {
+			params.oneString = true;
+			delete query.type;
 		}
 
 		for (var i in query) {
@@ -262,7 +269,7 @@
 			return $.kladr.type;
 		},
 
-		getInputs:  function (selector) {
+		getInputs: function (selector) {
 			var $inputs = $(),
 				inputSelector = '[data-kladr-type]';
 
@@ -305,7 +312,7 @@
 							type = '';
 						}
 
-						if(address) address += ', ';
+						if (address) address += ', ';
 						address += type + name;
 					}
 				}
