@@ -6,7 +6,6 @@
 
 	// Enum KLADR object types
 	$.kladr.type = {
-		all:      'all',
 		region:   'region',
 		district: 'district',
 		city:     'city',
@@ -17,7 +16,6 @@
 	// Validate query
 	$.kladr.validate = function (query) {
 		switch (query.type) {
-			case $.kladr.type.all:
 			case $.kladr.type.region:
 			case $.kladr.type.district:
 			case $.kladr.type.city:
@@ -47,8 +45,16 @@
 				}
 				break;
 			default:
-				error('type incorrect');
-				return false;
+				if (!query.oneString) {
+					error('type incorrect');
+					return false;
+				}
+				break;
+		}
+
+		if (query.oneString && query.parentType && !query.parentId) {
+			error('parentId undefined');
+			return false;
 		}
 
 		if (query.limit < 1) {
@@ -118,16 +124,12 @@
 				type:        'contentType',
 				name:        'query',
 				withParents: 'withParent',
+				oneString:   'oneString',
 				limit:       'limit'
 			};
 
 		if (query.parentType && query.parentId) {
 			params[query.parentType + 'Id'] = query.parentId;
-		}
-
-		if (query.type && query.type == $.kladr.type.all) {
-			params.oneString = true;
-			delete query.type;
 		}
 
 		for (var i in query) {
@@ -154,6 +156,7 @@
 		parentType:   null,
 		parentId:     null,
 		limit:        10,
+		oneString:    false,
 		withParents:  false,
 
 		// Plugin options
@@ -177,31 +180,21 @@
 		checkBefore:  null,
 
 		source: function (query, callback) {
-			// one string search crutch
-			if (query.type == $.kladr.type.all) {
-				query.withParents = true;
-			}
-
 			$.kladr.api(query, callback);
 		},
 
 		labelFormat: function (obj, query) {
-			var newObj, objs;
+			var objs;
 
-			if (obj.fullName) {
+			if (query.oneString) {
 				if (obj.parents) {
-					newObj = $.extend(true, {}, obj);
 					objs = $.extend(true, [], obj.parents);
-
-					delete newObj.fullName;
-					delete newObj.parents;
-
-					objs.push(newObj);
+					objs.push(obj);
 
 					return $.kladr.buildAddress(objs);
 				}
 
-				return obj.fullName;
+				return (obj.typeShort ? obj.typeShort + '. ' : '') + obj.name;
 			}
 
 			var label = '',
@@ -232,22 +225,17 @@
 		},
 
 		valueFormat: function (obj, query) {
-			var newObj, objs;
+			var objs;
 
-			if (obj.fullName) {
+			if (query.oneString) {
 				if (obj.parents) {
-					newObj = $.extend(true, {}, obj);
 					objs = $.extend(true, [], obj.parents);
-
-					delete newObj.fullName;
-					delete newObj.parents;
-
-					objs.push(newObj);
+					objs.push(obj);
 
 					return $.kladr.buildAddress(objs);
 				}
 
-				return obj.fullName;
+				return (obj.typeShort ? obj.typeShort + '. ' : '') + obj.name;
 			}
 
 			return obj.name;
@@ -340,10 +328,25 @@
 				t;
 
 			$inputs.each(function () {
-				var $this = $(this);
+				var $this = $(this),
+					obj, objs, i;
 
 				if ($this.attr('data-kladr-id')) {
-					filtered[$this.attr('data-kladr-type')] = $this.kladr('current');
+					obj = $this.kladr('current');
+
+					if ($this.attr('data-kladr-one-string') && obj.parents) {
+						objs = $.extend(true, [], obj.parents);
+						objs.push(obj);
+
+						for (i in objs) {
+							if (objs.hasOwnProperty(i)) {
+								filtered[objs[i].contentType] = objs[i];
+							}
+						}
+					}
+					else {
+						filtered[$this.attr('data-kladr-type')] = obj;
+					}
 				}
 				else {
 					filtered[$this.attr('data-kladr-type')] = $this.val();
@@ -493,7 +496,8 @@
 				var isActive = false;
 
 				$input
-					.attr('data-kladr-type', get('type'))
+					.attr('data-kladr-type', get('type') || '')
+					.attr('data-kladr-one-string', get('oneString') || null)
 					.on('keyup.kladr', open)
 					.on('keydown.kladr', keySelect)
 					.on('blur.kladr', function () {
@@ -851,11 +855,17 @@
 						name:        fixName(name),
 						parentType:  get('parentType'),
 						parentId:    get('parentId'),
+						oneString:   get('oneString'),
 						withParents: get('withParents'),
 						limit:       get('limit')
 					},
 					parentInput = get('parentInput'),
 					parent;
+
+				// one string search crutch
+				if (query.oneString) {
+					query.withParents = true;
+				}
 
 				if (parentInput) {
 					parent = getParent(parentInput, query.type);
@@ -939,6 +949,12 @@
 					$input.attr('data-kladr-id', obj.id);
 				} else {
 					$input.removeAttr('data-kladr-id');
+				}
+
+				if (get('oneString')) {
+					if (obj && obj.contentType) {
+						$input.attr('data-kladr-type', obj.contentType);
+					}
 				}
 			}
 
