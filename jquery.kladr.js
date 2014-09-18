@@ -181,7 +181,23 @@
 		},
 
 		labelFormat: function (obj, query) {
-			if (obj.fullName) return obj.fullName;
+			var newObj, objs;
+
+			if (obj.fullName) {
+				if (obj.parents) {
+					newObj = $.extend(true, {}, obj);
+					objs = $.extend(true, [], obj.parents);
+
+					delete newObj.fullName;
+					delete newObj.parents;
+
+					objs.push(newObj);
+
+					return $.kladr.buildAddress(objs);
+				}
+
+				return obj.fullName;
+			}
 
 			var label = '',
 				name,
@@ -211,7 +227,25 @@
 		},
 
 		valueFormat: function (obj, query) {
-			return obj.fullName || obj.name;
+			var newObj, objs;
+
+			if (obj.fullName) {
+				if (obj.parents) {
+					newObj = $.extend(true, {}, obj);
+					objs = $.extend(true, [], obj.parents);
+
+					delete newObj.fullName;
+					delete newObj.parents;
+
+					objs.push(newObj);
+
+					return $.kladr.buildAddress(objs);
+				}
+
+				return obj.fullName;
+			}
+
+			return obj.name;
 		},
 
 		showSpinner: function ($spinner) {
@@ -300,34 +334,6 @@
 				sorted = {},
 				t;
 
-			build = build || function (objs) {
-				var address = '',
-					zip = '',
-					name = '',
-					type = '';
-
-				for (var i in objs) {
-					if (objs.hasOwnProperty(i)) {
-						if ($.type(objs[i]) === 'object') {
-							name = objs[i].name;
-							type = objs[i].typeShort + '. ';
-							zip = objs[i].zip || zip;
-						}
-						else {
-							name = objs[i];
-							type = '';
-						}
-
-						if (address) address += ', ';
-						address += type + name;
-					}
-				}
-
-				address = (zip ? zip + ', ' : '') + address;
-
-				return address;
-			};
-
 			$inputs.each(function () {
 				var $this = $(this);
 
@@ -345,7 +351,52 @@
 				}
 			}
 
-			return build(sorted);
+			return (build || $.kladr.buildAddress)(sorted);
+		},
+
+		buildAddress: function (objs) {
+			var lastIds = [],
+				duplicate = false,
+				address = '',
+				zip = '',
+				name = '',
+				type = '',
+				i,
+				j;
+
+			for (i in objs) {
+				if (objs.hasOwnProperty(i)) {
+					if ($.type(objs[i]) === 'object') {
+						duplicate = false;
+						for (j = 0; j < lastIds.length; j++) {
+							if (lastIds[j] == objs[i].id) {
+								duplicate = true;
+								break;
+							}
+						}
+
+						if (duplicate) {
+							continue;
+						}
+
+						lastIds.push(objs[i].id);
+						name = objs[i].name;
+						type = objs[i].typeShort + '. ';
+						zip = objs[i].zip || zip;
+					}
+					else {
+						name = objs[i];
+						type = '';
+					}
+
+					if (address) address += ', ';
+					address += type + name;
+				}
+			}
+
+			address = (zip ? zip + ', ' : '') + address;
+
+			return address;
 		}
 	});
 
