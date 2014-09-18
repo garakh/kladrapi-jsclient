@@ -177,6 +177,11 @@
 		checkBefore:  null,
 
 		source: function (query, callback) {
+			// one string search crutch
+			if (query.type == $.kladr.type.all) {
+				query.withParents = true;
+			}
+
 			$.kladr.api(query, callback);
 		},
 
