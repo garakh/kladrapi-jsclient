@@ -8,33 +8,8 @@ $(function () {
 	var $tooltip = $('.tooltip');
 
 	$.kladr.setDefault({
-		token: '51dfe5d42fb2b43e3300006e',
-		key: '86a2c2a06f1b2451a87d05512cc2c3edfdf41969',
 		parentInput: '.js-form-address',
 		verify: true,
-		labelFormat: function (obj, query) {
-			var label = '';
-
-			var name = obj.name.toLowerCase();
-			query = query.name.toLowerCase();
-
-			var start = name.indexOf(query);
-			start = start > 0 ? start : 0;
-
-			if (query.length < obj.name.length) {
-				label += obj.name.substr(0, start);
-				label += '<strong>' + obj.name.substr(start, query.length) + '</strong>';
-				label += obj.name.substr(start + query.length, obj.name.length - query.length - start);
-			} else {
-				label += '<strong>' + obj.name + '</strong>';
-			}
-
-			if (obj.typeShort) {
-				label += ' ' + obj.typeShort + '.';
-			}
-
-			return label;
-		},
 		select: function (obj) {
 			setLabel($(this), obj.type);
 			$tooltip.hide();
