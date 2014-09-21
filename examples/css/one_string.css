@@ -1,23 +1,3 @@
-/*.address{
-    width: 560px;
-    margin: 20px auto;
-    padding: 10px;
-    border: 1px solid rgb(104, 104, 104);
-    border-radius: 5px;
-    font-size: 0.8em;
-    line-height: 25px;
-}
-
-.field label{
-    display: block;
-    float: left;
-    margin-right: 10px;
-}
-
-.field input {
-    width: 500px
-}*/
-
 body, input {
     color: #555;
     font-size: 14px;
@@ -41,11 +21,6 @@ input, button {
     padding-bottom: 40px;
     text-align: center;
 }
-/*.field label {
-    display: inline-block;
-    width: 80px;
-    vertical-align: middle;
-}*/
 .field {
     margin-bottom: 10px;
     padding: 0;

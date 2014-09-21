@@ -59,34 +59,3 @@ input, button {
     border: 7px solid;
     border-right-color: #f2dede;
 }
-/*#kladr_autocomplete ul {
-    border-radius: 4px;
-    border-color: #d3d3d3;
-    padding: 0;
-    background-color: #fff;
-}
-#kladr_autocomplete li {
-    padding: 6px 8px;
-    border: none;
-    border-bottom: 1px solid #ededed;
-    background-color: transparent;
-}
-#kladr_autocomplete ul .active {
-    border: none;
-    border-bottom: 1px solid  #f0f0f0;
-    background-color: #f0f0f0;
-    margin-top: -1px;
-    padding-top: 7px;
-}
-#kladr_autocomplete ul li:first-child.active {
-    padding-top: 6px;
-    margin-top: 0;
-}
-#kladr_autocomplete li strong {
-    color: #5499BB;
-}
-#kladr_autocomplete .spinner {
-    background-image: url("../img/spinner.png");
-    width: 16px;
-    height: 16px;
-}*/
