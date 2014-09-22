@@ -3,16 +3,12 @@ $(function () {
 		$district = $('[name="district"]'),
 		$city = $('[name="city"]'),
 		$street = $('[name="street"]'),
-		$building = $('[name="building"]'),
-		$buildingAdd = $('[name="building-add"]');
+		$building = $('[name="building"]');
 
 	var map = null,
-		placemark = null,
 		map_created = false;
 
 	$.kladr.setDefault({
-		token: '51dfe5d42fb2b43e3300006e',
-		key: '86a2c2a06f1b2451a87d05512cc2c3edfdf41969',
 		parentInput: '.js-form-address',
 		withParents: true,
 		verify: true,
@@ -26,25 +22,15 @@ $(function () {
 			start = start > 0 ? start : 0;
 
 			if (obj.typeShort) {
-				label += '<span class="ac-s2">' + obj.typeShort + '. ' + '</span>';
+				label += obj.typeShort + '. ';
 			}
 
 			if (query.length < obj.name.length) {
-				label += '<span class="ac-s2">' + obj.name.substr(0, start) + '</span>';
-				label += '<span class="ac-s">' + obj.name.substr(start, query.length) + '</span>';
-				label += '<span class="ac-s2">' + obj.name.substr(start + query.length, obj.name.length - query.length - start) + '</span>';
+				label += obj.name.substr(0, start);
+				label += '<strong>' + obj.name.substr(start, query.length) + '</strong>';
+				label += obj.name.substr(start + query.length, obj.name.length - query.length - start);
 			} else {
-				label += '<span class="ac-s">' + obj.name + '</span>';
-			}
-
-			if (obj.parents) {
-				for (var k = obj.parents.length - 1; k > -1; k--) {
-					var parent = obj.parents[k];
-					if (parent.name) {
-						if (label) label += '<span class="ac-st">, </span>';
-						label += '<span class="ac-st">' + parent.name + ' ' + parent.typeShort + '.</span>';
-					}
-				}
+				label += '<strong>' + obj.name + '</strong>';
 			}
 
 			return label;
@@ -72,12 +58,6 @@ $(function () {
 	$city.kladr('type', $.kladr.type.city);
 	$street.kladr('type', $.kladr.type.street);
 	$building.kladr('type', $.kladr.type.building);
-
-	$buildingAdd.change(function () {
-		log(null);
-		addressUpdate();
-		mapUpdate();
-	});
 
 	ymaps.ready(function () {
 		if (map_created) return;
@@ -119,19 +99,32 @@ $(function () {
 					if (result) result += ', ';
 					result += type + name;
 
-					zoom += 3;
+					switch (objs[i].contentType) {
+						case $.kladr.type.region:
+							zoom = 4;
+							break;
+
+						case $.kladr.type.district:
+							zoom = 7;
+							break;
+
+						case $.kladr.type.city:
+							zoom = 10;
+							break;
+
+						case $.kladr.type.street:
+							zoom = 13;
+							break;
+
+						case $.kladr.type.building:
+							zoom = 16;
+							break;
+					}
 				}
 			}
 
 			return result;
 		});
-
-		// Корпус
-		var name = $.trim($buildingAdd.val());
-		if (name) {
-			if (address) address += ', ';
-			address += 'корпус ' + name;
-		}
 
 		if (address && map_created) {
 			var geocode = ymaps.geocode(address);
@@ -140,9 +133,8 @@ $(function () {
 					map.geoObjects.remove(geoObject);
 				});
 
-				var position = res.geoObjects.get(0).geometry.getCoordinates();
-
-				placemark = new ymaps.Placemark(position, {}, {});
+				var position = res.geoObjects.get(0).geometry.getCoordinates(),
+					placemark = new ymaps.Placemark(position, {}, {});
 
 				map.geoObjects.add(placemark);
 				map.setCenter(position, zoom);
@@ -152,13 +144,6 @@ $(function () {
 
 	function addressUpdate () {
 		var address = $.kladr.getAddress('.js-form-address');
-
-		// Корпус
-		var name = $.trim($buildingAdd.val());
-		if (name) {
-			if (address) address += ', ';
-			address += 'к. ' + name;
-		}
 
 		$('#address').text(address);
 	}
