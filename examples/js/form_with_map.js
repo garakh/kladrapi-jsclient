@@ -71,7 +71,7 @@ $(function () {
 
 		map.controls.add('zoomControl', {
 			position: {
-				left: 10,
+				right: 10,
 				top: 10
 			}
 		});
@@ -151,16 +151,14 @@ $(function () {
 	function log (obj) {
 		var $log, i;
 
+		$('.js-log li').hide();
+
 		for (i in obj) {
 			$log = $('#' + i);
 
 			if ($log.length) {
-				if (obj && obj[i]) {
-					$log.find('.value').text(obj[i]);
-					$log.show();
-				} else {
-					$log.hide();
-				}
+				$log.find('.value').text(obj[i]);
+				$log.show();
 			}
 		}
 	}
