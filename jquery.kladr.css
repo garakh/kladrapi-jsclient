@@ -42,11 +42,6 @@
 
 #kladr_autocomplete a{
     text-decoration: none;
-    /*display: block;*/
-    /*width: 10000px;*/
-    /*max-height: 18px;*/
-    /*overflow-y:hidden;*/
-
 }
 
 #kladr_autocomplete strong {
