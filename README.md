@@ -103,9 +103,9 @@ $('input').kladr('option1', 123);
 
 Во все события в качестве контекста (this) передаётся текущее поле ввода.
 
-В обработчиках событий ...Before (*openBefore*, *closeBefore*) объявленных как параметр плагина
+В обработчиках событий **...Before** (*openBefore*, *closeBefore*) объявленных как параметр плагина
 ( *$('').kladr({openBefore: function () {}})* ) можно отменить действие плагина, если в функции
-вернуть *false* ( *$('').kladr({openBefore: function () { return false; }})* ).
+вернуть **false** ( *$('').kladr({openBefore: function () { return false; }})* ).
 
 * **openBefore** *= function() {}* - возникает перед открытием списка объектов. Доступно как событие
 *kladr_open_before* поля ввода.
