@@ -172,12 +172,13 @@ $('input').kladr({
 });
 `````
 
-Более подробрые примеры можно найти в папке *examples*
+Более подробрые примеры можно найти в папке [examples] [3].
 
 Лицензия
 --------------------------------------------------------------------------------
 Решение распространяется под лицензией «Общественное достояние» (Public Domain)
 и может быть свободно используемо любым лицом без выплат авторских вознаграждений.
 
-[1]: http://kladr-api.ru/        "КЛАДР API"
-[2]: https://kladr-api.ru/api.php        "API"
+[1]: http://kladr-api.ru/ "КЛАДР API"
+[2]: https://kladr-api.ru/api.php "API"
+[3]: https://github.com/garakh/kladrapi-jsclient/tree/master/examples "Examples"
