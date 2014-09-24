@@ -501,16 +501,22 @@
 					.on('keyup.kladr', open)
 					.on('keydown.kladr', keySelect)
 					.on('blur.kladr', function () {
-						check();
-						if (!isActive) close();
+						if (!isActive) {
+							check();
+							close();
+						}
 					});
 
 				$ac
-					.on('touchstart.kladr click.kladr', 'li, a', mouseSelect)
-					.on('touchstart.kladr mouseenter.kladr', 'li', function () {
+					.on('touchstart.kladr click.kladr', 'li, a', function () {
+						isActive = true;
+						mouseSelect.call(this);
+						isActive = false;
+					})
+					.on('mouseenter.kladr', function () {
 						isActive = true;
 					})
-					.on('touchend.kladr mouseleave.kladr', 'li', function () {
+					.on('mouseleave.kladr', function () {
 						isActive = false;
 					});
 			});
