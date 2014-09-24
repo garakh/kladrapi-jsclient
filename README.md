@@ -166,8 +166,8 @@ $('input').kladr({
 `````javascript
 $('input').kladr({
     type: $.kladr.type.district,
-    select: function( obj ){
-        $( 'label' ).text( obj.type );
+    select: function(obj){
+        $('label').text(obj.type);
     }
 });
 `````
