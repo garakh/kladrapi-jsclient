@@ -129,7 +129,7 @@ $('input').kladr('option1', 123);
 
 `````javascript
 $('input').kladr({
-    type: $.kladr.type.city
+	oneString: true
 });
 `````
 
@@ -137,7 +137,7 @@ $('input').kladr({
 
 `````javascript
 $('input').kladr({
-	oneString: true
+    type: $.kladr.type.city
 });
 `````
 
