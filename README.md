@@ -152,21 +152,6 @@ $('input').kladr({
 });
 `````
 
-Проверка названия города, введённого пользователем самостоятельно
-
-`````javascript
-$('input').kladr({
-    type: $.kladr.type.city,
-    check:  function( obj ){
-        if(obj){
-            $( 'input' ).css('color', 'black');
-        } else {
-            $( 'input' ).css('color', 'red');
-        }
-    }
-});
-`````
-
 Более подробрые примеры можно найти в папке *examples*
 
 Структура папок, файлов
