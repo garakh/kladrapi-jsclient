@@ -1,13 +1,13 @@
 {
   "name": "kladrapi-jsclient",
-  "version": "2.0.0",
+  "version": "1.9.1-pre",
   "description": "jQuery Kladr",
   "main": "jquery.kladr.min.js",
   "directories": {
     "example": "examples"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+	  "build": "npm install && gulp"
   },
   "repository": {
     "type": "git",
@@ -18,6 +18,10 @@
     "email": "xescoder@gmail.com",
     "url": "ru.linkedin.com/in/xescoder/"
   },
+  "keywords": [
+	"kladr",
+	"jquery"
+  ],
   "license": "Public Domain",
   "bugs": {
     "url": "https://github.com/garakh/kladrapi-jsclient/issues"
