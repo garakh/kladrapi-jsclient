@@ -32,7 +32,7 @@ input, button {
 }
 .field input {
     height: 2em;
-    min-width: 295px;
+    width: 295px;
     border: 1px solid #d8d8d8;
     padding: 0 7px;
     color: #666;

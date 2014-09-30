@@ -27,7 +27,7 @@ input, button {
 }
 .field input {
     height: 2em;
-    min-width: 370px;
+    width: 370px;
     border: 1px solid #d8d8d8;
     padding: 0 7px;
     color: #666;

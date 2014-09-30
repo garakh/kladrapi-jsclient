@@ -42,7 +42,7 @@ input, button {
 }
 .field input {
     height: 2em;
-    min-width: 240px;
+    width: 240px;
     border: 1px solid #d8d8d8;
     padding: 0 7px;
     color: #666;

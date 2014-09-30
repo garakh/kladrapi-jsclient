@@ -59,6 +59,9 @@ $(function () {
 	$street.kladr('type', $.kladr.type.street);
 	$building.kladr('type', $.kladr.type.building);
 
+	// Отключаем проверку введённых данных для строений
+	$building.kladr('verify', false);
+
 	ymaps.ready(function () {
 		if (map_created) return;
 		map_created = true;
