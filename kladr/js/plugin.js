@@ -20,7 +20,7 @@
 		open:         null,
 		close:        null,
 		send:         null,
-		received:     null,
+		receive:      null,
 		select:       null,
 		check:        null,
 
@@ -492,7 +492,7 @@
 				trigger('send');
 
 				get('source')(query, function (objs) {
-					trigger('received');
+					trigger('receive');
 
 					if (!$input.is(':focus')) {
 						hideSpinner();
@@ -636,7 +636,7 @@
 				trigger('send');
 
 				get('source')(query, function (objs) {
-					trigger('received');
+					trigger('receive');
 
 					if (!$.trim($input.val())) {
 						ret2(null, false);
