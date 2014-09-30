@@ -9,9 +9,9 @@ input, button {
     outline: none;
 }
 .address {
-    width: 400px;
-    margin: 40px auto 0;
-    padding: 40px 40px 30px;
+    width: 500px;
+    margin-top: 50px;
+    padding: 20px 40px 30px;
     border: 2px solid #e1e1e1;
     background-color: #f7f7f7;
     box-shadow: rgba(0,0,0,0.075) 1px 1px 5px;
