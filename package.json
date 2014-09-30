@@ -14,9 +14,9 @@
     "url": "https://github.com/garakh/kladrapi-jsclient.git"
   },
   "author": {
-	  "name": "Alexandr Yakovlev",
-	  "email": "xescoder@gmail.com",
-	  "url": "ru.linkedin.com/in/xescoder/"
+    "name": "Alexandr Yakovlev",
+    "email": "xescoder@gmail.com",
+    "url": "ru.linkedin.com/in/xescoder/"
   },
   "license": "Public Domain",
   "bugs": {
@@ -29,6 +29,6 @@
     "gulp-csso": "^0.2.9",
     "gulp-imagemin": "^1.0.1",
     "gulp-uglify": "^1.0.1",
-	"gulp-rename": "^1.2.0"
+    "gulp-rename": "^1.2.0"
   }
 }
