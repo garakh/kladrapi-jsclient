@@ -6,11 +6,18 @@
 
 	// Enum KLADR object types
 	$.kladr.type = {
-		region:   'region',
-		district: 'district',
-		city:     'city',
-		street:   'street',
-		building: 'building'
+		region:   'region',  // Область
+		district: 'district',// Район
+		city:     'city',    // Город
+		street:   'street',  // Улица
+		building: 'building' // Строение
+	};
+
+	// Enum city object types
+	$.kladr.typeCode = {
+		city:       1, // Город
+		settlement: 2, // Посёлок
+		village:    4  // Деревня
 	};
 
 	// Validate query
@@ -54,6 +61,11 @@
 
 		if (query.oneString && query.parentType && !query.parentId) {
 			error('parentId undefined');
+			return false;
+		}
+
+		if (query.typeCode && (query.type != $.kladr.type.city)) {
+			error('type must equal "city"');
 			return false;
 		}
 
@@ -122,6 +134,7 @@
 				token:       'token',
 				key:         'key',
 				type:        'contentType',
+				typeCode:    'typeCode',
 				name:        'query',
 				withParents: 'withParent',
 				oneString:   'oneString',
