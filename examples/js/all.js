@@ -25,11 +25,12 @@ $(function () {
 	(function () {
 		var $container = $(document.getElementById('form'));
 
-		var $region   = $container.find('[name="region"]');
-		var $district = $container.find('[name="district"]');
-		var $city     = $container.find('[name="city"]');
-		var $street   = $container.find('[name="street"]');
-		var $building = $container.find('[name="building"]');
+		var $zip      = $container.find('[name="zip"]'),
+			$region   = $container.find('[name="region"]'),
+			$district = $container.find('[name="district"]'),
+			$city     = $container.find('[name="city"]'),
+			$street   = $container.find('[name="street"]'),
+			$building = $container.find('[name="building"]');
 
 		var $tooltip = $container.find('.tooltip');
 
@@ -65,6 +66,33 @@ $(function () {
 
 		// Отключаем проверку введённых данных для строений
 		$building.kladr('verify', false);
+
+		// Поиск по почтовому индексу
+		$zip.keyup(function () {
+			$.kladr.api({
+				type: $.kladr.type.building,
+				zip: $zip.val(),
+				withParents: true,
+				limit: 1
+			}, function (objs) {
+				var obj = objs.length && objs[0], i, $input;
+				objs = [];
+
+				if (obj) {
+					if (obj.parents) {
+						objs = $.extend(true, [], obj.parents);
+					}
+
+					objs.push(obj);
+
+					for (i in objs) {
+						$input = $container.find('[name="' + objs[i].contentType + '"]');
+						$input.val(objs[i].name);
+						$input.trigger('blur');
+					}
+				}
+			});
+		});
 
 		function setLabel ($input, text) {
 			text = text.charAt(0).toUpperCase() + text.substr(1).toLowerCase();

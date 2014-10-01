@@ -1,9 +1,10 @@
 $(function () {
-	var $region   = $('[name="region"]');
-	var $district = $('[name="district"]');
-	var $city     = $('[name="city"]');
-	var $street   = $('[name="street"]');
-	var $building = $('[name="building"]');
+	var $zip      = $('[name="zip"]'),
+		$region   = $('[name="region"]'),
+		$district = $('[name="district"]'),
+		$city     = $('[name="city"]'),
+		$street   = $('[name="street"]'),
+	 	$building = $('[name="building"]');
 
 	var $tooltip = $('.tooltip');
 
@@ -33,6 +34,33 @@ $(function () {
 
 	// Отключаем проверку введённых данных для строений
 	$building.kladr('verify', false);
+
+	// Поиск по почтовому индексу
+	$zip.keyup(function () {
+		$.kladr.api({
+			type: $.kladr.type.building,
+			zip: $zip.val(),
+			withParents: true,
+			limit: 1
+		}, function (objs) {
+			var obj = objs.length && objs[0], i, $input;
+			objs = [];
+
+			if (obj) {
+				if (obj.parents) {
+					objs = $.extend(true, [], obj.parents);
+				}
+
+				objs.push(obj);
+
+				for (i in objs) {
+					$input = $('[name="' + objs[i].contentType + '"]');
+					$input.val(objs[i].name);
+					$input.trigger('blur');
+				}
+			}
+		});
+	});
 
 	function setLabel ($input, text) {
 		text = text.charAt(0).toUpperCase() + text.substr(1).toLowerCase();

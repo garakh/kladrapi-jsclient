@@ -42,13 +42,15 @@
 				}
 				break;
 			case $.kladr.type.building:
-				if (query.parentType != $.kladr.type.street) {
-					error('parentType must equal "street"');
-					return false;
-				}
-				if (!query.parentId) {
-					error('parentId undefined');
-					return false;
+				if (!query.zip) {
+					if (query.parentType != $.kladr.type.street) {
+						error('parentType must equal "street"');
+						return false;
+					}
+					if (!query.parentId) {
+						error('parentId undefined');
+						return false;
+					}
 				}
 				break;
 			default:
@@ -136,6 +138,7 @@
 				type:        'contentType',
 				typeCode:    'typeCode',
 				name:        'query',
+				zip:         'zip',
 				withParents: 'withParent',
 				oneString:   'oneString',
 				limit:       'limit'
