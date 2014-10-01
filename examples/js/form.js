@@ -70,9 +70,9 @@ $(function () {
 	function showError ($input, message) {
 		$tooltip.find('span').text(message);
 
-		var inputOffset = $input.offset();
-		var inputWidth = $input.outerWidth();
-		var inputHeight = $input.outerHeight();
+		var inputOffset = $input.offset(),
+			inputWidth = $input.outerWidth(),
+			inputHeight = $input.outerHeight();
 
 		var tooltipHeight = $tooltip.outerHeight();
 
