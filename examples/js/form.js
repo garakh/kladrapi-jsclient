@@ -35,44 +35,8 @@ $(function () {
 	// Отключаем проверку введённых данных для строений
 	$building.kladr('verify', false);
 
-	// Поиск по почтовому индексу
-	$zip.keyup(function () {
-		$.kladr.api({
-			type: $.kladr.type.building,
-			zip: $zip.val(),
-			withParents: true,
-			limit: 1
-		}, function (objs) {
-			var obj = objs.length && objs[0], i, $input, source;
-			objs = [];
-
-			if (obj) {
-				if (obj.parents) {
-					objs = $.extend(true, [], obj.parents);
-				}
-
-				objs.push(obj);
-
-				for (i in objs) {
-					$input = $('[data-kladr-type="' + objs[i].contentType + '"]');
-					source = $input.kladr('source');
-
-					(function () {
-						var o = objs[i];
-
-						$input
-							.val(o.name)
-							.kladr('source', function (query, callback) {
-								callback([o]);
-							});
-					})();
-
-					$input.trigger('blur');
-					$input.kladr('source', source);
-				}
-			}
-		});
-	});
+	// Подключаем плагин для почтового индекса
+	$zip.kladrZip();
 
 	function setLabel ($input, text) {
 		text = text.charAt(0).toUpperCase() + text.substr(1).toLowerCase();
