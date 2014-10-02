@@ -17,8 +17,26 @@ $(function () {
 		$container
 			.find('[name="address"]')
 			.kladr({
-				oneString: true
+				oneString: true,
+				select: function (obj) {
+					log(obj);
+				}
 			});
+
+		function log (obj) {
+			var $log, i;
+
+			$container.find('.js-log li').hide();
+
+			for (i in obj) {
+				$log = $container.find('#' + i);
+
+				if ($log.length) {
+					$log.find('.value').text(obj[i]);
+					$log.show();
+				}
+			}
+		}
 	})();
 
 	// Form example
