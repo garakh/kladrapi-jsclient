@@ -285,9 +285,11 @@
 		});
 
 		this.keyup(function () {
-			var zip = $(this).val();
+			var $this = $(this),
+				zip = $this.val();
 
 			if (!zip) {
+				$this.removeClass('kladr-error');
 				return;
 			}
 
@@ -301,6 +303,8 @@
 				objs = [];
 
 				if (obj) {
+					$this.removeClass('kladr-error');
+
 					if (obj.parents) {
 						objs = $.extend(true, [], obj.parents);
 					}
@@ -326,6 +330,9 @@
 							$input.kladr('source', source);
 						}
 					}
+				}
+				else {
+					$this.addClass('kladr-error');
 				}
 			});
 		});
