@@ -289,7 +289,7 @@
 				zip = $this.val();
 
 			if (!zip) {
-				$this.removeClass('kladr-error');
+				error(false);
 				return;
 			}
 
@@ -303,7 +303,7 @@
 				objs = [];
 
 				if (obj) {
-					$this.removeClass('kladr-error');
+					error(false);
 
 					if (obj.parents) {
 						objs = $.extend(true, [], obj.parents);
@@ -332,9 +332,13 @@
 					}
 				}
 				else {
-					$this.addClass('kladr-error');
+					error(true);
 				}
 			});
+
+			function error (er) {
+				er ? $this.addClass('kladr-error') : $this.removeClass('kladr-error');
+			}
 		});
 
 		return this;
