@@ -147,12 +147,11 @@ $('input').kladr({
 });
 `````
 
-Автодополнение городами и посёлками России:
+Автодополнение городами России:
 
 `````javascript
 $('input').kladr({
-    type: $.kladr.type.city,
-    typeCode: $.kladr.typeCode.city + $.kladr.typeCode.settlement
+    type: $.kladr.type.city
 });
 `````
 

@@ -9,14 +9,14 @@ input, button {
     outline: none;
 }
 .address {
-    width: 500px;
+    width: 390px;
     margin-top: 50px;
     padding: 20px 40px 30px;
     border: 2px solid #e1e1e1;
     background-color: #f7f7f7;
     box-shadow: rgba(0,0,0,0.075) 1px 1px 5px;
 }
-.address h1 {
+.address h2 {
     margin: 0;
     padding: 0;
     font-size: 20px;
@@ -77,8 +77,26 @@ input, button {
 }
 
 
-/* -------------------- form example ------------------- */
+/* ----------------- type code example ------------------ */
 
+#type_code .address {
+    width: 390px;
+}
+#type_code .field label {
+    display: block;
+}
+#type_code .field [type="radio"] {
+    height: 1.5em;
+    width: 20px;
+    vertical-align: middle;
+}
+
+
+/* -------------------- form example -------------------- */
+
+#form .address {
+    width: 400px;
+}
 #form .field {
     margin-bottom: 20px;
 }

@@ -1,9 +1,12 @@
 $(function () {
-	$('[name="city"]').kladr({
+	var $city     = $('[name="city"]'),
+		$typeCode = $('[name="typecode"]');
+
+	$city.kladr({
 		type: $.kladr.type.city
 	});
 
-	$('[name="typecode"]').change(function () {
+	$typeCode.change(function () {
 		changeTypeCode($(this).val());
 	});
 
@@ -26,6 +29,6 @@ $(function () {
 				break;
 		}
 
-		$('[name="city"]').kladr('typeCode', typeCode);
+		$city.kladr('typeCode', typeCode);
 	}
 });
