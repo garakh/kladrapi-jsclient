@@ -482,6 +482,7 @@
 						.appendTo($container);
 
 					position();
+					checkAutoFill();
 				}
 
 				callback();
@@ -754,6 +755,24 @@
 				function ret (obj, er) {
 					error(er);
 					setCurrent(obj);
+				}
+			}
+
+			function checkAutoFill () {
+				var count = 0,
+					interval = isFilled() || setInterval(function () {
+						if (++count > 5 || isFilled()) {
+							clearInterval(interval);
+						}
+					}, 100);
+
+				function isFilled () {
+					if ($input.val()) {
+						check();
+						return !!get('current');
+					}
+
+					return false;
 				}
 			}
 
