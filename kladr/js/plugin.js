@@ -151,10 +151,6 @@
 			return undefined;
 		},
 
-		getTypes: function () {
-			return $.kladr.type;
-		},
-
 		getInputs: function (selector) {
 			var $inputs = $(),
 				inputSelector = '[data-kladr-type]';
@@ -175,7 +171,7 @@
 
 		getAddress: function (selector, build) {
 			var $inputs = $.kladr.getInputs(selector),
-				types = $.kladr.getTypes(),
+				types = $.kladr.type,
 				filtered = {},
 				sorted = {},
 				t;
@@ -843,7 +839,7 @@
 
 			function getParent (selector, type) {
 				var $inputs = $.kladr.getInputs(selector),
-					types = $.kladr.getTypes(),
+					types = $.kladr.type,
 					parents = {},
 					parent = null,
 					t;
