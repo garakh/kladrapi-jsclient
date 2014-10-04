@@ -3,7 +3,6 @@ jQuery Kladr
 
 Исходный код плагина
 
-* **core.js** - Реализует $.kladr. Позволяет обращаться к сервису [kladr-api.ru] [1].
-* **plugin.js** - Реализует плагин $( '' ).kladr.
-
-[1]: http://kladr-api.ru/        "КЛАДР API"
+* **core.js** - Реализует $.kladr.
+* **kladr.js** - Реализует плагин $('input').kladr.
+* **kladr_zip.js** - Реализует плагин $('input').kladrZip.
