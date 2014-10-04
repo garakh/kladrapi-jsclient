@@ -76,9 +76,9 @@ jQuery Kladr
 * **valueFormat** *= function( obj, query) { return label; }* – функция для 
 форматирования подставляемых в поле ввода значений. В качестве параметров 
 принимает *obj* – объект КЛАДР, *query* – объект запроса.
-* **showSpinner** *= function ($spinner) {}* - функция выводящая ajax-крутилку.
+* **showSpinner** *= function ($spinner) {}* - функция, выводящая ajax-крутилку.
 В качестве параметра принимает jQuery объект ajax-крутилки.
-* **hideSpinner** *= function ($spinner) {}* - функция скрывающая ajax-крутилку.
+* **hideSpinner** *= function ($spinner) {}* - функция, скрывающая ajax-крутилку.
 В качестве параметра принимает jQuery объект ajax-крутилки.
 
 События плагина $('input').kladr
