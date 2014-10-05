@@ -29,7 +29,7 @@ $(function () {
 			$container.find('.js-log li').hide();
 
 			for (i in obj) {
-				$log = $container.find('#' + i);
+				$log = $container.find('[data-prop="' + i + '"]');
 
 				if ($log.length) {
 					$log.find('.value').text(obj[i]);
@@ -317,7 +317,7 @@ $(function () {
 			$container.find('.js-log li').hide();
 
 			for (i in obj) {
-				$log = $container.find('#' + i);
+				$log = $container.find('[data-prop="' + i + '"]');
 
 				if ($log.length) {
 					$log.find('.value').text(obj[i]);
