@@ -470,10 +470,11 @@
 					return;
 				}
 
+                setCurrent(null);
+
 				var name = $input.val();
 
 				if (!$.trim(name)) {
-					setCurrent(null);
 					error(false);
 					close();
 					return;
@@ -611,6 +612,11 @@
 			function check () {
 				if (!get('verify')) return;
 				if (!trigger('check_before')) return;
+
+                if (get('current')) {
+                    error(false);
+                    return;
+                }
 
 				var name = $.trim($input.val());
 
