@@ -703,7 +703,7 @@
 				$input.trigger('kladr_' + event, obj);
 
 				if ($.type(get(eventProp)) === 'function') {
-					return get(eventProp).call($input.get(0), obj);
+					return get(eventProp).call($input.get(0), obj) !== false;
 				}
 
 				return true;
