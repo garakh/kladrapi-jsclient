@@ -1,5 +1,4 @@
 /* ---------------------- common -------------------- */
-
 .address {
     width: 390px;
     margin-top: 50px;
@@ -56,6 +55,7 @@
     font-weight: bold;
     font-size: 14px;
     margin: 0;
+    padding: 0;
     margin-bottom: 10px;
 }
 
@@ -65,13 +65,26 @@
     list-style-type: none;
 }
 
-.addition li {
+.addition ul li,
+.addition p {
+    line-height: 13px;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    color: rgb(85, 85, 85);
+    padding: 0;
     margin-bottom: 5px;
 }
 
 .addition .name {
     font-style: italic;
 }
+
+#kladr_autocomplete a {
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    color: #555;
+}
+
 
 /* ------------------ one string example ----------------- */
 
@@ -81,7 +94,7 @@
 
 #one_string .field .group-name {
     margin-top: 25px;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
 }
 
 #one_string .field input {
@@ -90,6 +103,7 @@
 
 #one_string .field label {
     display: inline;
+    margin-right: 15px;
 }
 
 #one_string .field [type="radio"] {
@@ -97,6 +111,7 @@
     width: 20px;
     vertical-align: middle;
 }
+
 
 /* ----------------- type code example ------------------ */
 
@@ -106,6 +121,7 @@
 
 #type_code .field label {
     display: block;
+    margin-top: 5px;
 }
 
 #type_code .field [type="radio"] {
@@ -113,6 +129,7 @@
     width: 20px;
     vertical-align: middle;
 }
+
 
 /* -------------------- form example -------------------- */
 
@@ -157,6 +174,7 @@
     border: 7px solid;
     border-right-color: #f2dede;
 }
+
 
 /* ----------------- form with map example ---------------- */
 
@@ -203,7 +221,7 @@
 #form_with_map .addition .block {
     margin-bottom: 20px;
     min-height: 165px;
-    height: 165px;
+    height: 177px;
     width: 298px;
 }
 
