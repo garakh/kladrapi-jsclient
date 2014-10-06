@@ -2,35 +2,35 @@
 	var defaultOptions = {
 
 		// Api params
-		token:        null,
-		key:          null,
-		type:         null,
-		typeCode:     null,
-		parentType:   null,
-		parentId:     null,
-		limit:        10,
-		oneString:    false,
-		withParents:  false,
+		token: null,
+		key: null,
+		type: null,
+		typeCode: null,
+		parentType: null,
+		parentId: null,
+		limit: 10,
+		oneString: false,
+		withParents: false,
 
 		// Plugin options
-		parentInput:  null,
-		verify:       false,
-		spinner:      true,
+		parentInput: null,
+		verify: false,
+		spinner: true,
 
 		// Plugin events
-		open:         null,
-		close:        null,
-		send:         null,
-		receive:      null,
-		select:       null,
-		check:        null,
+		open: null,
+		close: null,
+		send: null,
+		receive: null,
+		select: null,
+		check: null,
 
 		// Plugin events before actions
-		openBefore:   null,
-		closeBefore:  null,
-		sendBefore:   null,
+		openBefore: null,
+		closeBefore: null,
+		sendBefore: null,
 		selectBefore: null,
-		checkBefore:  null,
+		checkBefore: null,
 
 		source: function (query, callback) {
 			$.kladr.api(query, callback);
@@ -122,8 +122,8 @@
 	};
 
 	var keys = {
-		up:    38,
-		down:  40,
+		up: 38,
+		down: 40,
 		enter: 13
 	};
 
@@ -444,7 +444,7 @@
 				position.height = inputHeight;
 
 				$ac.css({
-					top:  inputOffset.top + inputHeight + 'px',
+					top: inputOffset.top + inputHeight + 'px',
 					left: inputOffset.left
 				});
 
@@ -455,7 +455,7 @@
 					spinnerHeight = $spinner.height();
 
 				$spinner.css({
-					top:  inputOffset.top + (inputHeight - spinnerHeight) / 2 - 1,
+					top: inputOffset.top + (inputHeight - spinnerHeight) / 2 - 1,
 					left: inputOffset.left + inputWidth - spinnerWidth - 2
 				});
 			}
@@ -470,7 +470,7 @@
 					return;
 				}
 
-                setCurrent(null);
+				setCurrent(null);
 
 				var name = $input.val();
 
@@ -613,10 +613,10 @@
 				if (!get('verify')) return;
 				if (!trigger('check_before')) return;
 
-                if (get('current')) {
-                    error(false);
-                    return;
-                }
+				if (get('current')) {
+					error(false);
+					return;
+				}
 
 				var name = $.trim($input.val());
 
@@ -684,10 +684,10 @@
 			function checkAutoFill () {
 				var count = 0,
 					interval = isFilled() || setInterval(function () {
-						if (++count > 5 || isFilled()) {
-							clearInterval(interval);
-						}
-					}, 100);
+							if (++count > 5 || isFilled()) {
+								clearInterval(interval);
+							}
+						}, 100);
 
 				function isFilled () {
 					if ($input.val()) {
@@ -784,7 +784,7 @@
 					if (types.hasOwnProperty(t) && parents[t]) {
 						parent = {
 							type: t,
-							id:   parents[t]
+							id: parents[t]
 						}
 					}
 				}
@@ -857,8 +857,8 @@
 
 	function readParams (param1, param2) {
 		var params = {
-			obj:   false,
-			str:   false,
+			obj: false,
+			str: false,
 			isGet: false
 		};
 

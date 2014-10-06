@@ -6,14 +6,14 @@
 			var key = e.charCode || e.keyCode || 0,
 				allow = (
 					key == 8 ||
-						key == 9 ||
-						key == 13 ||
-						key == 46 ||
-						key == 110 ||
-						key == 190 ||
-						(key >= 35 && key <= 40) ||
-						(key >= 96 && key <= 105)
-					);
+					key == 9 ||
+					key == 13 ||
+					key == 46 ||
+					key == 110 ||
+					key == 190 ||
+					(key >= 35 && key <= 40) ||
+					(key >= 96 && key <= 105)
+				);
 
 			if ($(this).val().length >= 6) {
 				return allow;
@@ -32,10 +32,10 @@
 			}
 
 			$.kladr.api({
-				type:        $.kladr.type.building,
-				zip:         zip,
+				type: $.kladr.type.building,
+				zip: zip,
 				withParents: true,
-				limit:       1
+				limit: 1
 			}, function (objs) {
 				var obj = objs.length && objs[0], i, $input, source;
 				objs = [];

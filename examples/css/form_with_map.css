@@ -3,17 +3,20 @@
     font-size: 14px;
     font-family: Helvetica, Arial, sans-serif;
 }
+
 input, button {
     outline: none;
 }
+
 .address {
     width: 808px;
     margin: 40px auto 0;
     padding: 40px;
     border: 2px solid #e1e1e1;
     background-color: #f7f7f7;
-    box-shadow: rgba(0,0,0,0.075) 1px 1px 5px;
+    box-shadow: rgba(0, 0, 0, 0.075) 1px 1px 5px;
 }
+
 .address h1 {
     margin: 0;
     padding: 0;
@@ -21,13 +24,16 @@ input, button {
     padding-bottom: 40px;
     text-align: center;
 }
+
 .address .kladr-error {
     color: #df2c0f;
 }
+
 .col-1 {
     float: left;
 }
-.col-2{
+
+.col-2 {
     margin-left: 384px;
 }
 
@@ -36,10 +42,12 @@ input, button {
     width: 80px;
     vertical-align: middle;
 }
+
 .field {
     margin-bottom: 20px;
     padding: 0;
 }
+
 .field input {
     height: 2em;
     width: 240px;
@@ -47,6 +55,7 @@ input, button {
     padding: 0 7px;
     color: #666;
 }
+
 .panel-map {
     width: 384px;
     height: 582px;
@@ -55,9 +64,11 @@ input, button {
     background: #ffffff;
     background-size: 400px 250px;
 }
+
 .addition {
     padding-top: 15px;
 }
+
 .addition .block {
     display: block;
     height: 165px;
@@ -68,24 +79,29 @@ input, button {
     font-size: 13px;
     width: 298px;
 }
+
 .addition .block:nth-child(1) {
     height: 88px;
     line-height: 20px;
 }
+
 .addition .title {
     font-weight: bold;
     font-size: 14px;
     margin: 0;
     margin-bottom: 10px;
 }
+
 .addition ul {
     margin: 0;
     padding: 0;
     list-style-type: none;
 }
+
 .addition li {
     margin-bottom: 5px;
 }
+
 .addition .name {
     font-style: italic;
 }

@@ -1,10 +1,10 @@
 $(function () {
-	var $zip      = $('[name="zip"]'),
-		$region   = $('[name="region"]'),
+	var $zip = $('[name="zip"]'),
+		$region = $('[name="region"]'),
 		$district = $('[name="district"]'),
-		$city     = $('[name="city"]'),
-		$street   = $('[name="street"]'),
-	 	$building = $('[name="building"]');
+		$city = $('[name="city"]'),
+		$street = $('[name="street"]'),
+		$building = $('[name="building"]');
 
 	var $tooltip = $('.tooltip');
 

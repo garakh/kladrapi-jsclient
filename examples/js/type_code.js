@@ -1,5 +1,5 @@
 $(function () {
-	var $city     = $('[name="city"]'),
+	var $city = $('[name="city"]'),
 		$typeCode = $('[name="typecode"]');
 
 	$city.kladr({

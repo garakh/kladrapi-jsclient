@@ -6,25 +6,29 @@
     padding: 20px 40px 30px;
     border: 2px solid #e1e1e1;
     background-color: #f7f7f7;
-    box-shadow: rgba(0,0,0,0.075) 1px 1px 5px;
+    box-shadow: rgba(0, 0, 0, 0.075) 1px 1px 5px;
     color: #555;
     font-size: 14px;
     font-family: Helvetica, Arial, sans-serif;
 }
+
 .address h2 {
     margin: 0;
     padding: 0;
     font-size: 20px;
     text-align: center;
 }
+
 .address input,
 .address button {
     outline: none;
 }
+
 .field {
     margin-bottom: 10px;
     padding: 0;
 }
+
 .field input {
     height: 2em;
     width: 370px;
@@ -32,9 +36,11 @@
     padding: 0 7px;
     color: #666;
 }
+
 .addition {
     padding-top: 15px;
 }
+
 .addition .block {
     display: block;
     min-height: 170px;
@@ -52,72 +58,82 @@
     margin: 0;
     margin-bottom: 10px;
 }
+
 .addition ul {
     margin: 0;
     padding: 0;
     list-style-type: none;
 }
+
 .addition li {
     margin-bottom: 5px;
 }
+
 .addition .name {
     font-style: italic;
 }
-
 
 /* ------------------ one string example ----------------- */
 
 #one_string .address {
     width: 485px;
 }
+
 #one_string .field .group-name {
     margin-top: 25px;
     margin-bottom: 5px;
 }
+
 #one_string .field input {
     width: 470px;
 }
+
 #one_string .field label {
     display: inline;
 }
+
 #one_string .field [type="radio"] {
     height: 1.5em;
     width: 20px;
     vertical-align: middle;
 }
 
-
 /* ----------------- type code example ------------------ */
 
 #type_code .address {
     width: 390px;
 }
+
 #type_code .field label {
     display: block;
 }
+
 #type_code .field [type="radio"] {
     height: 1.5em;
     width: 20px;
     vertical-align: middle;
 }
 
-
 /* -------------------- form example -------------------- */
 
 #form .address {
     width: 400px;
 }
+
 #form .field {
     margin-bottom: 20px;
 }
+
 #form .field label {
     display: inline-block;
     width: 80px;
     vertical-align: middle;
 }
+
 #form .field input {
     width: 295px;
 }
+
 #form .tooltip {
     position: absolute;
     top: 16px;
@@ -130,6 +146,7 @@
     background-color: #f2dede;
     opacity: 0.8;
 }
+
 #form .tooltip b {
     position: absolute;
     display: block;
@@ -141,33 +158,39 @@
     border-right-color: #f2dede;
 }
 
-
 /* ----------------- form with map example ---------------- */
 
 #form_with_map .address {
     width: 808px;
     padding: 40px;
 }
+
 #form_with_map .address .kladr-error {
     color: #df2c0f;
 }
+
 #form_with_map .col-1 {
     float: left;
 }
-#form_with_map .col-2{
+
+#form_with_map .col-2 {
     margin-left: 384px;
 }
+
 #form_with_map .field {
     margin-bottom: 20px;
 }
+
 #form_with_map .field label {
     display: inline-block;
     width: 80px;
     vertical-align: middle;
 }
+
 #form_with_map .field input {
     width: 240px;
 }
+
 #form_with_map .panel-map {
     width: 384px;
     height: 582px;
@@ -176,12 +199,14 @@
     background: #ffffff;
     background-size: 400px 250px;
 }
+
 #form_with_map .addition .block {
     margin-bottom: 20px;
     min-height: 165px;
     height: 165px;
     width: 298px;
 }
+
 #form_with_map .addition .block:nth-child(1) {
     min-height: 88px;
     height: 88px;

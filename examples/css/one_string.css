@@ -3,17 +3,20 @@ body, input {
     font-size: 14px;
     font-family: Helvetica, Arial, sans-serif;
 }
+
 input, button {
     outline: none;
 }
+
 .address {
     width: 485px;
     margin: 40px auto 0;
     padding: 40px 40px 30px;
     border: 2px solid #e1e1e1;
     background-color: #f7f7f7;
-    box-shadow: rgba(0,0,0,0.075) 1px 1px 5px;
+    box-shadow: rgba(0, 0, 0, 0.075) 1px 1px 5px;
 }
+
 .address h1 {
     margin: 0;
     padding: 0;
@@ -21,14 +24,17 @@ input, button {
     padding-bottom: 40px;
     text-align: center;
 }
+
 .field {
     margin-bottom: 10px;
     padding: 0;
 }
+
 .field .group-name {
     margin-top: 25px;
     margin-bottom: 5px;
 }
+
 .field input {
     height: 2em;
     width: 470px;
@@ -36,14 +42,17 @@ input, button {
     padding: 0 7px;
     color: #666;
 }
+
 .field [type="radio"] {
     height: 1.5em;
     width: 20px;
     vertical-align: middle;
 }
+
 .addition {
     padding-top: 15px;
 }
+
 .addition .block {
     display: block;
     min-height: 170px;
@@ -61,14 +70,17 @@ input, button {
     margin: 0;
     margin-bottom: 10px;
 }
+
 .addition ul {
     margin: 0;
     padding: 0;
     list-style-type: none;
 }
+
 .addition li {
     margin-bottom: 5px;
 }
+
 .addition .name {
     font-style: italic;
 }

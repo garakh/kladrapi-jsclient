@@ -14,65 +14,65 @@ $(function () {
 	(function () {
 		var $container = $(document.getElementById('one_string'));
 
-        var $address = $container.find('[name="address"]'),
-            $parent = $container.find('[name="parent"]');
+		var $address = $container.find('[name="address"]'),
+			$parent = $container.find('[name="parent"]');
 
-        $address.kladr({
-            oneString: true,
-            select: function (obj) {
-                log(obj);
-            }
-        });
+		$address.kladr({
+			oneString: true,
+			select: function (obj) {
+				log(obj);
+			}
+		});
 
-        $parent.change(function () {
-            changeParent($(this).val());
-        });
+		$parent.change(function () {
+			changeParent($(this).val());
+		});
 
-        changeParent($container.find('[name="parent"]:checked').val());
+		changeParent($container.find('[name="parent"]:checked').val());
 
-        function changeParent (value) {
-            var parentType = null,
-                parentId = null;
+		function changeParent (value) {
+			var parentType = null,
+				parentId = null;
 
-            switch (value) {
-                case 'moscow':
-                    parentType = $.kladr.type.city;
-                    parentId = '7700000000000';
-                    break;
+			switch (value) {
+				case 'moscow':
+					parentType = $.kladr.type.city;
+					parentId = '7700000000000';
+					break;
 
-                case 'petersburg':
-                    parentType = $.kladr.type.city;
-                    parentId = '7800000000000';
-                    break;
-            }
+				case 'petersburg':
+					parentType = $.kladr.type.city;
+					parentId = '7800000000000';
+					break;
+			}
 
-            $address.kladr({
-                parentType: parentType,
-                parentId: parentId
-            });
-        }
+			$address.kladr({
+				parentType: parentType,
+				parentId: parentId
+			});
+		}
 
-        function log (obj) {
-            var $log, i;
+		function log (obj) {
+			var $log, i;
 
-            $container.find('.js-log li').hide();
+			$container.find('.js-log li').hide();
 
-            for (i in obj) {
-                $log = $container.find('[data-prop="' + i + '"]');
+			for (i in obj) {
+				$log = $container.find('[data-prop="' + i + '"]');
 
-                if ($log.length) {
-                    $log.find('.value').text(obj[i]);
-                    $log.show();
-                }
-            }
-        }
+				if ($log.length) {
+					$log.find('.value').text(obj[i]);
+					$log.show();
+				}
+			}
+		}
 	})();
 
 	// Type code example
 	(function () {
 		var $container = $(document.getElementById('type_code'));
 
-		var $city     = $container.find('[name="city"]'),
+		var $city = $container.find('[name="city"]'),
 			$typeCode = $container.find('[name="typecode"]');
 
 		$city.kladr({
@@ -110,11 +110,11 @@ $(function () {
 	(function () {
 		var $container = $(document.getElementById('form'));
 
-		var $zip      = $container.find('[name="zip"]'),
-			$region   = $container.find('[name="region"]'),
+		var $zip = $container.find('[name="zip"]'),
+			$region = $container.find('[name="region"]'),
 			$district = $container.find('[name="district"]'),
-			$city     = $container.find('[name="city"]'),
-			$street   = $container.find('[name="street"]'),
+			$city = $container.find('[name="city"]'),
+			$street = $container.find('[name="street"]'),
 			$building = $container.find('[name="building"]');
 
 		var $tooltip = $container.find('.tooltip');
@@ -182,10 +182,10 @@ $(function () {
 	(function () {
 		var $container = $(document.getElementById('form_with_map'));
 
-		var $region   = $container.find('[name="region"]'),
+		var $region = $container.find('[name="region"]'),
 			$district = $container.find('[name="district"]'),
-			$city     = $container.find('[name="city"]'),
-			$street   = $container.find('[name="street"]'),
+			$city = $container.find('[name="city"]'),
+			$street = $container.find('[name="street"]'),
 			$building = $container.find('[name="building"]');
 
 		var map = null,
