@@ -14,29 +14,58 @@ $(function () {
 	(function () {
 		var $container = $(document.getElementById('one_string'));
 
-		$container
-			.find('[name="address"]')
-			.kladr({
-				oneString: true,
-				select: function (obj) {
-					log(obj);
-				}
-			});
+        var $address = $container.find('[name="address"]'),
+            $parent = $container.find('[name="parent"]');
 
-		function log (obj) {
-			var $log, i;
+        $address.kladr({
+            oneString: true,
+            select: function (obj) {
+                log(obj);
+            }
+        });
 
-			$container.find('.js-log li').hide();
+        $parent.change(function () {
+            changeParent($(this).val());
+        });
 
-			for (i in obj) {
-				$log = $container.find('[data-prop="' + i + '"]');
+        changeParent($container.find('[name="parent"]:checked').val());
 
-				if ($log.length) {
-					$log.find('.value').text(obj[i]);
-					$log.show();
-				}
-			}
-		}
+        function changeParent (value) {
+            var parentType = null,
+                parentId = null;
+
+            switch (value) {
+                case 'moscow':
+                    parentType = $.kladr.type.city;
+                    parentId = '7700000000000';
+                    break;
+
+                case 'petersburg':
+                    parentType = $.kladr.type.city;
+                    parentId = '7800000000000';
+                    break;
+            }
+
+            $address.kladr({
+                parentType: parentType,
+                parentId: parentId
+            });
+        }
+
+        function log (obj) {
+            var $log, i;
+
+            $container.find('.js-log li').hide();
+
+            for (i in obj) {
+                $log = $container.find('[data-prop="' + i + '"]');
+
+                if ($log.length) {
+                    $log.find('.value').text(obj[i]);
+                    $log.show();
+                }
+            }
+        }
 	})();
 
 	// Type code example

@@ -71,8 +71,20 @@ input, button {
 #one_string .address {
     width: 485px;
 }
+#one_string .field .group-name {
+    margin-top: 25px;
+    margin-bottom: 5px;
+}
 #one_string .field input {
     width: 470px;
+}
+#one_string .field label {
+    display: inline;
+}
+#one_string .field [type="radio"] {
+    height: 1.5em;
+    width: 20px;
+    vertical-align: middle;
 }
 
 

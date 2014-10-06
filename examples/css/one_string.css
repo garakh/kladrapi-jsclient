@@ -25,12 +25,21 @@ input, button {
     margin-bottom: 10px;
     padding: 0;
 }
+.field .group-name {
+    margin-top: 25px;
+    margin-bottom: 5px;
+}
 .field input {
     height: 2em;
     width: 470px;
     border: 1px solid #d8d8d8;
     padding: 0 7px;
     color: #666;
+}
+.field [type="radio"] {
+    height: 1.5em;
+    width: 20px;
+    vertical-align: middle;
 }
 .addition {
     padding-top: 15px;
