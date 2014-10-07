@@ -368,6 +368,9 @@
 					.on('mouseleave.kladr', function () {
 						isActive = false;
 					});
+
+				$(window)
+					.on('resize.kladr', position);
 			});
 
 			function create (callback) {
@@ -622,6 +625,7 @@
 
 				if (!name) {
 					ret(null, false);
+					trigger('check', null);
 					return;
 				}
 
@@ -729,16 +733,16 @@
 
 			function getQuery (name) {
 				var query = {
-						token:       get('token'),
-						key:         get('key'),
-						type:        get('type'),
-						typeCode:    get('typeCode'),
-						name:        fixName(name),
-						parentType:  get('parentType'),
-						parentId:    get('parentId'),
-						oneString:   get('oneString'),
+						token: get('token'),
+						key: get('key'),
+						type: get('type'),
+						typeCode: get('typeCode'),
+						name: fixName(name),
+						parentType: get('parentType'),
+						parentId: get('parentId'),
+						oneString: get('oneString'),
 						withParents: get('withParents'),
-						limit:       get('limit')
+						limit: get('limit')
 					},
 					parentInput = get('parentInput'),
 					parent;

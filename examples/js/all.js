@@ -199,7 +199,6 @@ $(function () {
 			.add($building)
 			.kladr({
 				parentInput: $container.find('.js-form-address'),
-				withParents: true,
 				verify: true,
 				labelFormat: function (obj, query) {
 					var label = '';
@@ -222,18 +221,27 @@ $(function () {
 						label += '<strong>' + obj.name + '</strong>';
 					}
 
+					if(obj.parents){
+						for(var k = obj.parents.length-1; k>-1; k--){
+							var parent = obj.parents[k];
+							if(parent.name){
+								if(label) label += '<small>, </small>';
+								label += '<small>' + parent.name + ' ' + parent.typeShort + '.</small>';
+							}
+						}
+					}
+
 					return label;
 				},
 				select: function (obj) {
-					$(this).parent().find('label').text(obj.type);
-
+					setLabel($(this), obj.type);
 					log(obj);
 					addressUpdate();
 					mapUpdate();
 				},
 				check: function (obj) {
 					if (obj) {
-						$(this).parent().find('label').text(obj.type);
+						setLabel($(this), obj.type);
 					}
 
 					log(obj);
@@ -247,6 +255,9 @@ $(function () {
 		$city.kladr('type', $.kladr.type.city);
 		$street.kladr('type', $.kladr.type.street);
 		$building.kladr('type', $.kladr.type.building);
+
+		// Включаем получение родительских объектов для населённых пунктов
+		$city.kladr('withParents', true);
 
 		// Отключаем проверку введённых данных для строений
 		$building.kladr('verify', false);
@@ -268,6 +279,11 @@ $(function () {
 				}
 			});
 		});
+
+		function setLabel ($input, text) {
+			text = text.charAt(0).toUpperCase() + text.substr(1).toLowerCase();
+			$input.parent().find('label').text(text);
+		}
 
 		function mapUpdate () {
 			var zoom = 4;

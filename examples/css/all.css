@@ -12,7 +12,7 @@
 }
 
 .address h2 {
-    margin: 0;
+    margin: 0 0 20px 0;
     padding: 0;
     font-size: 20px;
     text-align: center;
@@ -79,10 +79,20 @@
     font-style: italic;
 }
 
-#kladr_autocomplete a {
+#kladr_autocomplete a,
+#kladr_autocomplete strong,
+#kladr_autocomplete small {
     font-family: Helvetica, Arial, sans-serif;
     font-size: 14px;
+}
+
+#kladr_autocomplete a {
     color: #555;
+}
+
+#kladr_autocomplete small {
+    color: #AAA;
+    font-size: 12px;
 }
 
 
