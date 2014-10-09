@@ -1,6 +1,6 @@
 {
   "name": "jquery.kladr",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "main": "jquery.kladr.min.js",
   "homepage": "https://github.com/garakh/kladrapi-jsclient",
   "authors": [
@@ -16,5 +16,8 @@
     "gulpfile.js",
     "package.json",
     "*.md"
-  ]
+  ],
+  "dependencies": {
+		"jquery": ">=1.6"
+	}
 }
