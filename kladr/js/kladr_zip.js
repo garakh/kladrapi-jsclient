@@ -37,7 +37,7 @@
 				withParents: true,
 				limit: 1
 			}, function (objs) {
-				var obj = objs.length && objs[0], i, $input, source;
+				var obj = objs.length && objs[0], i, $input, controller;
 				objs = [];
 
 				if (obj) {
@@ -52,20 +52,7 @@
 					for (i in objs) {
 						if (objs.hasOwnProperty(i)) {
 							$input = $container.find('[data-kladr-type="' + objs[i].contentType + '"]');
-							source = $input.kladr('source');
-
-							(function () {
-								var o = objs[i];
-
-								$input
-									.val(o.name)
-									.kladr('source', function (query, callback) {
-										callback([o]);
-									});
-							})();
-
-							$input.trigger('blur');
-							$input.kladr('source', source);
+							$input.kladr('controller').setValue(objs[i]);
 						}
 					}
 				}

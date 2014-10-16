@@ -118,7 +118,8 @@
 	};
 
 	var readOnlyParams = {
-		current: null
+		current: null,
+		controller: null
 	};
 
 	var keys = {
@@ -402,6 +403,8 @@
 					$spinner = $('<div class="spinner' + guid + ' spinner" style="display: none;"></div>')
 						.appendTo($container);
 
+					createController();
+
 					position();
 					checkAutoFill();
 				}
@@ -684,6 +687,32 @@
 					error(er);
 					setCurrent(obj);
 				}
+			}
+
+			function createController () {
+				var controller = {
+
+					setValue: function (value) {
+						var obj = null,
+							query = null;
+
+						if ($.type(value) === 'object') {
+							obj = value;
+							query = getQuery('');
+						}
+						else {
+							// not completed
+							return;
+						}
+
+						$input.val(obj ? get('valueFormat')(obj, query) : '');
+						setCurrent(obj);
+
+						return controller;
+					}
+				};
+
+				set('controller', controller);
 			}
 
 			function checkAutoFill () {
