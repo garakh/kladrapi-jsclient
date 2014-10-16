@@ -349,7 +349,7 @@
 					.attr('data-kladr-one-string', get('oneString') || null)
 					.on('keyup.kladr', open)
 					.on('keydown.kladr', keySelect)
-					.on('blur.kladr', function () {
+					.on('blur.kladr change.kladr', function () {
 						if (!isActive) {
 							check();
 							close();
@@ -386,6 +386,7 @@
 					$ac = $container.find('.autocomplete' + guid);
 					$spinner = $container.find('.spinner' + guid);
 
+					$(window).off('.kladr');
 					$input.off('.kladr');
 					$ac.off('.kladr');
 				}
@@ -616,16 +617,16 @@
 				if (!get('verify')) return;
 				if (!trigger('check_before')) return;
 
-				if (get('current')) {
-					error(false);
-					return;
-				}
-
 				var name = $.trim($input.val());
 
 				if (!name) {
 					ret(null, false);
 					trigger('check', null);
+					return;
+				}
+
+				if (get('current')) {
+					error(false);
 					return;
 				}
 
