@@ -7,7 +7,7 @@
     "example": "examples"
   },
   "scripts": {
-	  "build": "npm install && gulp"
+	  "build": "npm install && (gulp || node node_modules/gulp/bin/gulp.js)"
   },
   "repository": {
     "type": "git",
