@@ -133,18 +133,18 @@
 
 			if (params.obj) {
 				for (var i in params.obj) {
-					if (defaultOptions.hasOwnProperty(i)) {
+					if (hasOwn(defaultOptions, i)) {
 						defaultOptions[i] = params.obj[i];
 					}
 				}
 			}
-			else if (params.str && !params.isGet && defaultOptions.hasOwnProperty(params.str[0])) {
+			else if (params.str && !params.isGet && hasOwn(defaultOptions, params.str[0])) {
 				defaultOptions[params.str[0]] = params.str[1];
 			}
 		},
 
 		getDefault: function (param) {
-			if (defaultOptions.hasOwnProperty(param)) {
+			if (hasOwn(defaultOptions, param)) {
 				return defaultOptions[param];
 			}
 
@@ -188,7 +188,7 @@
 						objs.push(obj);
 
 						for (i in objs) {
-							if (objs.hasOwnProperty(i)) {
+							if (hasOwn(objs, i)) {
 								filtered[objs[i].contentType] = objs[i];
 							}
 						}
@@ -203,7 +203,7 @@
 			});
 
 			for (t in types) {
-				if (types.hasOwnProperty(t) && filtered[t]) {
+				if (hasOwn(types, t) && filtered[t]) {
 					sorted[t] = filtered[t];
 				}
 			}
@@ -222,7 +222,7 @@
 				j;
 
 			for (i in objs) {
-				if (objs.hasOwnProperty(i)) {
+				if (hasOwn(objs, i)) {
 					if ($.type(objs[i]) === 'object') {
 						duplicate = false;
 						for (j = 0; j < lastIds.length; j++) {
@@ -292,12 +292,12 @@
 				set: function (params) {
 					if (params.obj) {
 						for (var i in params.obj) {
-							if (params.obj.hasOwnProperty(i) && defaultOptions.hasOwnProperty(i)) {
+							if (hasOwn(params.obj, i) && hasOwn(defaultOptions, i)) {
 								data[i] = params.obj[i];
 							}
 						}
 					}
-					else if (params.str && !params.isGet && defaultOptions.hasOwnProperty(params.str[0])) {
+					else if (params.str && !params.isGet && hasOwn(defaultOptions, params.str[0])) {
 						data[params.str[0]] = params.str[1];
 					}
 
@@ -305,7 +305,7 @@
 				},
 
 				get: function (param) {
-					if (defaultOptions.hasOwnProperty(param) || readOnlyParams.hasOwnProperty(param)) {
+					if (hasOwn(defaultOptions, param) || hasOwn(readOnlyParams, param)) {
 						return data[param];
 					}
 
@@ -318,7 +318,7 @@
 				},
 
 				_get: function (param) {
-					if (data.hasOwnProperty(param)) {
+					if (hasOwn(data, param)) {
 						return data[param];
 					}
 
@@ -414,7 +414,7 @@
 				$ac.empty();
 
 				for (var i in objs) {
-					if (objs.hasOwnProperty(i)) {
+					if (hasOwn(objs, i)) {
 						obj = objs[i];
 						value = get('valueFormat')(obj, query);
 						label = get('labelFormat')(obj, query);
@@ -656,7 +656,7 @@
 						obj = null;
 
 					for (var i in objs) {
-						if (objs.hasOwnProperty(i)) {
+						if (hasOwn(objs, i)) {
 							valueLowerCase = objs[i].name.toLowerCase();
 
 							if (nameLowerCase == valueLowerCase) {
@@ -785,7 +785,7 @@
 						return parent;
 					}
 
-					if (types.hasOwnProperty(t) && parents[t]) {
+					if (hasOwn(types, t) && parents[t]) {
 						parent = {
 							type: t,
 							id: parents[t]
@@ -874,7 +874,7 @@
 		if ($.type(param1) === 'string') {
 			params.str = [];
 			for (var i in arguments) {
-				if (arguments.hasOwnProperty(i)) {
+				if (hasOwn(arguments, i)) {
 					params.str[i] = arguments[i];
 				}
 			}
@@ -890,5 +890,9 @@
 	function getGuid () {
 		if (!getGuid.guid) getGuid.guid = 0;
 		return ++getGuid.guid;
+	}
+
+	function hasOwn(obj, property) {
+		return obj.hasOwnProperty(property);
 	}
 })(jQuery);

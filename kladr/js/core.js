@@ -149,12 +149,16 @@
 		}
 
 		for (var i in query) {
-			if (query.hasOwnProperty(i) && fields.hasOwnProperty(i) && query[i]) {
+			if (hasOwn(query, i) && hasOwn(fields, i) && query[i]) {
 				params[fields[i]] = query[i];
 			}
 		}
 
 		return params;
+	}
+
+	function hasOwn(obj, property) {
+		return obj.hasOwnProperty(property);
 	}
 
 	function error (error) {
