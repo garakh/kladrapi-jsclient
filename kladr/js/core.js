@@ -157,7 +157,7 @@
 		return params;
 	}
 
-	function hasOwn(obj, property) {
+	function hasOwn (obj, property) {
 		return obj.hasOwnProperty(property);
 	}
 
