@@ -693,21 +693,58 @@
 				var controller = {
 
 					setValue: function (value) {
-						var obj = null,
-							query = null;
-
 						if ($.type(value) === 'object') {
-							obj = value;
-							query = getQuery('');
-						}
-						else {
-							// not completed
-							return;
+							changeValue(value, getQuery(''));
+							return controller;
 						}
 
-						$input.val(obj ? get('valueFormat')(obj, query) : '');
-						setCurrent(obj);
+						if (!!value) {
+							value = $.trim(value + '');
 
+							if (value) {
+								var query = getQuery(value);
+
+								query.withParents = false;
+								query.limit = 10;
+
+								if (!trigger('send_before', query)) {
+									changeValue(null, query);
+									return controller;
+								}
+
+								trigger('send');
+
+								get('source')(query, function (objs) {
+									trigger('receive');
+
+									var nameLowerCase = query.name.toLowerCase(),
+										valueLowerCase = null,
+										obj = null;
+
+									for (var i in objs) {
+										if (hasOwn(objs, i)) {
+											valueLowerCase = objs[i].name.toLowerCase();
+
+											if (nameLowerCase == valueLowerCase) {
+												obj = objs[i];
+												break;
+											}
+										}
+									}
+
+									changeValue(obj, query);
+								});
+
+								return controller;
+							}
+						}
+
+						function changeValue(obj, query) {
+							$input.val(obj ? get('valueFormat')(obj, query) : '');
+							setCurrent(obj);
+						}
+
+						changeValue(null, null);
 						return controller;
 					}
 				};
