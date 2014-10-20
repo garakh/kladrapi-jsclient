@@ -693,17 +693,32 @@
 				var controller = {
 
 					setValue: function (value) {
+						var query = getQuery('');
+
 						if ($.type(value) === 'object') {
-							changeValue(value, getQuery(''));
+							changeValue(value, query);
 							return controller;
 						}
 
-						if (!!value) {
+						if ($.type(value) === 'number') {
+							query.parentType = query.type;
+							query.parentId = value;
+							query.limit = 1;
+
+							$.kladr.api(query, function (objs) {
+								if (objs.length) {
+									changeValue(objs[0], query);
+								}
+							});
+
+							return controller;
+						}
+
+						if ($.type(value) === 'string') {
 							value = $.trim(value + '');
 
 							if (value) {
-								var query = getQuery(value);
-
+								query.name = fixName(value);
 								query.withParents = false;
 								query.limit = 10;
 
@@ -745,6 +760,11 @@
 						}
 
 						changeValue(null, null);
+						return controller;
+					},
+
+					clear: function () {
+						controller.setValue(null);
 						return controller;
 					}
 				};
