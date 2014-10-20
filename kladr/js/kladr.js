@@ -764,8 +764,7 @@
 					},
 
 					clear: function () {
-						controller.setValue(null);
-						return controller;
+						return controller.setValue(null);
 					}
 				};
 
