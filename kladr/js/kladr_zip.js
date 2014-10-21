@@ -52,7 +52,7 @@
 					for (i in objs) {
 						if (objs.hasOwnProperty(i)) {
 							$input = $container.find('[data-kladr-type="' + objs[i].contentType + '"]');
-							$input.kladr('controller').setValue(objs[i]);
+							$input.kladr('controller').setValueByObject(objs[i]);
 						}
 					}
 				}

@@ -693,80 +693,98 @@
 				var controller = {
 
 					setValue: function (value) {
-						var query = getQuery('');
-
 						if ($.type(value) === 'object') {
-							changeValue(value, query);
-							return controller;
+							return controller.setValueByObject(value);
 						}
 
 						if ($.type(value) === 'number') {
-							query.parentType = query.type;
-							query.parentId = value;
-							query.limit = 1;
-
-							$.kladr.api(query, function (objs) {
-								if (objs.length) {
-									changeValue(objs[0], query);
-								}
-							});
-
-							return controller;
+							return controller.setValueById(value);
 						}
 
 						if ($.type(value) === 'string') {
-							value = $.trim(value + '');
+							return controller.setValueByName(value);
+						}
 
-							if (value) {
-								query.name = fixName(value);
-								query.withParents = false;
-								query.limit = 10;
+						if (!value) {
+							return controller.clear();
+						}
 
-								if (!trigger('send_before', query)) {
-									changeValue(null, query);
-									return controller;
-								}
+						return controller;
+					},
 
-								trigger('send');
+					setValueByName: function (name) {
+						name = $.trim(name + '');
 
-								get('source')(query, function (objs) {
-									trigger('receive');
+						if (name) {
+							var query = getQuery('');
 
-									var nameLowerCase = query.name.toLowerCase(),
-										valueLowerCase = null,
-										obj = null;
+							query.name = fixName(name);
+							query.withParents = false;
+							query.limit = 10;
 
-									for (var i in objs) {
-										if (hasOwn(objs, i)) {
-											valueLowerCase = objs[i].name.toLowerCase();
-
-											if (nameLowerCase == valueLowerCase) {
-												obj = objs[i];
-												break;
-											}
-										}
-									}
-
-									changeValue(obj, query);
-								});
-
+							if (!trigger('send_before', query)) {
+								changeValue(null, query);
 								return controller;
 							}
+
+							trigger('send');
+
+							get('source')(query, function (objs) {
+								trigger('receive');
+
+								var nameLowerCase = query.name.toLowerCase(),
+									valueLowerCase = null,
+									obj = null;
+
+								for (var i in objs) {
+									if (hasOwn(objs, i)) {
+										valueLowerCase = objs[i].name.toLowerCase();
+
+										if (nameLowerCase == valueLowerCase) {
+											obj = objs[i];
+											break;
+										}
+									}
+								}
+
+								changeValue(obj, query);
+							});
 						}
 
-						function changeValue(obj, query) {
-							$input.val(obj ? get('valueFormat')(obj, query) : '');
-							setCurrent(obj);
-						}
+						return controller;
+					},
 
-						changeValue(null, null);
+					setValueById: function (id) {
+						var query = getQuery('');
+
+						query.parentType = query.type;
+						query.parentId = id;
+						query.limit = 1;
+
+						$.kladr.api(query, function (objs) {
+							if (objs.length) {
+								changeValue(objs[0], query);
+							}
+						});
+
+						return controller;
+					},
+
+					setValueByObject: function (obj) {
+						changeValue(obj, getQuery(''));
 						return controller;
 					},
 
 					clear: function () {
-						return controller.setValue(null);
+						changeValue(null, null);
+						return controller;
 					}
 				};
+
+				function changeValue(obj, query) {
+					$input.val(obj ? get('valueFormat')(obj, query) : '');
+					setCurrent(obj);
+				}
 
 				set('controller', controller);
 			}
