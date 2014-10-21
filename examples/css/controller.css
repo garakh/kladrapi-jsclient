@@ -43,11 +43,11 @@ input, button {
 }
 
 .field .group-name {
-	margin-bottom: 5px;
+    margin-bottom: 5px;
 }
 
 .field [type="radio"] {
-	height: 1.5em;
-	width: 20px;
-	vertical-align: middle;
+    height: 1.5em;
+    width: 20px;
+    vertical-align: middle;
 }
