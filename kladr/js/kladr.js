@@ -106,7 +106,10 @@
 					$spinner.css('background-position', '0% ' + top + '%');
 
 					top += 5.555556;
-					if (top > 95) top = -0.2;
+
+					if (top > 95) {
+						top = -0.2;
+					}
 				}, 30);
 
 			$spinner.show();
@@ -245,7 +248,10 @@
 						type = '';
 					}
 
-					if (address) address += ', ';
+					if (address) {
+						address += ', ';
+					}
+
 					address += type + name;
 				}
 			}
@@ -460,8 +466,9 @@
 
 			function open (event) {
 				// return on control keys
-				if ((event.which > 8) && (event.which < 46))
+				if ((event.which > 8) && (event.which < 46)) {
 					return;
+				}
 
 				if (!trigger('open_before')) {
 					close();
@@ -514,7 +521,9 @@
 			}
 
 			function close () {
-				if (!trigger('close_before')) return;
+				if (!trigger('close_before')) {
+					return;
+				}
 
 				$ac.empty().hide();
 				trigger('close');
@@ -580,8 +589,9 @@
 			function mouseSelect () {
 				var $li = $(this);
 
-				if ($li.is('a'))
+				if ($li.is('a')) {
 					$li = $li.parents('li');
+				}
 
 				$li.addClass('active');
 
@@ -593,10 +603,14 @@
 			}
 
 			function select () {
-				if (!trigger('select_before')) return;
+				if (!trigger('select_before')) {
+					return;
+				}
 
 				var $a = $ac.find('.active a');
-				if (!$a.length) return;
+				if (!$a.length) {
+					return;
+				}
 
 				$input.val($a.attr('data-val'));
 
@@ -606,8 +620,13 @@
 			}
 
 			function check () {
-				if (!get('verify')) return;
-				if (!trigger('check_before')) return;
+				if (!get('verify')) {
+					return;
+				}
+
+				if (!trigger('check_before')) {
+					return;
+				}
 
 				var name = $.trim($input.val());
 
@@ -797,7 +816,9 @@
 			}
 
 			function trigger (event, obj) {
-				if (!event) return true;
+				if (!event) {
+					return true;
+				}
 
 				var eventProp = event.replace(/_([a-z])/ig, function (all, letter) {
 					return letter.toUpperCase();
@@ -981,7 +1002,10 @@
 	}
 
 	function getGuid () {
-		if (!getGuid.guid) getGuid.guid = 0;
+		if (!getGuid.guid) {
+			getGuid.guid = 0;
+		}
+
 		return ++getGuid.guid;
 	}
 
