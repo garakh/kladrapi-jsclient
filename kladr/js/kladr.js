@@ -64,7 +64,7 @@
 			objName = name.toLowerCase();
 			queryName = query.name.toLowerCase();
 			start = objName.indexOf(queryName);
-			start = start > 0 ? start : 0;
+			start = ~start ? start : 0;
 
 			if (queryName.length < objName.length) {
 				label += name.substr(0, start);
@@ -148,8 +148,6 @@
 			if (hasOwn(defaultOptions, param)) {
 				return defaultOptions[param];
 			}
-
-			return undefined;
 		},
 
 		getInputs: function (selector) {
@@ -260,7 +258,7 @@
 
 	$.fn.kladr = function (param1, param2) {
 		var params = readParams(param1, param2),
-			result = undefined;
+			result = null;
 
 		this.each(function () {
 			var res = kladr($(this), params);
@@ -269,8 +267,6 @@
 				result = res;
 				return false;
 			}
-
-			return undefined;
 		});
 
 		if (params.isGet) {
@@ -309,8 +305,6 @@
 					if (hasOwn(defaultOptions, param) || hasOwn(readOnlyParams, param)) {
 						return data[param];
 					}
-
-					return undefined;
 				},
 
 				_set: function (param, value) {
@@ -322,8 +316,6 @@
 					if (hasOwn(data, param)) {
 						return data[param];
 					}
-
-					return undefined;
 				}
 			};
 		})();
@@ -335,7 +327,6 @@
 
 			options.set(params);
 			callback();
-			return undefined;
 		}
 
 		return init(params, function () {
@@ -584,8 +575,6 @@
 						close();
 						break;
 				}
-
-				return undefined;
 			}
 
 			function mouseSelect () {
@@ -911,7 +900,7 @@
 					index;
 
 				for (var i = 0; i < testName.length; i++) {
-					if (noCorrect.indexOf(testName[i]) > -1) {
+					if (~noCorrect.indexOf(testName[i])) {
 						error(true);
 						return name;
 					}
@@ -919,7 +908,7 @@
 					ch = name[i];
 					index = pattern.indexOf(ch);
 
-					if (index > -1) {
+					if (~index) {
 						result += replace[index];
 						continue;
 					}
