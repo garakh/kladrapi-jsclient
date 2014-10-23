@@ -69,7 +69,7 @@
 			if (queryName.length < objName.length) {
 				label += name.substr(0, start);
 				label += '<strong>' + name.substr(start, queryName.length) + '</strong>';
-				label += name.substr(start + queryName.length, objName.length - queryName.length - start);
+				label += name.substr(start + queryName.length);
 			} else {
 				label += '<strong>' + name + '</strong>';
 			}
