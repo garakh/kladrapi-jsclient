@@ -154,21 +154,12 @@
 		},
 
 		getInputs: function (selector) {
-			var $inputs = $(),
+			var $source = $(selector || document.body),
 				inputSelector = '[data-kladr-type]';
 
-			$(selector || document.body)
-				.each(function () {
-					var $el = $(this);
-
-					$inputs = $inputs.add(
-						$el.is(inputSelector)
-							? $el
-							: $el.find(inputSelector)
-					);
-				});
-
-			return $inputs;
+			return $source
+				.filter(inputSelector)
+				.add($source.find(inputSelector));
 		},
 
 		getAddress: function (selector, build) {
