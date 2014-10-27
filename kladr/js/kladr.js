@@ -1002,11 +1002,9 @@
 	}
 
 	function getGuid () {
-		if (!getGuid.guid) {
-			getGuid.guid = 0;
-		}
-
-		return ++getGuid.guid;
+		return getGuid.guid
+			? ++getGuid.guid
+			: getGuid.guid = 1;
 	}
 
 	function hasOwn (obj, property) {
