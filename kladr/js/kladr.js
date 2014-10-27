@@ -800,9 +800,7 @@
 			function checkAutoFill () {
 				var count = 0,
 					interval = isFilled() || setInterval(function () {
-							if (++count > 5 || isFilled()) {
-								clearInterval(interval);
-							}
+							(++count > 5 || isFilled()) && clearInterval(interval);
 						}, 100);
 
 				function isFilled () {
