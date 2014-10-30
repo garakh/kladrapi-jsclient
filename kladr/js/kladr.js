@@ -901,33 +901,17 @@
 
 			function fixName (name) {
 				var noCorrect = 'abcdefghijklmnopqrstuvwxyz',
-					pattern = 'Ёё',
-					replace = 'Ее';
-
-				var testName = name.toLowerCase(),
-					result = '',
-					ch,
-					index;
+					testName = name.toLowerCase();
 
 				for (var i = 0; i < testName.length; i++) {
 					if (~noCorrect.indexOf(testName[i])) {
 						error(true);
 						return name;
 					}
-
-					ch = name[i];
-					index = pattern.indexOf(ch);
-
-					if (~index) {
-						result += replace[index];
-						continue;
-					}
-
-					result += ch;
 				}
 
 				error(false);
-				return result;
+				return name;
 			}
 
 			function setCurrent (obj) {
