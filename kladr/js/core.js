@@ -6,11 +6,11 @@
 
 	// Enum KLADR object types
 	$.kladr.type = {
-		region:   'region',  // Область
-		district: 'district',// Район
-		city:     'city',    // Город
-		street:   'street',  // Улица
-		building: 'building' // Строение
+		region:   'region',   // Область
+		district: 'district', // Район
+		city:     'city',     // Город
+		street:   'street',   // Улица
+		building: 'building'  // Строение
 	};
 
 	// Enum city object types
