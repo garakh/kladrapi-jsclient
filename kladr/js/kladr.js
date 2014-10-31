@@ -959,8 +959,8 @@
 		}
 
 		if ($.type(param1) === 'string') {
-			params.str = [].slice.call(arguments);
-			params.isGet = (params.str[1] === undefined);
+			params.str = arguments;
+			params.isGet = (arguments[1] === undefined);
 		}
 
 		return params;
