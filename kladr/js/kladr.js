@@ -960,10 +960,7 @@
 
 		if ($.type(param1) === 'string') {
 			params.str = [].slice.call(arguments);
-
-			if (params.str[1] === undefined) {
-				params.isGet = true;
-			}
+			params.isGet = (params.str[1] === undefined);
 		}
 
 		return params;
