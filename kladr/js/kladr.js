@@ -959,12 +959,7 @@
 		}
 
 		if ($.type(param1) === 'string') {
-			params.str = [];
-			for (var i in arguments) {
-				if (hasOwn(arguments, i)) {
-					params.str[i] = arguments[i];
-				}
-			}
+			params.str = [].slice.call(arguments);
 
 			if (params.str[1] === undefined) {
 				params.isGet = true;
