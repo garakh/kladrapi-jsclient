@@ -206,7 +206,6 @@
 
 		buildAddress: function (objs) {
 			var lastIds = [],
-				duplicate = false,
 				address = '',
 				zip = '',
 				name = '',
@@ -214,38 +213,31 @@
 				i,
 				j;
 
-			for (i in objs) {
-				if (hasOwn(objs, i)) {
-					if ($.type(objs[i]) === 'object') {
-						duplicate = false;
-						for (j = 0; j < lastIds.length; j++) {
-							if (lastIds[j] == objs[i].id) {
-								duplicate = true;
-								break;
+			forEachObjs:
+				for (i in objs) {
+					if (hasOwn(objs, i)) {
+						if ($.type(objs[i]) === 'object') {
+							for (j = 0; j < lastIds.length; j++) {
+								if (lastIds[j] == objs[i].id) {
+									continue forEachObjs;
+								}
 							}
+
+							lastIds.push(objs[i].id);
+
+							name = objs[i].name;
+							type = objs[i].typeShort + '. ';
+							zip = objs[i].zip || zip;
+						}
+						else {
+							name = objs[i];
+							type = '';
 						}
 
-						if (duplicate) {
-							continue;
-						}
-
-						lastIds.push(objs[i].id);
-						name = objs[i].name;
-						type = objs[i].typeShort + '. ';
-						zip = objs[i].zip || zip;
+						if (address) address += ', ';
+						address += type + name;
 					}
-					else {
-						name = objs[i];
-						type = '';
-					}
-
-					if (address) {
-						address += ', ';
-					}
-
-					address += type + name;
 				}
-			}
 
 			address = (zip ? zip + ', ' : '') + address;
 
