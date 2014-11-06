@@ -1,6 +1,6 @@
 {
   "name": "jquery.kladr",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "jQuery Kladr",
   "main": "jquery.kladr.min.js",
   "directories": {
@@ -16,7 +16,7 @@
   "author": {
     "name": "Alexandr Yakovlev",
     "email": "xescoder@gmail.com",
-    "url": "ru.linkedin.com/in/xescoder/"
+    "url": "https://www.linkedin.com/in/xescoder"
   },
   "keywords": [
 	"kladr",
