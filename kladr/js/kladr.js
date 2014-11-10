@@ -267,11 +267,12 @@
 
 	function kladr ($input, params) {
 		var options = (function () {
-			var data = $input.data('kladr-data');
+			var dataKey = 'kladr-data',
+				data = $input.data(dataKey);
 
 			if (!data) {
 				data = $.extend({}, defaultOptions, readOnlyParams);
-				$input.data('kladr-data', data);
+				$input.data(dataKey, data);
 			}
 
 			return {
@@ -287,7 +288,7 @@
 						data[params.str[0]] = params.str[1];
 					}
 
-					$input.data('kladr-data', data);
+					$input.data(dataKey, data);
 				},
 
 				get: function (param) {
@@ -298,7 +299,7 @@
 
 				_set: function (param, value) {
 					data[param] = value;
-					$input.data('kladr-data', data);
+					$input.data(dataKey, data);
 				},
 
 				_get: function (param) {
