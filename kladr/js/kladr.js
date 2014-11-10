@@ -320,8 +320,9 @@
 		}
 
 		return init(params, function () {
-			var $ac = null;
-			var $spinner = null;
+			var $ac = null,
+				$spinner = null,
+				eventNamespace = '.kladr';
 
 			create(function () {
 				var isActive = false;
@@ -329,9 +330,9 @@
 				$input
 					.attr('data-kladr-type', get('type') || '')
 					.attr('data-kladr-one-string', get('oneString') || null)
-					.on('keyup.kladr', open)
-					.on('keydown.kladr', keySelect)
-					.on('blur.kladr change.kladr', function () {
+					.on('keyup' + eventNamespace, open)
+					.on('keydown' + eventNamespace, keySelect)
+					.on('blur' + eventNamespace + ' change' + eventNamespace, function () {
 						if (!isActive) {
 							check();
 							close();
@@ -339,20 +340,20 @@
 					});
 
 				$ac
-					.on('touchstart.kladr click.kladr', 'li, a', function () {
+					.on('touchstart' + eventNamespace + ' click' + eventNamespace, 'li, a', function () {
 						isActive = true;
 						mouseSelect.call(this);
 						isActive = false;
 					})
-					.on('mouseenter.kladr', function () {
+					.on('mouseenter' + eventNamespace, function () {
 						isActive = true;
 					})
-					.on('mouseleave.kladr', function () {
+					.on('mouseleave' + eventNamespace, function () {
 						isActive = false;
 					});
 
 				$(window)
-					.on('resize.kladr', position);
+					.on('resize' + eventNamespace, position);
 			});
 
 			function create (callback) {
@@ -368,9 +369,9 @@
 					$ac = $container.find('.autocomplete' + guid);
 					$spinner = $container.find('.spinner' + guid);
 
-					$(window).off('.kladr');
-					$input.off('.kladr');
-					$ac.off('.kladr');
+					$(window).off(eventNamespace);
+					$input.off(eventNamespace);
+					$ac.off(eventNamespace);
 				}
 				else {
 					guid = getGuid();
