@@ -22,17 +22,19 @@
 
 	// Validate query
 	$.kladr.validate = function (query) {
+		var type = $.kladr.type;
+
 		switch (query.type) {
-			case $.kladr.type.region:
-			case $.kladr.type.district:
-			case $.kladr.type.city:
+			case type.region:
+			case type.district:
+			case type.city:
 				if (query.parentType && !query.parentId) {
 					error('parentId undefined');
 					return false;
 				}
 				break;
-			case $.kladr.type.street:
-				if (query.parentType != $.kladr.type.city) {
+			case type.street:
+				if (query.parentType != type.city) {
 					error('parentType must equal "city"');
 					return false;
 				}
@@ -41,9 +43,9 @@
 					return false;
 				}
 				break;
-			case $.kladr.type.building:
+			case type.building:
 				if (!query.zip) {
-					if (query.parentType != $.kladr.type.street) {
+					if (query.parentType != type.street) {
 						error('parentType must equal "street"');
 						return false;
 					}
@@ -66,7 +68,7 @@
 			return false;
 		}
 
-		if (query.typeCode && (query.type != $.kladr.type.city)) {
+		if (query.typeCode && (query.type != type.city)) {
 			error('type must equal "city"');
 			return false;
 		}
@@ -91,24 +93,20 @@
 			return;
 		}
 
-		var def = $.Deferred();
-
-		def.done(callback);
-		def.fail(function (er) {
-			error(er);
+		var timeout = setTimeout(function () {
 			callback([]);
-		});
+			timeout = null;
+		}, 3000);
 
 		$.getJSON($.kladr.url + "?callback=?",
 			toApiFormat(query),
 			function (data) {
-				def.resolve(data.result || []);
+				if (timeout) {
+					callback(data.result || []);
+					clearTimeout(timeout);
+				}
 			}
 		);
-
-		setTimeout(function () {
-			def.reject('Request error');
-		}, 3000);
 	};
 
 	// Check exist object
@@ -122,35 +120,27 @@
 		query.limit = 1;
 
 		$.kladr.api(query, function (objs) {
-			if (objs && objs.length) {
-				callback(objs[0]);
-			} else {
-				callback(false);
-			}
+			objs && objs.length
+				? callback(objs[0])
+				: callback(false);
 		});
 	};
 
 	function toApiFormat (query) {
 		var params = {},
 			fields = {
-				token:       'token',
-				key:         'key',
 				type:        'contentType',
-				typeCode:    'typeCode',
 				name:        'query',
-				zip:         'zip',
-				withParents: 'withParent',
-				oneString:   'oneString',
-				limit:       'limit'
+				withParents: 'withParent'
 			};
 
 		if (query.parentType && query.parentId) {
 			params[query.parentType + 'Id'] = query.parentId;
 		}
 
-		for (var i in query) {
-			if (hasOwn(query, i) && hasOwn(fields, i) && query[i]) {
-				params[fields[i]] = query[i];
+		for (var key in query) {
+			if (hasOwn(query, key) && query[key]) {
+				params[hasOwn(fields, key) ? fields[key] : key] = query[key];
 			}
 		}
 
@@ -162,6 +152,8 @@
 	}
 
 	function error (error) {
-		window.console && window.console.error && window.console.error(error);
+		var console = window.console;
+
+		console && console.error && console.error(error);
 	}
 })(jQuery);
