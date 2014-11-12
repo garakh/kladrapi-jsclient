@@ -783,14 +783,37 @@
 			}
 
 			function checkAutoFill () {
-				var count = 0,
-					interval = isFilled() || setInterval(function () {
-							(++count > 5 || isFilled()) && clearInterval(interval);
-						}, 100);
+				var count = 0;
+
+				(function test () {
+					if (++count > 5 || isFilled()) {
+						return;
+					}
+
+					setTimeout(test, 100);
+				})();
 
 				function isFilled () {
-					if ($input.val()) {
-						check();
+					var name = $input.val();
+
+					if (name) {
+						var query = getQuery(name),
+							queryType = query.type,
+							queryParentType = query.parentType,
+							type = $.kladr.type,
+							parentFilled = true;
+
+						// Crutch for street input
+						if (queryType == type.street && queryParentType != type.city) {
+							parentFilled = false;
+						}
+
+						// Crutch for building input
+						if (queryType == type.building && queryParentType != type.street) {
+							parentFilled = false;
+						}
+
+						parentFilled && check();
 						return !!get('current');
 					}
 
