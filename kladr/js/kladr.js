@@ -852,25 +852,28 @@
 			}
 
 			function getQuery (name) {
-				var query = {
-						token: get('token'),
-						key: get('key'),
-						type: get('type'),
-						typeCode: get('typeCode'),
-						name: fixName(name),
-						parentType: get('parentType'),
-						parentId: get('parentId'),
-						oneString: get('oneString'),
-						withParents: get('withParents'),
-						limit: get('limit')
-					},
-					parentInput = get('parentInput'),
-					parent;
+				var query = {},
+					fields = [
+						'token',
+						'key',
+						'type',
+						'typeCode',
+						'parentType',
+						'parentId',
+						'oneString',
+						'withParents',
+						'limit'
+					],
+					i;
 
-				// one string search crutch
-				if (query.oneString) {
-					query.withParents = true;
+				for (i = 0; i < fields.length; i++) {
+					query[fields[i]] = get(fields[i]);
 				}
+
+				query.name = fixName(name);
+
+				var parentInput = get('parentInput'),
+					parent;
 
 				if (parentInput) {
 					parent = getParent(parentInput, query.type);
@@ -879,6 +882,11 @@
 						query.parentType = parent.type;
 						query.parentId = parent.id;
 					}
+				}
+
+				// one string search crutch
+				if (query.oneString) {
+					query.withParents = true;
 				}
 
 				return query;
