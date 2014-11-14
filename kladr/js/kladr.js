@@ -617,7 +617,6 @@
 
 				if (!name) {
 					ret(null, false);
-					trigger('check', null);
 					return;
 				}
 
