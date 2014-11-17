@@ -45,8 +45,8 @@
 				break;
 			case type.building:
 				if (!query.zip) {
-					if (query.parentType != type.street) {
-						error('parentType must equal "street"');
+					if (!~$.inArray(query.parentType, [type.street, type.city])) {
+						error('parentType must equal "street" or "city"');
 						return false;
 					}
 					if (!query.parentId) {
