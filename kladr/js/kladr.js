@@ -808,7 +808,7 @@
 						}
 
 						// Crutch for building input
-						if (queryType == type.building && queryParentType != type.street) {
+						if (queryType == type.building && !~$.inArray(queryParentType, [type.street, type.city])) {
 							parentFilled = false;
 						}
 
