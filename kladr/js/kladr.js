@@ -983,8 +983,8 @@
 		}
 
 		if ($.type(param1) === 'string') {
-			params.str = arguments;
-			params.isGet = (arguments[1] === undefined);
+			params.str = [param1, param2];
+			params.isGet = (param2 === undefined);
 		}
 
 		return params;
