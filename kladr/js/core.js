@@ -1,8 +1,12 @@
-(function ($) {
+(function ($, window) {
 	$.kladr = {};
 
-	// Service URL
-	$.kladr.url = 'http://kladr-api.ru/api.php';
+	(function () {
+		var protocol = window.location.protocol == 'https:' ? 'https:' : 'http:';
+
+		// Service URL
+		$.kladr.url = protocol + '//kladr-api.ru/api.php';
+	})();
 
 	// Enum KLADR object types
 	$.kladr.type = {
@@ -156,4 +160,4 @@
 
 		console && console.error && console.error(error);
 	}
-})(jQuery);
+})(jQuery, window);
