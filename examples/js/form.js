@@ -38,12 +38,12 @@ $(function () {
 	// Подключаем плагин для почтового индекса
 	$zip.kladrZip();
 
-	function setLabel ($input, text) {
+	function setLabel($input, text) {
 		text = text.charAt(0).toUpperCase() + text.substr(1).toLowerCase();
 		$input.parent().find('label').text(text);
 	}
 
-	function showError ($input, message) {
+	function showError($input, message) {
 		$tooltip.find('span').text(message);
 
 		var inputOffset = $input.offset(),

@@ -15,7 +15,7 @@ $(function () {
 
 	changeParent($('[name="parent"]:checked').val());
 
-	function changeParent (value) {
+	function changeParent(value) {
 		var parentType = null,
 			parentId = null;
 
@@ -37,7 +37,7 @@ $(function () {
 		});
 	}
 
-	function log (obj) {
+	function log(obj) {
 		var $log, i;
 
 		$('.js-log li').hide();

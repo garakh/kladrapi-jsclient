@@ -130,7 +130,7 @@
 		});
 	};
 
-	function toApiFormat (query) {
+	function toApiFormat(query) {
 		var params = {},
 			fields = {
 				type:        'contentType',
@@ -151,11 +151,11 @@
 		return params;
 	}
 
-	function hasOwn (obj, property) {
+	function hasOwn(obj, property) {
 		return obj.hasOwnProperty(property);
 	}
 
-	function error (error) {
+	function error(error) {
 		var console = window.console;
 
 		console && console.error && console.error(error);

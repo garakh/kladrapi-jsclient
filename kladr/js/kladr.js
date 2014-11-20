@@ -265,7 +265,7 @@
 		return this;
 	};
 
-	function kladr ($input, params) {
+	function kladr($input, params) {
 		var options = (function () {
 			var dataKey = 'kladr-data',
 				data = $input.data(dataKey);
@@ -310,7 +310,7 @@
 			};
 		})();
 
-		function init (params, callback) {
+		function init(params, callback) {
 			if (params.isGet) {
 				return options.get(params.str[0]);
 			}
@@ -364,7 +364,7 @@
 					.on('resize' + eventNamespace, position);
 			});
 
-			function create (callback) {
+			function create(callback) {
 				var $container = $(document.getElementById('kladr_autocomplete'));
 
 				if (!$container.length) {
@@ -402,7 +402,7 @@
 				callback();
 			}
 
-			function render (objs, query) {
+			function render(objs, query) {
 				var obj, value, label, $a;
 
 				$ac.empty();
@@ -423,7 +423,7 @@
 				}
 			}
 
-			function position () {
+			function position() {
 				var inputOffset = $input.offset(),
 					inputWidth = $input.outerWidth(),
 					inputHeight = $input.outerHeight();
@@ -461,7 +461,7 @@
 				});
 			}
 
-			function open (event) {
+			function open(event) {
 				// return on control keys
 				if ((event.which > 8) && (event.which < 46)) {
 					return;
@@ -517,7 +517,7 @@
 				});
 			}
 
-			function close () {
+			function close() {
 				if (!trigger('close_before')) {
 					return;
 				}
@@ -526,7 +526,7 @@
 				trigger('close');
 			}
 
-			function keySelect (event) {
+			function keySelect(event) {
 				var $active = $ac.find('li.active');
 
 				switch (event.which) {
@@ -583,7 +583,7 @@
 				}
 			}
 
-			function mouseSelect () {
+			function mouseSelect() {
 				var $li = $(this);
 
 				if ($li.is('a')) {
@@ -599,7 +599,7 @@
 				return false;
 			}
 
-			function select () {
+			function select() {
 				if (!trigger('select_before')) {
 					return;
 				}
@@ -616,7 +616,7 @@
 				trigger('select', get('current'));
 			}
 
-			function check () {
+			function check() {
 				if (!get('verify')) {
 					return;
 				}
@@ -681,19 +681,19 @@
 					ret2(obj, !obj);
 					trigger('check', obj);
 
-					function ret2 (obj, er) {
+					function ret2(obj, er) {
 						hideSpinner();
 						ret(obj, er);
 					}
 				});
 
-				function ret (obj, er) {
+				function ret(obj, er) {
 					error(er);
 					setCurrent(obj);
 				}
 			}
 
-			function createController () {
+			function createController() {
 				var controller = {
 
 					setValue: function (value) {
@@ -793,10 +793,10 @@
 				set('controller', controller);
 			}
 
-			function checkAutoFill () {
+			function checkAutoFill() {
 				var count = 0;
 
-				(function test () {
+				(function test() {
 					if (++count > 5 || isFilled()) {
 						return;
 					}
@@ -804,7 +804,7 @@
 					setTimeout(test, 100);
 				})();
 
-				function isFilled () {
+				function isFilled() {
 					var name = $input.val();
 
 					if (name) {
@@ -832,7 +832,7 @@
 				}
 			}
 
-			function trigger (event, obj) {
+			function trigger(event, obj) {
 				if (!event) {
 					return true;
 				}
@@ -850,19 +850,19 @@
 				return true;
 			}
 
-			function showSpinner () {
+			function showSpinner() {
 				if (get('spinner')) {
 					get('showSpinner')($spinner);
 				}
 			}
 
-			function hideSpinner () {
+			function hideSpinner() {
 				if (get('spinner')) {
 					get('hideSpinner')($spinner);
 				}
 			}
 
-			function getQuery (name) {
+			function getQuery(name) {
 				var query = {},
 					fields = [
 						'token',
@@ -903,7 +903,7 @@
 				return query;
 			}
 
-			function getParent (selector, type) {
+			function getParent(selector, type) {
 				var $inputs = $.kladr.getInputs(selector),
 					types = $.kladr.type,
 					parents = {},
@@ -935,7 +935,7 @@
 				return parent;
 			}
 
-			function fixName (name) {
+			function fixName(name) {
 				var noCorrect = 'abcdefghijklmnopqrstuvwxyz',
 					testName = name.toLowerCase();
 
@@ -950,7 +950,7 @@
 				return name;
 			}
 
-			function setCurrent (obj) {
+			function setCurrent(obj) {
 				set('current', obj);
 
 				if (obj && obj.id) {
@@ -966,23 +966,23 @@
 				}
 			}
 
-			function error (error) {
+			function error(error) {
 				error
 					? $input.addClass('kladr-error')
 					: $input.removeClass('kladr-error');
 			}
 
-			function get (param) {
+			function get(param) {
 				return options._get(param);
 			}
 
-			function set (param, value) {
+			function set(param, value) {
 				options._set(param, value);
 			}
 		});
 	}
 
-	function readParams (param1, param2) {
+	function readParams(param1, param2) {
 		var params = {
 			obj: false,
 			str: false,
@@ -1002,13 +1002,13 @@
 		return params;
 	}
 
-	function getGuid () {
+	function getGuid() {
 		return getGuid.guid
 			? ++getGuid.guid
 			: getGuid.guid = 1;
 	}
 
-	function hasOwn (obj, property) {
+	function hasOwn(obj, property) {
 		return obj.hasOwnProperty(property);
 	}
 })(jQuery, window, document);

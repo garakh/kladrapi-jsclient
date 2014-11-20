@@ -30,7 +30,7 @@ $(function () {
 
 		changeParent($container.find('[name="parent"]:checked').val());
 
-		function changeParent (value) {
+		function changeParent(value) {
 			var parentType = null,
 				parentId = null;
 
@@ -52,7 +52,7 @@ $(function () {
 			});
 		}
 
-		function log (obj) {
+		function log(obj) {
 			var $log, i;
 
 			$container.find('.js-log li').hide();
@@ -85,7 +85,7 @@ $(function () {
 
 		changeTypeCode($container.find('[name="typecode"]:checked').val());
 
-		function changeTypeCode (value) {
+		function changeTypeCode(value) {
 			var typeCode = null;
 
 			switch (value) {
@@ -155,12 +155,12 @@ $(function () {
 		// Подключаем плагин для почтового индекса
 		$zip.kladrZip($container);
 
-		function setLabel ($input, text) {
+		function setLabel($input, text) {
 			text = text.charAt(0).toUpperCase() + text.substr(1).toLowerCase();
 			$input.parent().find('label').text(text);
 		}
 
-		function showError ($input, message) {
+		function showError($input, message) {
 			$tooltip.find('span').text(message);
 
 			var inputOffset = $input.offset(),
@@ -221,11 +221,11 @@ $(function () {
 						label += '<strong>' + obj.name + '</strong>';
 					}
 
-					if(obj.parents){
-						for(var k = obj.parents.length-1; k>-1; k--){
+					if (obj.parents) {
+						for (var k = obj.parents.length - 1; k > -1; k--) {
 							var parent = obj.parents[k];
-							if(parent.name){
-								if(label) label += '<small>, </small>';
+							if (parent.name) {
+								if (label) label += '<small>, </small>';
 								label += '<small>' + parent.name + ' ' + parent.typeShort + '.</small>';
 							}
 						}
@@ -280,12 +280,12 @@ $(function () {
 			});
 		});
 
-		function setLabel ($input, text) {
+		function setLabel($input, text) {
 			text = text.charAt(0).toUpperCase() + text.substr(1).toLowerCase();
 			$input.parent().find('label').text(text);
 		}
 
-		function mapUpdate () {
+		function mapUpdate() {
 			var zoom = 4;
 
 			var address = $.kladr.getAddress($container.find('.js-form-address'), function (objs) {
@@ -350,13 +350,13 @@ $(function () {
 			}
 		}
 
-		function addressUpdate () {
+		function addressUpdate() {
 			var address = $.kladr.getAddress($container.find('.js-form-address'));
 
 			$container.find('#address').text(address);
 		}
 
-		function log (obj) {
+		function log(obj) {
 			var $log, i;
 
 			$container.find('.js-log li').hide();

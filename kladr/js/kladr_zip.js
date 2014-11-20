@@ -61,7 +61,7 @@
 				}
 			});
 
-			function error (er) {
+			function error(er) {
 				er ? $this.addClass('kladr-error') : $this.removeClass('kladr-error');
 			}
 		});

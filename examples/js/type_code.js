@@ -12,7 +12,7 @@ $(function () {
 
 	changeTypeCode($('[name="typecode"]:checked').val());
 
-	function changeTypeCode (value) {
+	function changeTypeCode(value) {
 		var typeCode = null;
 
 		switch (value) {
