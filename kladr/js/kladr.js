@@ -428,6 +428,10 @@
 					inputWidth = $input.outerWidth(),
 					inputHeight = $input.outerHeight();
 
+				if (!inputOffset) {
+					return;
+				}
+
 				if ((position.top == inputOffset.top)
 					&& (position.left == inputOffset.left)
 					&& (position.width == inputWidth)
