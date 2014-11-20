@@ -812,7 +812,8 @@
 							queryType = query.type,
 							queryParentType = query.parentType,
 							type = $.kladr.type,
-							parentFilled = true;
+							parentFilled = true,
+							setByName = get('controller').setValueByName;
 
 						// Crutch for street input
 						if (queryType == type.street && queryParentType != type.city) {
@@ -824,7 +825,7 @@
 							parentFilled = false;
 						}
 
-						parentFilled && check();
+						parentFilled && setByName(name);
 						return !!get('current');
 					}
 
