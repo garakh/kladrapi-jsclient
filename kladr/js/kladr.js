@@ -325,7 +325,8 @@
 				eventNamespace = '.kladr';
 
 			create(function () {
-				var isActive = false;
+				var isActive = false,
+					canCheck = false;
 
 				$input
 					.attr('data-kladr-type', get('type') || '')
@@ -334,9 +335,16 @@
 					.on('keydown' + eventNamespace, keySelect)
 					.on('blur' + eventNamespace + ' change' + eventNamespace, function () {
 						if (!isActive) {
-							check();
+							if (canCheck) {
+								canCheck = false;
+								check();
+							}
+
 							close();
 						}
+					})
+					.on('focus' + eventNamespace, function () {
+						canCheck = true;
 					});
 
 				$ac
