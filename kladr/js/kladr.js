@@ -1,4 +1,4 @@
-(function ($, undefined) {
+(function ($, window, document, undefined) {
 	var defaultOptions = {
 
 		// Api params
@@ -999,4 +999,4 @@
 	function hasOwn (obj, property) {
 		return obj.hasOwnProperty(property);
 	}
-})(jQuery);
+})(jQuery, window, document);
