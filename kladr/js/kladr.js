@@ -322,7 +322,8 @@
 		return init(params, function () {
 			var $ac = null,
 				$spinner = null,
-				eventNamespace = '.kladr';
+				eventNamespace = '.kladr',
+				triggerChangeFlag = 'kladrInputChange';
 
 			create(function () {
 				var isActive = false,
@@ -333,30 +334,32 @@
 					.attr('data-kladr-one-string', get('oneString') || null)
 					.on('keyup' + eventNamespace, open)
 					.on('keydown' + eventNamespace, keySelect)
-					.on('blur' + eventNamespace + ' change' + eventNamespace, function () {
-						if (!isActive) {
-							if (canCheck) {
-								canCheck = false;
-								check();
-							}
-
-							close();
+					.on('blur' + eventNamespace, function () {
+						if (!isActive && $input.data(triggerChangeFlag)) {
+							$input.change();
 						}
+					})
+					.on('blur' + eventNamespace + ' change' + eventNamespace, function () {
+						if (isActive) return;
+
+						if (canCheck) {
+							canCheck = false;
+							check();
+						}
+
+						close();
+						return false;
 					})
 					.on('focus' + eventNamespace, function () {
 						canCheck = true;
 					});
 
 				$ac
-					.on('touchstart' + eventNamespace + ' click' + eventNamespace, 'li, a', function () {
+					.on('touchstart' + eventNamespace + ' mousedown' + eventNamespace, 'li, a', function (event) {
+						event.preventDefault();
+
 						isActive = true;
-						mouseSelect.call(this);
-						isActive = false;
-					})
-					.on('mouseenter' + eventNamespace, function () {
-						isActive = true;
-					})
-					.on('mouseleave' + eventNamespace, function () {
+						mouseSelect(this);
 						isActive = false;
 					});
 
@@ -466,6 +469,8 @@
 				if ((event.which > 8) && (event.which < 46)) {
 					return;
 				}
+
+				$input.data(triggerChangeFlag, false);
 
 				if (!trigger('open_before')) {
 					close();
@@ -583,8 +588,8 @@
 				}
 			}
 
-			function mouseSelect() {
-				var $li = $(this);
+			function mouseSelect(element) {
+				var $li = $(element);
 
 				if ($li.is('a')) {
 					$li = $li.parents('li');
@@ -594,9 +599,6 @@
 
 				select();
 				close();
-				$input.focus();
-
-				return false;
 			}
 
 			function select() {
@@ -609,7 +611,9 @@
 					return;
 				}
 
-				$input.val($a.attr('data-val'));
+				$input
+					.val($a.attr('data-val'))
+					.data(triggerChangeFlag, true);
 
 				error(false);
 				setCurrent($a.data('kladr-object'));
