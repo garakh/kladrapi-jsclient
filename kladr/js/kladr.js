@@ -41,7 +41,7 @@
 
 			if (query.oneString) {
 				if (obj.parents) {
-					objs = $.extend(true, [], obj.parents);
+					objs = [].concat(obj.parents);
 					objs.push(obj);
 
 					return $.kladr.buildAddress(objs);
@@ -82,7 +82,7 @@
 
 			if (query.oneString) {
 				if (obj.parents) {
-					objs = $.extend(true, [], obj.parents);
+					objs = [].concat(obj.parents);
 					objs.push(obj);
 
 					return $.kladr.buildAddress(objs);
@@ -177,13 +177,11 @@
 					obj = $this.kladr('current');
 
 					if ($this.attr('data-kladr-one-string') && obj.parents) {
-						objs = $.extend(true, [], obj.parents);
+						objs = [].concat(obj.parents);
 						objs.push(obj);
 
-						for (i in objs) {
-							if (hasOwn(objs, i)) {
-								filtered[objs[i].contentType] = objs[i];
-							}
+						for (i = 0; i < objs.length; i++) {
+							filtered[objs[i].contentType] = objs[i];
 						}
 					}
 					else {
@@ -214,29 +212,27 @@
 				j;
 
 			forEachObjs:
-				for (i in objs) {
-					if (hasOwn(objs, i)) {
-						if ($.type(objs[i]) === 'object') {
-							for (j = 0; j < lastIds.length; j++) {
-								if (lastIds[j] == objs[i].id) {
-									continue forEachObjs;
-								}
+				for (i = 0; i < objs.length; i++) {
+					if ($.type(objs[i]) === 'object') {
+						for (j = 0; j < lastIds.length; j++) {
+							if (lastIds[j] == objs[i].id) {
+								continue forEachObjs;
 							}
-
-							lastIds.push(objs[i].id);
-
-							name = objs[i].name;
-							type = objs[i].typeShort + '. ';
-							zip = objs[i].zip || zip;
-						}
-						else {
-							name = objs[i];
-							type = '';
 						}
 
-						if (address) address += ', ';
-						address += type + name;
+						lastIds.push(objs[i].id);
+
+						name = objs[i].name;
+						type = objs[i].typeShort + '. ';
+						zip = objs[i].zip || zip;
 					}
+					else {
+						name = objs[i];
+						type = '';
+					}
+
+					if (address) address += ', ';
+					address += type + name;
 				}
 
 			address = (zip ? zip + ', ' : '') + address;
@@ -410,19 +406,17 @@
 
 				$ac.empty();
 
-				for (var i in objs) {
-					if (hasOwn(objs, i)) {
-						obj = objs[i];
-						value = get('valueFormat')(obj, query);
-						label = get('labelFormat')(obj, query);
+				for (var i = 0; i < objs.length; i++) {
+					obj = objs[i];
+					value = get('valueFormat')(obj, query);
+					label = get('labelFormat')(obj, query);
 
-						$a = $('<a data-val="' + value + '">' + label + '</a>');
-						$a.data('kladr-object', obj);
+					$a = $('<a data-val="' + value + '">' + label + '</a>');
+					$a.data('kladr-object', obj);
 
-						$('<li></li>')
-							.append($a)
-							.appendTo($ac);
-					}
+					$('<li></li>')
+						.append($a)
+						.appendTo($ac);
 				}
 			}
 
@@ -667,14 +661,12 @@
 						valueLowerCase = null,
 						obj = null;
 
-					for (var i in objs) {
-						if (hasOwn(objs, i)) {
-							valueLowerCase = objs[i].name.toLowerCase();
+					for (var i = 0; i < objs.length; i++) {
+						valueLowerCase = objs[i].name.toLowerCase();
 
-							if (nameLowerCase == valueLowerCase) {
-								obj = objs[i];
-								break;
-							}
+						if (nameLowerCase == valueLowerCase) {
+							obj = objs[i];
+							break;
 						}
 					}
 
@@ -744,14 +736,12 @@
 									valueLowerCase = null,
 									obj = null;
 
-								for (var i in objs) {
-									if (hasOwn(objs, i)) {
-										valueLowerCase = objs[i].name.toLowerCase();
+								for (var i = 0; i < objs.length; i++) {
+									valueLowerCase = objs[i].name.toLowerCase();
 
-										if (nameLowerCase == valueLowerCase) {
-											obj = objs[i];
-											break;
-										}
+									if (nameLowerCase == valueLowerCase) {
+										obj = objs[i];
+										break;
 									}
 								}
 

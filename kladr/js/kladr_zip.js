@@ -44,16 +44,14 @@
 					error(false);
 
 					if (obj.parents) {
-						objs = $.extend(true, [], obj.parents);
+						objs = objs.concat(obj.parents);
 					}
 
 					objs.push(obj);
 
-					for (i in objs) {
-						if (objs.hasOwnProperty(i)) {
-							$input = $container.find('[data-kladr-type="' + objs[i].contentType + '"]');
-							$input.kladr('controller').setValueByObject(objs[i]);
-						}
+					for (i = 0; i < objs.length; i++) {
+						$input = $container.find('[data-kladr-type="' + objs[i].contentType + '"]');
+						$input.kladr('controller').setValueByObject(objs[i]);
 					}
 				}
 				else {
