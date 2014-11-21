@@ -326,7 +326,7 @@
 
 			create(function () {
 				var isActive = false,
-					canCheck = false;
+					canCheck = true;
 
 				$input
 					.attr('data-kladr-type', get('type') || '')
