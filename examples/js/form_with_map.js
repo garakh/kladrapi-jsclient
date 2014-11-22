@@ -58,6 +58,16 @@ $(function () {
 			log(obj);
 			addressUpdate();
 			mapUpdate();
+		},
+		checkBefore: function () {
+			var $input = $(this);
+
+			if (!$.trim($input.val())) {
+				log(null);
+				addressUpdate();
+				mapUpdate();
+				return false;
+			}
 		}
 	});
 
@@ -100,25 +110,17 @@ $(function () {
 		var zoom = 4;
 
 		var address = $.kladr.getAddress('.js-form-address', function (objs) {
-			var result = '',
-				name = '',
-				type = '';
+			var result = '';
 
-			for (var i in objs) {
-				if (objs.hasOwnProperty(i)) {
-					if ($.type(objs[i]) === 'object') {
-						name = objs[i].name;
-						type = ' ' + objs[i].type;
-					}
-					else {
-						name = objs[i];
-						type = '';
-					}
+			$.each(objs, function (i, obj) {
+				var name = '',
+					type = '';
 
-					if (result) result += ', ';
-					result += type + name;
+				if ($.type(obj) === 'object') {
+					name = obj.name;
+					type = ' ' + obj.type;
 
-					switch (objs[i].contentType) {
+					switch (obj.contentType) {
 						case $.kladr.type.region:
 							zoom = 4;
 							break;
@@ -140,7 +142,13 @@ $(function () {
 							break;
 					}
 				}
-			}
+				else {
+					name = obj;
+				}
+
+				if (result) result += ', ';
+				result += type + name;
+			});
 
 			return result;
 		});

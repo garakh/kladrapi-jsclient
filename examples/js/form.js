@@ -16,12 +16,22 @@ $(function () {
 			$tooltip.hide();
 		},
 		check: function (obj) {
+			var $input = $(this);
+
 			if (obj) {
-				setLabel($(this), obj.type);
+				setLabel($input, obj.type);
 				$tooltip.hide();
 			}
 			else {
-				showError($(this), 'Введено неверно');
+				showError($input, 'Введено неверно');
+			}
+		},
+		checkBefore: function () {
+			var $input = $(this);
+
+			if (!$.trim($input.val())) {
+				$tooltip.hide();
+				return false;
 			}
 		}
 	});
