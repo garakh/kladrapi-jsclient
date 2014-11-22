@@ -205,35 +205,33 @@
 		buildAddress: function (objs) {
 			var lastIds = [],
 				address = '',
-				zip = '',
-				name = '',
-				type = '',
-				i,
-				j;
+				zip = '';
 
-			forEachObjs:
-				for (i = 0; i < objs.length; i++) {
-					if ($.type(objs[i]) === 'object') {
-						for (j = 0; j < lastIds.length; j++) {
-							if (lastIds[j] == objs[i].id) {
-								continue forEachObjs;
-							}
+			$.each(objs, function (i, obj) {
+				var name = '',
+					type = '',
+					j;
+
+				if ($.type(obj) === 'object') {
+					for (j = 0; j < lastIds.length; j++) {
+						if (lastIds[j] == obj.id) {
+							return;
 						}
-
-						lastIds.push(objs[i].id);
-
-						name = objs[i].name;
-						type = objs[i].typeShort + '. ';
-						zip = objs[i].zip || zip;
-					}
-					else {
-						name = objs[i];
-						type = '';
 					}
 
-					if (address) address += ', ';
-					address += type + name;
+					lastIds.push(obj.id);
+
+					name = obj.name;
+					type = obj.typeShort + '. ';
+					zip = obj.zip || zip;
 				}
+				else {
+					name = obj;
+				}
+
+				if (address) address += ', ';
+				address += type + name;
+			});
 
 			address = (zip ? zip + ', ' : '') + address;
 
