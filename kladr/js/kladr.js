@@ -24,6 +24,7 @@
 		receive: null,
 		select: null,
 		check: null,
+		change: null,
 
 		// Plugin events before actions
 		openBefore: null,
@@ -944,6 +945,12 @@
 			}
 
 			function setCurrent(obj) {
+				var curr = get('current');
+
+				if ((curr && curr.id) === (obj && obj.id)) {
+					return;
+				}
+
 				set('current', obj);
 
 				if (obj && obj.id) {
@@ -957,6 +964,8 @@
 						$input.attr('data-kladr-type', obj.contentType);
 					}
 				}
+
+				trigger('change', obj);
 			}
 
 			function error(error) {
