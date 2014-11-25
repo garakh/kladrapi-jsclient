@@ -163,6 +163,69 @@
 				.add($source.find(inputSelector));
 		},
 
+		setValues: function (values, selector) {
+			var types = $.kladr.type,
+				filtered = {},
+				sorted = [],
+				$inputs, t;
+
+			if (!~$.inArray($.type(values), ['object', 'array'])) {
+				return;
+			}
+
+			$.each(values, function (key, value) {
+				if (!value) {
+					return;
+				}
+
+				var type = value.contentType || value.type || key;
+
+				if (hasOwn(types, type)) {
+					filtered[type] = value;
+				}
+			});
+
+			if ($.isEmptyObject(filtered)) {
+				return;
+			}
+
+			for (t in types) {
+				if (hasOwn(types, t) && filtered[t]) {
+					sorted[t] = filtered[t];
+				}
+			}
+
+			$inputs = $.kladr.getInputs(selector);
+
+			(function set() {
+				var $input, type, value;
+
+				for (type in sorted) {
+					if (hasOwn(sorted, type)) {
+						value = sorted[type];
+						delete sorted[type];
+						break;
+					}
+				}
+
+				if (!type) {
+					return;
+				}
+
+				$input = $inputs.filter('[data-kladr-type="' + type + '"]');
+
+				if (!$input.length) {
+					set();
+					return;
+				}
+
+				$input
+					.on('kladr_change', set)
+					.kladr('controller')
+					.setValue(value);
+			})();
+		},
+
 		getAddress: function (selector, build) {
 			var $inputs = $.kladr.getInputs(selector),
 				types = $.kladr.type,
