@@ -185,10 +185,6 @@
 				}
 			});
 
-			if ($.isEmptyObject(filtered)) {
-				return;
-			}
-
 			for (t in types) {
 				if (hasOwn(types, t) && filtered[t]) {
 					sorted[t] = filtered[t];
@@ -198,7 +194,8 @@
 			$inputs = $.kladr.getInputs(selector);
 
 			(function set() {
-				var $input, type, value;
+				var $input, type, value,
+					changeEvent = 'kladr_change.setvalues';
 
 				for (type in sorted) {
 					if (hasOwn(sorted, type)) {
@@ -220,7 +217,10 @@
 				}
 
 				$input
-					.on('kladr_change', set)
+					.on(changeEvent, function () {
+						$input.off(changeEvent);
+						set();
+					})
 					.kladr('controller')
 					.setValue(value);
 			})();
