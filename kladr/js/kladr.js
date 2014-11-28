@@ -164,7 +164,8 @@
 		},
 
 		setValues: function (values, selector) {
-			var types = $.kladr.type,
+			var changeEvent = 'kladr_change.setvalues',
+				types = $.kladr.type,
 				filtered = {},
 				sorted = [],
 				$inputs, t;
@@ -194,8 +195,7 @@
 			$inputs = $.kladr.getInputs(selector);
 
 			(function set() {
-				var $input, type, value,
-					changeEvent = 'kladr_change.setvalues';
+				var $input, type, value;
 
 				for (type in sorted) {
 					if (hasOwn(sorted, type)) {
