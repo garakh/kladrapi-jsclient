@@ -385,7 +385,8 @@
 
 			create(function () {
 				var isActive = false,
-					canCheck = true;
+					canCheck = true,
+					lastChangeVal = '';
 
 				$input
 					.attr('data-kladr-type', get('type') || '')
@@ -393,12 +394,16 @@
 					.on('keyup' + eventNamespace, open)
 					.on('keydown' + eventNamespace, keySelect)
 					.on('blur' + eventNamespace, function () {
-						if (!isActive && $input.data(triggerChangeFlag)) {
+						if (!isActive && $input.data(triggerChangeFlag) && (lastChangeVal != $input.val())) {
 							$input.change();
 						}
 					})
-					.on('blur' + eventNamespace + ' change' + eventNamespace, function () {
+					.on('blur' + eventNamespace + ' change' + eventNamespace, function (event) {
 						if (isActive) return;
+
+						if (event.type == 'change') {
+							lastChangeVal = $input.val();
+						}
 
 						if (canCheck) {
 							canCheck = false;
