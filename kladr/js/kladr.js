@@ -866,6 +866,10 @@
 				})();
 
 				function isFilled() {
+					if (!!get('current')) {
+						return true;
+					}
+
 					var name = $input.val();
 
 					if (name) {
