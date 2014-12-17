@@ -1,7 +1,5 @@
-(function ($, undefined) {
+(function ($) {
 	$.fn.kladrZip = function (selector) {
-		var $container = $(selector || document.body);
-
 		this.keydown(function (e) {
 			var key = e.charCode || e.keyCode || 0,
 				allow = (
@@ -37,7 +35,7 @@
 				withParents: true,
 				limit: 1
 			}, function (objs) {
-				var obj = objs.length && objs[0], i, $input, controller;
+				var obj = objs.length && objs[0];
 				objs = [];
 
 				if (obj) {
@@ -48,11 +46,7 @@
 					}
 
 					objs.push(obj);
-
-					for (i = 0; i < objs.length; i++) {
-						$input = $container.find('[data-kladr-type="' + objs[i].contentType + '"]');
-						$input.kladr('controller').setValueByObject(objs[i]);
-					}
+					$.kladr.setValues(objs, selector);
 				}
 				else {
 					error(true);
