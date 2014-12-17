@@ -4,7 +4,7 @@ $(function () {
 
 	$address.kladr({
 		oneString: true,
-		select: function (obj) {
+		change: function (obj) {
 			log(obj);
 		}
 	});

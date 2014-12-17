@@ -19,7 +19,7 @@ $(function () {
 
 		$address.kladr({
 			oneString: true,
-			select: function (obj) {
+			change: function (obj) {
 				log(obj);
 			}
 		});
@@ -243,13 +243,7 @@ $(function () {
 
 					return label;
 				},
-				select: function (obj) {
-					setLabel($(this), obj.type);
-					log(obj);
-					addressUpdate();
-					mapUpdate();
-				},
-				check: function (obj) {
+				change: function (obj) {
 					if (obj) {
 						setLabel($(this), obj.type);
 					}
