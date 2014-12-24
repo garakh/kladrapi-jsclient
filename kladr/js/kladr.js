@@ -462,7 +462,7 @@
 					createController();
 
 					position();
-					//checkAutoFill();
+					checkAutoFill();
 				}
 
 				callback();
