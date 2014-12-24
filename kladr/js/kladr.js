@@ -462,7 +462,7 @@
 					createController();
 
 					position();
-					checkAutoFill();
+					//checkAutoFill();
 				}
 
 				callback();
@@ -794,6 +794,7 @@
 								return controller;
 							}
 
+							lock();
 							trigger('send');
 
 							get('source')(query, function (objs) {
@@ -826,10 +827,12 @@
 						query.parentId = id;
 						query.limit = 1;
 
+						lock();
+
 						$.kladr.api(query, function (objs) {
-							if (objs.length) {
-								changeValue(objs[0], query);
-							}
+							objs.length
+								? changeValue(objs[0], query)
+								: changeValue(null, query);
 						});
 
 						return controller;
@@ -846,9 +849,16 @@
 					}
 				};
 
+				var lockAttr = 'data-kladr-autofill-lock';
+
+				function lock() {
+					$input.attr(lockAttr, true);
+				}
+
 				function changeValue(obj, query) {
 					$input.val(obj ? get('valueFormat')(obj, query) : '');
 					setCurrent(obj);
+					$input.removeAttr(lockAttr);
 				}
 
 				set('controller', controller);
@@ -866,10 +876,6 @@
 				})();
 
 				function isFilled() {
-					if (!!get('current')) {
-						return true;
-					}
-
 					var name = $input.val();
 
 					if (name) {
@@ -878,7 +884,8 @@
 							queryParentType = query.parentType,
 							type = $.kladr.type,
 							parentFilled = true,
-							setByName = get('controller').setValueByName;
+							setByName = get('controller').setValueByName,
+							lock;
 
 						// Crutch for street input
 						if (queryType == type.street && queryParentType != type.city) {
@@ -890,7 +897,9 @@
 							parentFilled = false;
 						}
 
-						parentFilled && setByName(name);
+						lock = $input.attr('data-kladr-autofill-lock');
+
+						lock && get('current') && parentFilled && setByName(name);
 						return !!get('current');
 					}
 
