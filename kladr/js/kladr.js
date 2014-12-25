@@ -627,7 +627,8 @@
 							$active = $ac.find('li').first();
 						}
 
-						(function () {
+						if($active.length){
+                                                    (function () {
 							var acScroll = $ac.scrollTop(),
 								acHeight = $ac.height(),
 								acOffset = $ac.offset(),
@@ -637,7 +638,8 @@
 							if ((activeOffset.top - acOffset.top + activeHeight) > acHeight) {
 								$ac.scrollTop(acScroll + activeHeight);
 							}
-						})();
+						    })();
+                                                }
 
 						$active.addClass('active');
 						select();
