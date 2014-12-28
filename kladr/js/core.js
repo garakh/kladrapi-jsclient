@@ -6,6 +6,7 @@
 
 		/**
 		 * URL сервиса
+		 *
 		 * @type {string}
 		 */
 		$.kladr.url = protocol + '//kladr-api.ru/api.php';
@@ -13,6 +14,7 @@
 
 	/**
 	 * Перечисление типов объектов
+	 *
 	 * @type {{region: string, district: string, city: string, street: string, building: string}}
 	 */
 	$.kladr.type = {
@@ -25,6 +27,7 @@
 
 	/**
 	 * Перечисление типов населённых пунктов
+	 *
 	 * @type {{city: number, settlement: number, village: number}}
 	 */
 	$.kladr.typeCode = {
@@ -35,6 +38,7 @@
 
 	/**
 	 * Проверяет корректность запроса
+	 *
 	 * @param {{}} query Запрос
 	 * @returns {boolean}
 	 */
@@ -100,6 +104,7 @@
 
 	/**
 	 * Отправляет запрос к сервису
+	 *
 	 * @param {{}} query Запрос
 	 * @param {Function} callback Функция, которой будет передан массив полученных объектов
 	 */
@@ -132,6 +137,7 @@
 
 	/**
 	 * Проверяет существование объекта, соответствующего запросу
+	 *
 	 * @param {{}} query Запрос
 	 * @param {Function} callback Функция, которой будет передан объект, если он существует, или
 	 * false если не существует.
@@ -154,6 +160,7 @@
 
 	/**
 	 * Преобразует запрос из формата принятого в плагине в формат сервиса
+	 *
 	 * @param {{}} query Запрос в формате плагина
 	 * @returns {{}} Запрос в формате сервиса
 	 */
@@ -180,6 +187,7 @@
 
 	/**
 	 * Проверяет принадлежит ли объекту свойство
+	 *
 	 * @param {{}} obj Объект
 	 * @param {string} property Свойство
 	 * @returns {boolean}
@@ -190,6 +198,7 @@
 
 	/**
 	 * Выводит ошибку в консоль
+	 *
 	 * @param {string} error Текст ошибки
 	 */
 	function error(error) {

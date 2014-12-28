@@ -2,6 +2,7 @@
 
 	/**
 	 * Список значений параметров плагина по умолчанию
+	 *
 	 * @type {{token: null, key: null, type: null, typeCode: null, parentType: null, parentId: null, limit: number, oneString: boolean, withParents: boolean, parentInput: null, verify: boolean, spinner: boolean, open: null, close: null, send: null, receive: null, select: null, check: null, change: null, openBefore: null, closeBefore: null, sendBefore: null, selectBefore: null, checkBefore: null, source: Function, labelFormat: Function, valueFormat: Function, showSpinner: Function, hideSpinner: Function}}
 	 */
 	var defaultOptions = {
@@ -36,6 +37,7 @@
 
 		/**
 		 * Отправляет запрос сервису
+		 *
 		 * @param {{}} query
 		 * @param {Function} callback
 		 */
@@ -45,6 +47,7 @@
 
 		/**
 		 * Форматирует подписи для объектов в списке
+		 *
 		 * @param {{}} obj Объект КЛАДР
 		 * @param {{}} query Запрос, по которому получен объект
 		 * @returns {string}
@@ -92,6 +95,7 @@
 
 		/**
 		 * Форматирует подставляемое в поле ввода значение
+		 *
 		 * @param {{}} obj Объект КЛАДР
 		 * @param {{}} query Запрос, по которому получен объект
 		 * @returns {string}
@@ -115,6 +119,7 @@
 
 		/**
 		 * Выводит ajax-крутилку
+		 *
 		 * @param {{}} $spinner jQuery объект ajax-крутилки
 		 */
 		showSpinner: function ($spinner) {
@@ -140,6 +145,7 @@
 
 		/**
 		 * Скрывает ajax-крутилку
+		 *
 		 * @param {{}} $spinner jQuery объект ajax-крутилки
 		 */
 		hideSpinner: function ($spinner) {
@@ -149,6 +155,7 @@
 
 	/**
 	 * Параметры только для чтения
+	 *
 	 * @type {{current: null, controller: null}}
 	 */
 	var readOnlyParams = {
@@ -156,6 +163,11 @@
 		controller: null // Контроллер для управления плагином
 	};
 
+	/**
+	 * Коды отслеживаемых плагином клавиш
+	 *
+	 * @type {{up: number, down: number, enter: number}}
+	 */
 	var keys = {
 		up: 38,
 		down: 40,
@@ -163,6 +175,13 @@
 	};
 
 	$.kladr = $.extend($.kladr, {
+
+		/**
+		 * Устанавливает значения по умолчанию для параметров плагина
+		 *
+		 * @param {{}|string} param1
+		 * @param {*} param2
+		 */
 		setDefault: function (param1, param2) {
 			var params = readParams(param1, param2);
 
@@ -178,12 +197,25 @@
 			}
 		},
 
+		/**
+		 * Возвращает значение по умолчанию для параметра плагина
+		 *
+		 * @param {string} param
+		 * @returns {*}
+		 */
 		getDefault: function (param) {
 			if (hasOwn(defaultOptions, param)) {
 				return defaultOptions[param];
 			}
 		},
 
+		/**
+		 * Возращает jQuery коллекцию полей ввода,
+		 * к которым был подключен плагин
+		 *
+		 * @param {*} selector Селектор, DOM элемент или jQuery объект, ограничивающий поиск полей ввода
+		 * @returns {{}} jQuery коллекция полей ввода
+		 */
 		getInputs: function (selector) {
 			var $source = $(selector || document.body),
 				inputSelector = '[data-kladr-type]';
@@ -193,6 +225,13 @@
 				.add($source.find(inputSelector));
 		},
 
+		/**
+		 * Устанавливает значения для полей, к которым
+		 * был подключен плагин
+		 *
+		 * @param {{}|[]} values Список значений
+		 * @param {*} selector Селектор, ограничивающий поиск полей ввода
+		 */
 		setValues: function (values, selector) {
 			var changeEvent = 'kladr_change.setvalues',
 				types = $.kladr.type,
@@ -256,6 +295,13 @@
 			})();
 		},
 
+		/**
+		 * Возвращает собранную на основании полей ввода строку адреса
+		 *
+		 * @param {*} selector Селектор, ограничивающий поиск полей ввода
+		 * @param {Function} build Функция, строящая строку адреса из списка объектов КЛАДР
+		 * @returns {string}
+		 */
 		getAddress: function (selector, build) {
 			var $inputs = $.kladr.getInputs(selector),
 				types = $.kladr.type,
@@ -296,6 +342,12 @@
 			return (build || $.kladr.buildAddress)(sorted);
 		},
 
+		/**
+		 * Строит строку адреса на основании списка объектов КЛАДР
+		 *
+		 * @param {{}|[]} objs Список объектов КЛАДР
+		 * @returns {string}
+		 */
 		buildAddress: function (objs) {
 			var lastIds = [],
 				address = '',
@@ -353,7 +405,20 @@
 		return this;
 	};
 
+	/**
+	 * Подключает плагин к полю ввода
+	 *
+	 * @param {{}} $input jQuery объект поля ввода
+	 * @param {{}} params Объект параметров
+	 * @returns {*}
+	 */
 	function kladr($input, params) {
+
+		/**
+		 * Хранилище параметров плагина
+		 *
+		 * @type {{}}
+		 */
 		var options = (function () {
 			var dataKey = 'kladr-data',
 				data = $input.data(dataKey);
@@ -364,6 +429,12 @@
 			}
 
 			return {
+
+				/**
+				 * Устанавливает значение публичному параметру плагина
+				 *
+				 * @param {{}} params
+				 */
 				set: function (params) {
 					if (params.obj) {
 						for (var i in params.obj) {
@@ -379,17 +450,37 @@
 					$input.data(dataKey, data);
 				},
 
+				/**
+				 * Возвращает значение публичного параметра плагина
+				 *
+				 * @param {string} param
+				 * @returns {*}
+				 */
 				get: function (param) {
 					if (hasOwn(defaultOptions, param) || hasOwn(readOnlyParams, param)) {
 						return data[param];
 					}
 				},
 
+				/**
+				 * Устанавливает значение параметра плагина
+				 *
+				 * @param {string} param
+				 * @param {*} value
+				 * @private
+				 */
 				_set: function (param, value) {
 					data[param] = value;
 					$input.data(dataKey, data);
 				},
 
+				/**
+				 * Возвращает значение параметра плагина
+				 *
+				 * @param {string} param
+				 * @returns {*}
+				 * @private
+				 */
 				_get: function (param) {
 					if (hasOwn(data, param)) {
 						return data[param];
@@ -398,6 +489,13 @@
 			};
 		})();
 
+		/**
+		 * Инициализирует плагин
+		 *
+		 * @param {{}} params Объект параметров
+		 * @param {Function} callback Функция, выполняемая после инициализации
+		 * @returns {*}
+		 */
 		function init(params, callback) {
 			if (params.isGet) {
 				return options.get(params.str[0]);
@@ -408,15 +506,15 @@
 		}
 
 		return init(params, function () {
-			var $ac = null,
-				$spinner = null,
-				eventNamespace = '.kladr',
-				triggerChangeFlag = 'kladrInputChange';
+			var $ac = null, // jQuery объект выпадающего списка
+				$spinner = null, // jQuery объект ajax-крутилки
+				eventNamespace = '.kladr', // Пространство имён событий, на которые подписывается плагин
+				triggerChangeFlag = 'kladrInputChange'; // Флаг, включающий эмуляцию события change для поля ввода
 
 			create(function () {
-				var isActive = false,
-					canCheck = true,
-					lastChangeVal = '';
+				var isActive = false,   // Поле ввода активно
+					canCheck = true,    // Поле ввода можно проверить
+					lastChangeVal = ''; // Значение поля ввода при последнем событии change
 
 				$input
 					.attr('data-kladr-type', get('type') || '')
@@ -460,6 +558,11 @@
 					.on('resize' + eventNamespace, position);
 			});
 
+			/**
+			 * Создаёт DOM элементы плагина
+			 *
+			 * @param {Function} callback
+			 */
 			function create(callback) {
 				var $container = $(document.getElementById('kladr_autocomplete'));
 
@@ -498,6 +601,12 @@
 				callback();
 			}
 
+			/**
+			 * Заполняет выпадающий список
+			 *
+			 * @param {[]} objs Массив объектов КЛАДР
+			 * @param {{}} query Объект запроса к сервису
+			 */
 			function render(objs, query) {
 				var obj, value, label, $a;
 
@@ -517,6 +626,9 @@
 				}
 			}
 
+			/**
+			 * Позиционирует выпадающий список на странице
+			 */
 			function position() {
 				var inputOffset = $input.offset(),
 					inputWidth = $input.outerWidth(),
@@ -555,6 +667,11 @@
 				});
 			}
 
+			/**
+			 * Открывает выпадающий список
+			 *
+			 * @param {{}} event jQuery объект события
+			 */
 			function open(event) {
 				// return on control keys
 				if ((event.which > 8) && (event.which < 46)) {
@@ -613,6 +730,9 @@
 				});
 			}
 
+			/**
+			 * Закрывает выпадающий список
+			 */
 			function close() {
 				if (!trigger('close_before')) {
 					return;
@@ -622,6 +742,11 @@
 				trigger('close');
 			}
 
+			/**
+			 * Осуществляет активацию и выбор элемента выпадающего списка с клавиатуры
+			 *
+			 * @param {{}} event jQuery объект события
+ 			 */
 			function keySelect(event) {
 				var $active = $ac.find('li.active');
 
@@ -681,6 +806,11 @@
 				}
 			}
 
+			/**
+			 * Осуществляет активацию и выбор элемента выпадающего списка мышью
+			 *
+			 * @param {{}} element DOM элемент, который необходимо выбрать
+			 */
 			function mouseSelect(element) {
 				var $li = $(element);
 
@@ -694,6 +824,9 @@
 				close();
 			}
 
+			/**
+			 * Осуществляет выбор активного элемента выпадающего списка
+			 */
 			function select() {
 				if (!trigger('select_before')) {
 					return;
@@ -713,6 +846,9 @@
 				trigger('select', get('current'));
 			}
 
+			/**
+			 * Проверяет введённое пользователем значение в поле ввода
+			 */
 			function check() {
 				if (!get('verify')) {
 					return;
@@ -788,9 +924,18 @@
 				}
 			}
 
+			/**
+			 * Создаёт контроллер плагина
+			 */
 			function createController() {
 				var controller = {
 
+					/**
+					 * Устанавливает значение в поле ввода
+					 *
+					 * @param {*} value
+					 * @returns {{}} Контроллер плагина
+					 */
 					setValue: function (value) {
 						if ($.type(value) === 'object') {
 							return controller.setValueByObject(value);
@@ -811,6 +956,12 @@
 						return controller;
 					},
 
+					/**
+					 * Устанавливает значение в поле ввода по названию
+					 *
+					 * @param {string} name Название объекта КЛАДР
+					 * @returns {{}} Контроллер плагина
+					 */
 					setValueByName: function (name) {
 						name = $.trim(name + '');
 
@@ -852,6 +1003,12 @@
 						return controller;
 					},
 
+					/**
+					 * Устанавливает значение в поле ввода по идентификатору
+					 *
+					 * @param {number} id Идентификатор объекта КЛАДР
+					 * @returns {{}} Контроллер плагина
+					 */
 					setValueById: function (id) {
 						var query = getQuery('');
 
@@ -870,11 +1027,22 @@
 						return controller;
 					},
 
+					/**
+					 * Устанавливает объект КЛАДР как значение поля ввода
+					 *
+					 * @param {{}} obj Объект КЛАДР
+					 * @returns {{}} Контроллер плагина
+					 */
 					setValueByObject: function (obj) {
 						changeValue(obj, getQuery(''));
 						return controller;
 					},
 
+					/**
+					 * Очищает поле ввода
+					 *
+					 * @returns {{}} Контроллер плагина
+					 */
 					clear: function () {
 						changeValue(null, null);
 						return controller;
@@ -883,10 +1051,19 @@
 
 				var lockAttr = 'data-kladr-autofill-lock';
 
+				/**
+				 * Блокирует поле ввода для изменения функцией checkAutoFill
+				 */
 				function lock() {
 					$input.attr(lockAttr, true);
 				}
 
+				/**
+				 * Изменяет значение поля ввода
+				 *
+				 * @param {{}} obj Объект КЛАДР
+				 * @param {{}} query Объект запроса к сервису
+				 */
 				function changeValue(obj, query) {
 					$input.val(obj ? get('valueFormat')(obj, query) : '');
 					setCurrent(obj);
@@ -896,6 +1073,9 @@
 				set('controller', controller);
 			}
 
+			/**
+			 * Проверяет автоматически установленное при автозаполнении браузером значение
+			 */
 			function checkAutoFill() {
 				var count = 0;
 
@@ -919,12 +1099,12 @@
 							setByName = get('controller').setValueByName,
 							lock;
 
-						// Crutch for street input
+						// Костыль для полей ввода улиц
 						if (queryType == type.street && queryParentType != type.city) {
 							parentFilled = false;
 						}
 
-						// Crutch for building input
+						// Костыль для полей ввода строений
 						if (queryType == type.building && !~$.inArray(queryParentType, [type.street, type.city])) {
 							parentFilled = false;
 						}
@@ -939,6 +1119,13 @@
 				}
 			}
 
+			/**
+			 * Инициализирует событие плагина
+			 *
+			 * @param {string} event Имя события
+			 * @param {{}} obj Объект передаваемый в событие
+			 * @returns {boolean} Выполнить действие идущее после события
+			 */
 			function trigger(event, obj) {
 				if (!event) {
 					return true;
@@ -957,18 +1144,30 @@
 				return true;
 			}
 
+			/**
+			 * Отображает ajax-крутилку
+			 */
 			function showSpinner() {
 				if (get('spinner')) {
 					get('showSpinner')($spinner);
 				}
 			}
 
+			/**
+			 * Скрывает ajax-крутилку
+			 */
 			function hideSpinner() {
 				if (get('spinner')) {
 					get('hideSpinner')($spinner);
 				}
 			}
 
+			/**
+			 * Генерирует запрос к сервису
+			 *
+			 * @param {string} name Введённое в поле ввода пользователем значение
+			 * @returns {{}}
+			 */
 			function getQuery(name) {
 				var query = {},
 					fields = [
@@ -1002,7 +1201,7 @@
 					}
 				}
 
-				// one string search crutch
+				// Костыль для поиска одной строкой
 				if (query.oneString) {
 					query.withParents = true;
 				}
@@ -1010,6 +1209,14 @@
 				return query;
 			}
 
+			/**
+			 * Возвращает тип и идентификатор ближайшего родительского объекта
+			 * среди заполненных пользователем полей ввода на странице
+			 *
+			 * @param {*} selector Селектор для ограничения поиска полей ввода
+			 * @param {string} type Тип объектов в текущем поле ввода
+			 * @returns {{}}
+			 */
 			function getParent(selector, type) {
 				var $inputs = $.kladr.getInputs(selector),
 					types = $.kladr.type,
@@ -1042,6 +1249,12 @@
 				return parent;
 			}
 
+			/**
+			 * Отображает ошибку при некорректном вводе
+			 *
+			 * @param {string} name Введённое пользователем значение
+			 * @returns {string}
+			 */
 			function fixName(name) {
 				var noCorrect = 'abcdefghijklmnopqrstuvwxyz',
 					testName = name.toLowerCase();
@@ -1057,6 +1270,11 @@
 				return name;
 			}
 
+			/**
+			 * Устанавливает текущий объект КЛАДР
+			 *
+			 * @param {{}} obj
+			 */
 			function setCurrent(obj) {
 				var curr = get('current');
 
@@ -1081,22 +1299,47 @@
 				trigger('change', obj);
 			}
 
+			/**
+			 * Управляет выводом ошибки в поле ввода
+			 *
+			 * @param {boolean} error Если true, то вывести ошибку. Если false, то снять.
+			 */
 			function error(error) {
 				error
 					? $input.addClass('kladr-error')
 					: $input.removeClass('kladr-error');
 			}
 
+			/**
+			 * Возвращает значение параметра плагина
+			 *
+			 * @param {string} param
+			 * @returns {*}
+			 */
 			function get(param) {
 				return options._get(param);
 			}
 
+			/**
+			 * Устанавливает значение параметра плагина
+			 *
+			 * @param {string} param
+			 * @param {*} value
+			 */
 			function set(param, value) {
 				options._set(param, value);
 			}
 		});
 	}
 
+	/**
+	 * Считывает значение параметров в объект
+	 * более удобного для использования формата
+	 *
+	 * @param {string|{}} param1
+	 * @param {*} param2
+	 * @returns {{obj: boolean|{}, str: boolean|{}, isGet: boolean}}
+	 */
 	function readParams(param1, param2) {
 		var params = {
 			obj: false,
@@ -1117,12 +1360,24 @@
 		return params;
 	}
 
+	/**
+	 * Возвращает глобальный уникальный идентификатор
+	 *
+	 * @returns {number}
+	 */
 	function getGuid() {
 		return getGuid.guid
 			? ++getGuid.guid
 			: getGuid.guid = 1;
 	}
 
+	/**
+	 * Проверяет принадлежит ли свойство объекту
+	 *
+	 * @param {{}} obj
+	 * @param {string} property
+	 * @returns {boolean}
+	 */
 	function hasOwn(obj, property) {
 		return obj.hasOwnProperty(property);
 	}
