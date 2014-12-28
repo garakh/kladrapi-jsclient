@@ -1,42 +1,54 @@
 (function ($, window, document, undefined) {
+
+	/**
+	 * Список значений параметров плагина по умолчанию
+	 * @type {{token: null, key: null, type: null, typeCode: null, parentType: null, parentId: null, limit: number, oneString: boolean, withParents: boolean, parentInput: null, verify: boolean, spinner: boolean, open: null, close: null, send: null, receive: null, select: null, check: null, change: null, openBefore: null, closeBefore: null, sendBefore: null, selectBefore: null, checkBefore: null, source: Function, labelFormat: Function, valueFormat: Function, showSpinner: Function, hideSpinner: Function}}
+	 */
 	var defaultOptions = {
 
-		// Api params
-		token: null,
-		key: null,
-		type: null,
-		typeCode: null,
-		parentType: null,
-		parentId: null,
-		limit: 10,
-		oneString: false,
-		withParents: false,
+		token: null,        // Токен для доступа к сервису
+		key: null,          // Ключ для доступа к сервису
+		type: null,         // Тип подставляемых объектов
+		typeCode: null,     // Тип подставляемых населённых пунктов
+		parentType: null,   // Тип родительского объекта
+		parentId: null,     // Идентификатор родительского объекта
+		limit: 10,          // Количество отображаемых в выпадающем списке объектов
+		oneString: false,   // Включить ввод адреса одной строкой
+		withParents: false, // Получить объекты вместе с родительскими
 
-		// Plugin options
-		parentInput: null,
-		verify: false,
-		spinner: true,
+		parentInput: null, // Селектор для поиска родительских полей ввода
+		verify: false,     // Проверять введённые данные
+		spinner: true,     // Отображать ajax-крутилку
 
-		// Plugin events
-		open: null,
-		close: null,
-		send: null,
-		receive: null,
-		select: null,
-		check: null,
-		change: null,
+		open: null,    // Открыт выпадающий список объектов
+		close: null,   // Закрыт выпадающий список объектов
+		send: null,    // Отправлен запрос к сервису
+		receive: null, // Получен ответ от сервиса
+		select: null,  // Выбран объект в выпадающем списке
+		check: null,   // Проверен введённый пользователем объект
+		change: null,  // Изменился объект в поле ввода
 
-		// Plugin events before actions
-		openBefore: null,
-		closeBefore: null,
-		sendBefore: null,
-		selectBefore: null,
-		checkBefore: null,
+		openBefore: null,   // Вызывается перед открытием выпадающего списка
+		closeBefore: null,  // Вызывается перед закрытием выпадающего списка
+		sendBefore: null,   // Вызывается перед отправкой запроса сервису
+		selectBefore: null, // Вызывается перед выбором объекта в списке
+		checkBefore: null,  // Вызывается перед проверкой введённого пользователем объекта
 
+		/**
+		 * Отправляет запрос сервису
+		 * @param {{}} query
+		 * @param {Function} callback
+		 */
 		source: function (query, callback) {
 			$.kladr.api(query, callback);
 		},
 
+		/**
+		 * Форматирует подписи для объектов в списке
+		 * @param {{}} obj Объект КЛАДР
+		 * @param {{}} query Запрос, по которому получен объект
+		 * @returns {string}
+		 */
 		labelFormat: function (obj, query) {
 			var objs;
 
@@ -78,6 +90,12 @@
 			return label;
 		},
 
+		/**
+		 * Форматирует подставляемое в поле ввода значение
+		 * @param {{}} obj Объект КЛАДР
+		 * @param {{}} query Запрос, по которому получен объект
+		 * @returns {string}
+		 */
 		valueFormat: function (obj, query) {
 			var objs;
 
@@ -95,6 +113,10 @@
 			return obj.name;
 		},
 
+		/**
+		 * Выводит ajax-крутилку
+		 * @param {{}} $spinner jQuery объект ajax-крутилки
+		 */
 		showSpinner: function ($spinner) {
 			var top = -0.2,
 				spinnerInterval = setInterval(function () {
@@ -116,14 +138,22 @@
 			$spinner.show();
 		},
 
+		/**
+		 * Скрывает ajax-крутилку
+		 * @param {{}} $spinner jQuery объект ajax-крутилки
+		 */
 		hideSpinner: function ($spinner) {
 			$spinner.hide();
 		}
 	};
 
+	/**
+	 * Параметры только для чтения
+	 * @type {{current: null, controller: null}}
+	 */
 	var readOnlyParams = {
-		current: null,
-		controller: null
+		current: null,   // Текущий, выбранный объект КЛАДР
+		controller: null // Контроллер для управления плагином
 	};
 
 	var keys = {
