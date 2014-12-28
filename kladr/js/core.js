@@ -4,11 +4,17 @@
 	(function () {
 		var protocol = window.location.protocol == 'https:' ? 'https:' : 'http:';
 
-		// Service URL
+		/**
+		 * URL сервиса
+		 * @type {string}
+		 */
 		$.kladr.url = protocol + '//kladr-api.ru/api.php';
 	})();
 
-	// Enum KLADR object types
+	/**
+	 * Перечисление типов объектов
+	 * @type {{region: string, district: string, city: string, street: string, building: string}}
+	 */
 	$.kladr.type = {
 		region:   'region',   // Область
 		district: 'district', // Район
@@ -17,14 +23,21 @@
 		building: 'building'  // Строение
 	};
 
-	// Enum city object types
+	/**
+	 * Перечисление типов населённых пунктов
+	 * @type {{city: number, settlement: number, village: number}}
+	 */
 	$.kladr.typeCode = {
 		city:       1, // Город
 		settlement: 2, // Посёлок
 		village:    4  // Деревня
 	};
 
-	// Validate query
+	/**
+	 * Проверяет корректность запроса
+	 * @param {{}} query Запрос
+	 * @returns {boolean}
+	 */
 	$.kladr.validate = function (query) {
 		var type = $.kladr.type;
 
@@ -85,7 +98,11 @@
 		return true;
 	};
 
-	// Send query to service
+	/**
+	 * Отправляет запрос к сервису
+	 * @param {{}} query Запрос
+	 * @param {Function} callback Функция, которой будет передан массив полученных объектов
+	 */
 	$.kladr.api = function (query, callback) {
 		if (!callback) {
 			error('Callback undefined');
@@ -113,7 +130,12 @@
 		);
 	};
 
-	// Check exist object
+	/**
+	 * Проверяет существование объекта, соответствующего запросу
+	 * @param {{}} query Запрос
+	 * @param {Function} callback Функция, которой будет передан объект, если он существует, или
+	 * false если не существует.
+	 */
 	$.kladr.check = function (query, callback) {
 		if (!callback) {
 			error('Callback undefined');
@@ -130,6 +152,11 @@
 		});
 	};
 
+	/**
+	 * Преобразует запрос из формата принятого в плагине в формат сервиса
+	 * @param {{}} query Запрос в формате плагина
+	 * @returns {{}} Запрос в формате сервиса
+	 */
 	function toApiFormat(query) {
 		var params = {},
 			fields = {
@@ -151,10 +178,20 @@
 		return params;
 	}
 
+	/**
+	 * Проверяет принадлежит ли объекту свойство
+	 * @param {{}} obj Объект
+	 * @param {string} property Свойство
+	 * @returns {boolean}
+	 */
 	function hasOwn(obj, property) {
 		return obj.hasOwnProperty(property);
 	}
 
+	/**
+	 * Выводит ошибку в консоль
+	 * @param {string} error Текст ошибки
+	 */
 	function error(error) {
 		var console = window.console;
 
