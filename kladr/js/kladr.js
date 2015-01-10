@@ -84,7 +84,8 @@
 
 			if (queryName.length < objName.length) {
 				label += name.substr(0, start);
-				label += '<strong>' + name.substr(start, queryName.length) + '</strong>';
+				label += '<strong>' + name.substr(
+					start, queryName.length) + '</strong>';
 				label += name.substr(start + queryName.length);
 			} else {
 				label += '<strong>' + name + '</strong>';
@@ -1065,7 +1066,7 @@
 				 * @param {{}} query Объект запроса к сервису
 				 */
 				function changeValue(obj, query) {
-					$input.val(obj ? get('valueFormat')(obj, query) : '');
+					obj?$input.val(get('valueFormat')(obj, query)):error(1);
 					setCurrent(obj);
 					$input.removeAttr(lockAttr);
 				}
