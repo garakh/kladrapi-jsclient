@@ -264,6 +264,42 @@ $(function () {
 				}
 			});
 
+		$street.kladr({
+				labelFormat: function (obj, query) {
+					var label = '';
+
+					var name = obj.name.toLowerCase();
+					query = query.name.toLowerCase();
+
+					var start = name.indexOf(query);
+					start = start > 0 ? start : 0;
+
+					if (obj.typeShort) {
+						label += obj.typeShort + '. ';
+					}
+
+					if (query.length < obj.name.length) {
+						label += obj.name.substr(0, start);
+						label += '<strong>' + obj.name.substr(start, query.length) + '</strong>';
+						label += obj.name.substr(start + query.length, obj.name.length - query.length - start);
+					} else {
+						label += '<strong>' + obj.name + '</strong>';
+					}
+
+					if (obj.parents) {
+						for (var k = obj.parents.length - 1; k > -1; k--) {
+							var parent = obj.parents[k];
+							if (parent.name && parent.contentType == 'city') {
+								if (label) label += '<small>, </small>';
+								label += '<small>' + parent.name + ' ' + parent.typeShort + '.</small>';
+							}
+						}
+					}
+
+					return label;
+				}			
+		});
+			
 		$region.kladr('type', $.kladr.type.region);
 		$district.kladr('type', $.kladr.type.district);
 		$city.kladr('type', $.kladr.type.city);
