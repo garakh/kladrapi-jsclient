@@ -272,6 +272,7 @@ $(function () {
 
 		// Включаем получение родительских объектов для населённых пунктов
 		$city.kladr('withParents', true);
+		$street.kladr('withParents', true);
 
 		// Отключаем проверку введённых данных для строений
 		$building.kladr('verify', false);
