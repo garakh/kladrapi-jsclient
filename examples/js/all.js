@@ -291,7 +291,7 @@ $(function () {
 							var parent = obj.parents[k];
 							if (parent.name && parent.contentType == 'city') {
 								if (label) label += '<small>, </small>';
-								label += '<small>' + parent.typeShort + '. ' + parent.name '</small>';
+								label += '<small>' + parent.typeShort + '. ' + parent.name + '</small>';
 							}
 						}
 					}
