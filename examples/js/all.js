@@ -36,12 +36,12 @@ $(function () {
 
 			switch (value) {
 				case 'moscow':
-					parentType = $.kladr.type.city;
+					parentType = $.kladr.type.region;
 					parentId = '7700000000000';
 					break;
 
 				case 'petersburg':
-					parentType = $.kladr.type.city;
+					parentType = $.kladr.type.region;
 					parentId = '7800000000000';
 					break;
 			}
