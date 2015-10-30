@@ -752,7 +752,7 @@
 						successSearch = false;
 						return;
 					}
-                    successSearch = true;
+					successSearch = true;
 					render(objs, query);
 					position();
 					hideSpinner();
