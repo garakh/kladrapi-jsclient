@@ -16,6 +16,8 @@
 		limit: 10,          // Количество отображаемых в выпадающем списке объектов
 		oneString: false,   // Включить ввод адреса одной строкой
 		withParents: false, // Получить объекты вместе с родительскими
+		noResultText: null, // Текст для показа в выпадающем списке в случае отсутствия результатов поиска
+		checkEmptyRespone: false, // Текст для показа в выпадающем списке в случае отсутствия результатов поиска
 
 		parentInput: null, // Селектор для поиска родительских полей ввода
 		verify: false,     // Проверять введённые данные
@@ -510,6 +512,7 @@
 		return init(params, function () {
 			var $ac = null, // jQuery объект выпадающего списка
 				$spinner = null, // jQuery объект ajax-крутилки
+				successSearch = false, // Состояние последнего запроса
 				eventNamespace = '.kladr', // Пространство имён событий, на которые подписывается плагин
 				triggerChangeFlag = 'kladrInputChange'; // Флаг, включающий эмуляцию события change для поля ввода
 
@@ -539,7 +542,9 @@
 							canCheck = false;
 							check();
 						}
-
+						if(!successSearch && defaultOptions.checkEmptyRespone) { // Если запрос был неуспешных, т.е. не вернулись данные с сервера, то очищаем input  c вводом
+							$input.val('');
+						}
 						close();
 						return false;
 					})
@@ -629,6 +634,27 @@
 			}
 
 			/**
+			 * Заполняет выпадающий список сообщением о пустом запросе
+			 *
+			 */
+			function renderEmpty() {
+				var obj, value, label, $a;
+				$ac.empty();
+				value = '';
+				label = defaultOptions.noResultText;
+				if(label == null || label == '')
+					return; 
+				$a = $('<a data-val="' + value + '">' + label + '</a>');
+				$a.data('kladr-object', {});
+
+				$('<li></li>')
+					.append($a)
+					.appendTo($ac);
+			}
+
+			
+
+			/**
 			 * Позиционирует выпадающий список на странице
 			 */
 			function position() {
@@ -708,7 +734,7 @@
 				trigger('send');
 
 				get('source')(query, function (objs) {
-					trigger('receive');
+					trigger('receive', objs);
 
 					if (!$input.is(':focus')) {
 						hideSpinner();
@@ -719,10 +745,14 @@
 					if (!$.trim($input.val()) || !objs.length) {
 						hideSpinner();
 						setCurrent(null);
-						close();
+						renderEmpty();
+						position();
+						$ac.slideDown(50);
+						trigger('open');
+						successSearch = false;
 						return;
 					}
-
+					successSearch = true;
 					render(objs, query);
 					position();
 					hideSpinner();
