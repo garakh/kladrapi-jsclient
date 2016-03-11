@@ -124,15 +124,17 @@
 			timeout = null;
 		}, 3000);
 
-		$.getJSON($.kladr.url + "?callback=?",
-			toApiFormat(query),
-			function (data) {
-				if (timeout) {
-					callback(data.result || []);
-					clearTimeout(timeout);
-				}
-			}
-		);
+        $.ajax({
+            url: $.kladr.url + '?callback=?',
+            type: 'get',
+            data: toApiFormat(query),
+            dataType: 'jsonp'
+        }).done(function (data) {
+            if (timeout) {
+                callback(data.result || []);
+                clearTimeout(timeout);
+            }
+        });
 	};
 
 	/**
