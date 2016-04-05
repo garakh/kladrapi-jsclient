@@ -55,8 +55,9 @@
 				}
 				break;
 			case type.street:
-				if (query.parentType != type.city) {
-					error('parentType must equal "city"');
+				
+				if (query.parentType != type.city && query.parentType != type.street) {
+					error('parentType must equal "city" or "street"');
 					return false;
 				}
 				if (!query.parentId) {
