@@ -7,7 +7,7 @@
     "example": "examples"
   },
   "scripts": {
-	  "build": "npm install && (gulp || node node_modules/gulp/bin/gulp.js)"
+    "build": "npm install && (gulp || node node_modules/gulp/bin/gulp.js)"
   },
   "repository": {
     "type": "git",
@@ -19,8 +19,8 @@
     "url": "https://www.linkedin.com/in/xescoder"
   },
   "keywords": [
-	"kladr",
-	"jquery"
+    "kladr",
+    "jquery"
   ],
   "license": "Public Domain",
   "bugs": {
@@ -29,9 +29,10 @@
   "homepage": "https://github.com/garakh/kladrapi-jsclient",
   "devDependencies": {
     "gulp": "^3.8.8",
-    "gulp-csso": "^0.2.9",
-    "gulp-uglify": "^1.0.1",
     "gulp-concat": "^2.4.1",
-    "gulp-rename": "^1.2.0"
+    "gulp-csso": "^0.2.9",
+    "gulp-rename": "^1.2.0",
+    "gulp-uglify": "^1.0.1",
+    "gulp-wrap-umd": "^0.2.1"
   }
 }

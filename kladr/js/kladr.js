@@ -644,7 +644,7 @@
 				value = '';
 				label = defaultOptions.noResultText;
 				if(label == null || label == '')
-					return; 
+					return;
 				$a = $('<a data-val="' + value + '">' + label + '</a>');
 				$a.data('kladr-object', {});
 
@@ -653,7 +653,7 @@
 					.appendTo($ac);
 			}
 
-			
+
 
 			/**
 			 * Позиционирует выпадающий список на странице
