@@ -1077,7 +1077,7 @@
 					 * @returns {{}} Контроллер плагина
 					 */
 					clear: function () {
-						changeValue(null, null);
+						changeValue('current', '');
 						return controller;
 					}
 				};
