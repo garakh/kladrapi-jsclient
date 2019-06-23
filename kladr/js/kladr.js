@@ -34,7 +34,9 @@
 
 		openBefore: null,   // Вызывается перед открытием выпадающего списка
 		closeBefore: null,  // Вызывается перед закрытием выпадающего списка
-		sendBefore: null,   // Вызывается перед отправкой запроса сервису
+		sendBefore: function (query) { // Вызывается перед отправкой запроса сервису
+            return query;
+        },
 		selectBefore: null, // Вызывается перед выбором объекта в списке
 		checkBefore: null,  // Вызывается перед проверкой введённого пользователем объекта
 
@@ -726,7 +728,8 @@
 
 				var query = getQuery(name);
 
-				if (!trigger('send_before', query)) {
+                query = trigger('send_before', query);
+                if (!query) {
 					close();
 					return;
 				}
@@ -908,7 +911,8 @@
 				query.withParents = false;
 				query.limit = 10;
 
-				if (!trigger('send_before', query)) {
+				query = trigger('send_before', query);
+                if (!query) {
 					ret(null, false);
 					trigger('check', null);
 					return;
@@ -1005,7 +1009,8 @@
 							query.withParents = false;
 							query.limit = 10;
 
-							if (!trigger('send_before', query)) {
+							query = trigger('send_before', query);
+                            if (!query) {
 								changeValue(null, query);
 								return controller;
 							}
@@ -1171,7 +1176,7 @@
 				$input.trigger('kladr_' + event, obj);
 
 				if ($.type(get(eventProp)) === 'function') {
-					return get(eventProp).call($input.get(0), obj) !== false;
+					return get(eventProp).call($input.get(0), obj);
 				}
 
 				return true;
