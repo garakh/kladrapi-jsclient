@@ -2,7 +2,8 @@ var gulp = require('gulp'),
 	csso = require('gulp-csso'),
 	uglify = require('gulp-uglify'),
 	concat = require('gulp-concat'),
-	rename = require('gulp-rename');
+	rename = require('gulp-rename'),
+	wrap = require('gulp-wrap-umd');
 
 gulp.task('default', function () {
 
@@ -13,6 +14,17 @@ gulp.task('default', function () {
 			'./kladr/js/kladr_zip.js'
 		])
 		.pipe(concat('jquery.kladr.js'))
+		.pipe(wrap({
+			exports: 'jQuery',
+			namespace: 'jQuery',
+			deps: [
+				{
+					name: 'jquery',
+					globalName: 'jQuery',
+					paramName: 'jQuery'
+				}
+			]
+		}))
 		.pipe(uglify())
 		.pipe(rename({suffix: '.min'}))
 		.pipe(gulp.dest('./'));
